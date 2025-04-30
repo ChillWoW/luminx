@@ -1,0 +1,100 @@
+.loader-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Spinner variant */
+.loader-svg {
+    animation: rotate var(--speed) linear infinite;
+}
+
+.loader-track {
+    fill: none;
+    background-color: #252627;
+    transition: stroke 0.5s ease;
+}
+
+.loader-circle {
+    fill: none;
+    transition: stroke 0.5s ease;
+}
+
+/* Dots variant */
+.loader-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.loader-dot {
+    border-radius: 50%;
+    animation: bounce var(--speed) infinite ease-in-out;
+}
+
+/* Pulse variant */
+.loader-pulse {
+    border-radius: 50%;
+    animation: pulse var(--speed) infinite ease-in-out;
+}
+
+/* Bars variant */
+.loader-bars {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.loader-bar {
+    border-radius: 2px;
+    animation: barScale var(--speed) infinite ease-in-out;
+}
+
+/* Animations */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes bounce {
+    0%,
+    100% {
+        transform: scale(0.5);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(0.5);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes barScale {
+    0%,
+    100% {
+        transform: scaleY(0.5);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}

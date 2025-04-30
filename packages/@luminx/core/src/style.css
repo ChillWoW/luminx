@@ -1,0 +1,42 @@
+:root {
+    /* Dark */
+    --lumin-background: #242424;
+    --lumin-background-hover: #2f2f2f;
+    --lumin-border: #3a3a3a;
+    --lumin-text: #fff;
+    --lumin-hint: #969494;
+    --lumin-placeholder: #808080;
+    --lumin-section: #d8d0d0;
+    --lumin-primary: #4187f6;
+    --lumin-secondary: #51546d;
+
+    /* Other */
+    --lumin-error: #e23b3b;
+    --lumin-success: #63da63;
+    --lumin-blue: #458efc;
+    --lumin-black: #000;
+}
+
+.lumin-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--lumin-border) var(--lumin-background);
+}
+
+.lumin-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.lumin-scrollbar::-webkit-scrollbar-track {
+    background: var(--lumin-background);
+    border-radius: 4px;
+}
+
+.lumin-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--lumin-border);
+    border-radius: 4px;
+}
+
+.lumin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--lumin-border);
+}

@@ -1,0 +1,23 @@
+{
+    "name": "luminx",
+    "version": "1.0.0",
+    "description": "UI Component Library for React with TailwindCSS",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "npm run build --workspaces",
+        "copy-css": "npm run copy-css --workspaces",
+        "prepublishOnly": "npm run build"
+    },
+    "devDependencies": {
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "@types/react-syntax-highlighter": "^15.5.13",
+        "copyfiles": "^2.4.1",
+        "tailwindcss": "^3.4.11",
+        "typescript": "^5"
+    }
+}
