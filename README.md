@@ -1,4 +1,4 @@
-# Noctis UI
+# Lumin UI
 
 A modern React component library created with TailwindCSS.
 
