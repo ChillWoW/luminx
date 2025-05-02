@@ -1,4 +1,4 @@
-# Lumin UI
+# LuminX
 
 A modern React component library created with TailwindCSS.
 
@@ -10,17 +10,9 @@ npm install @luminx/core
 yarn add @luminx/core
 ```
 
-## Installation (React 19)
-
-```bash
-npm install @luminx/core --legacy-peer-deeps
-# or
-npm install @luminx/core --force
-```
-
 ## Docs
 
-Docs are currently being made. For now you can see every components source code.
+Docs are currently being made. For now we suggest to read source code, to find components.
 
 ## Example Usage
 
