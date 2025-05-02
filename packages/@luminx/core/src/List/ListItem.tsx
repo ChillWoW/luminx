@@ -66,4 +66,4 @@ export function ListItem({
     );
 }
 
-ListItem.displayName = "ListItem";
+ListItem.displayName = "@luminx/core/ListItem";

@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { useDrawerContext } from "./context";
 
 export interface DrawerBodyProps {
@@ -10,10 +10,10 @@ export const DrawerBody = ({ children }: DrawerBodyProps) => {
     const { classNames } = useDrawerContext();
 
     return (
-        <div className={cn("flex-1 overflow-y-auto", classNames?.body)}>
+        <div className={cx("flex-1 overflow-y-auto", classNames?.body)}>
             {children}
         </div>
     );
 };
 
-DrawerBody.displayName = "DrawerBody";
+DrawerBody.displayName = "@luminx/core/DrawerBody";

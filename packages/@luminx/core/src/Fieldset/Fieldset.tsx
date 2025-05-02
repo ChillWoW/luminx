@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 import { FieldsetProps } from "./types";
-import { cn, getRadius } from "..";
+import { cx, getRadius } from "../_theme";
+import "../style.css";
 
 export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
     (
@@ -18,7 +19,7 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
         return (
             <fieldset
                 ref={ref}
-                className={cn(
+                className={cx(
                     "border border-[var(--lumin-border)] p-4",
                     disabled && "opacity-60 cursor-not-allowed",
                     classNames?.root
@@ -32,7 +33,7 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
             >
                 {legend && (
                     <legend
-                        className={cn(
+                        className={cx(
                             "px-2 text-sm font-medium text-[var(--lumin-hint)]",
                             disabled && "opacity-60",
                             classNames?.legend
@@ -46,3 +47,5 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
         );
     }
 );
+
+Fieldset.displayName = "@luminx/core/Fieldset";

@@ -7,6 +7,7 @@ export type Radius =
     | "xl"
     | "2xl"
     | "3xl"
+    | "4xl"
     | "full";
 
 export interface GetRadiusProps {

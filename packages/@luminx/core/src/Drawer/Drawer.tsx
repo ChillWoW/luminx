@@ -30,10 +30,12 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
         overlayOpacity = 0.6,
         withOverlay = true,
         style,
-        className
+        className,
+        transitionDuration = 250
     } = props;
 
     const [mounted, setMounted] = useState(false);
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -45,6 +47,20 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
             return () => document.removeEventListener("keydown", handleEscape);
         }
     }, [canClose, onClose, closeOnEscape]);
+
+    useEffect(() => {
+        if (opened) {
+            setMounted(true);
+            const timer = setTimeout(() => setVisible(true), 10);
+            return () => clearTimeout(timer);
+        } else {
+            setVisible(false);
+            const timer = setTimeout(() => {
+                if (!opened) setMounted(false);
+            }, transitionDuration);
+            return () => clearTimeout(timer);
+        }
+    }, [opened, transitionDuration]);
 
     useEffect(() => {
         if (!lockScroll) return;
@@ -61,7 +77,7 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
         }
     }, [opened, lockScroll]);
 
-    if (!mounted || !opened) return null;
+    if (!mounted) return null;
 
     const Component = (
         <DrawerContext.Provider
@@ -81,7 +97,9 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
                 position,
                 offset,
                 style,
-                className
+                className,
+                opened: visible,
+                transitionDuration
             }}
         >
             <DrawerRoot>
@@ -105,6 +123,6 @@ const DrawerExtended = Object.assign(Drawer, {
     Body: DrawerBody
 });
 
-DrawerExtended.displayName = "Drawer";
+DrawerExtended.displayName = "@luminx/core/Drawer";
 
 export { DrawerExtended as Drawer };

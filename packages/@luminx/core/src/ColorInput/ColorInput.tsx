@@ -3,7 +3,9 @@ import { Input } from "../Input/Input";
 import { ColorInputProps } from "./types";
 import { ColorSwatch } from "../ColorSwatch/ColorSwatch";
 import { ColorPicker } from "../ColorPicker/ColorPicker";
-import { parseColor } from "../ColorPicker/ColorUtils";
+import { parseColor } from "../ColorPicker/utils";
+import { cx } from "../_theme";
+import { IconPencil } from "@tabler/icons-react";
 
 const EyedropperIcon = () => (
     <svg
@@ -28,6 +30,7 @@ export const ColorInput = ({
     hidePreview,
     showEyeDropper,
     colorSwatchProps,
+    withPicker = true,
     classNames = {},
     ...props
 }: ColorInputProps) => {
@@ -98,6 +101,7 @@ export const ColorInput = ({
         <ColorSwatch
             color={currentColor}
             size={24}
+            radius="full"
             className={classNames.colorSwatch}
             {...colorSwatchProps}
         />
@@ -107,10 +111,9 @@ export const ColorInput = ({
         <button
             type="button"
             onClick={activateEyedropper}
-            className="w-7 h-[30px] flex items-center justify-center hover:bg-[var(--lumin-secondary)] rounded-md"
-            title="Pick color from screen"
+            className="w-7 h-[30px] flex items-center justify-center hover:bg-[var(--lumin-secondary)] rounded-full"
         >
-            <EyedropperIcon />
+            <IconPencil size={18} />
         </button>
     );
 
@@ -123,34 +126,28 @@ export const ColorInput = ({
                 onClick={togglePicker}
                 leftSection={hidePreview ? null : colorSwatch}
                 rightSection={showEyeDropper ? eyedropperButton : null}
-                leftSectionPadding={1}
-                rightSectionPadding={1}
                 inputRef={inputRef}
-                classNames={{
-                    ...classNames,
-                    leftSection: "ml-1",
-                    rightSection: "mr-1"
-                }}
                 {...props}
             />
 
-            {isPickerOpen && (
+            {withPicker && isPickerOpen && (
                 <div
                     ref={pickerRef}
-                    className="absolute z-50 mt-1 shadow-lg rounded-md overflow-hidden bg-[var(--lumin-background)] p-2 flex"
+                    className={cx(
+                        "absolute z-50 mt-1 shadow-lg rounded-md overflow-hidden bg-[var(--lumin-background)] p-2 flex"
+                    )}
                     style={{ minWidth: inputRef.current?.offsetWidth || 200 }}
                 >
                     <ColorPicker
                         value={currentColor}
                         onChange={handleColorChange}
                         format={format}
-                        size="sm"
-                        classNames={{
-                            wrapper: "w-full"
-                        }}
+                        fullWidth
                     />
                 </div>
             )}
         </div>
     );
 };
+
+ColorInput.displayName = "@luminx/core/ColorInput";

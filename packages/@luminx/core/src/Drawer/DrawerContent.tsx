@@ -1,14 +1,16 @@
 import { forwardRef, ReactNode } from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { useDrawerContext } from "./context";
-import { getRadius, getShadow, getPadding, getCornerRadius } from "../_theme";
+import { getShadow, getPadding, getCornerRadius } from "../_theme";
+import "../style.css";
 
 export interface DrawerContentProps {
     children: ReactNode;
+    style?: React.CSSProperties;
 }
 
 export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
-    ({ children }, ref) => {
+    ({ children, style }, ref) => {
         const {
             size,
             radius,
@@ -16,7 +18,9 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
             padding,
             classNames,
             position = "left",
-            offset = 0
+            offset = 0,
+            opened,
+            transitionDuration = 300
         } = useDrawerContext();
 
         const positionStyles = {
@@ -43,12 +47,30 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
             return sizeMap[size || "md"];
         })();
 
+        // Get transform values based on position and opened state
+        const getTransform = () => {
+            if (opened) return "translate3d(0, 0, 0)";
+
+            switch (position) {
+                case "left":
+                    return "translate3d(-100%, 0, 0)";
+                case "right":
+                    return "translate3d(100%, 0, 0)";
+                case "top":
+                    return "translate3d(0, -100%, 0)";
+                case "bottom":
+                    return "translate3d(0, 100%, 0)";
+                default:
+                    return "translate3d(-100%, 0, 0)";
+            }
+        };
+
         return (
             <div
                 ref={ref}
-                className={cn(
-                    "flex flex-col bg-[var(--lumin-background)] border border-[var(--lumin-border)]",
-                    "fixed z-[2] transition-transform duration-300 ease-in-out",
+                className={cx(
+                    "flex flex-col bg-[var(--lumin-background)]",
+                    "fixed z-[2]",
                     {
                         "h-full": isVertical,
                         "w-full": !isVertical
@@ -65,7 +87,10 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
                         corner: "right"
                     }),
                     ...getShadow(shadow || "sm"),
-                    ...getPadding(padding || "md")
+                    ...getPadding(padding || "md"),
+                    transform: getTransform(),
+                    transition: `transform ${transitionDuration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
+                    ...style
                 }}
             >
                 {children}
@@ -74,4 +99,4 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
     }
 );
 
-DrawerContent.displayName = "DrawerContent";
+DrawerContent.displayName = "@luminx/core/DrawerContent";

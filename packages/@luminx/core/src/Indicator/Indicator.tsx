@@ -1,7 +1,6 @@
 import React from "react";
-import { cn } from "../_utils";
 import { IndicatorProps } from "./types";
-import { getRadius } from "../_theme";
+import { getRadius, cx } from "../_theme";
 
 export const Indicator = ({
     children,
@@ -30,16 +29,17 @@ export const Indicator = ({
 
     return (
         <div
-            className={cn("relative inline-flex", classNames?.root, className)}
+            className={cx("relative inline-flex", classNames?.root, className)}
         >
             {children}
             {show && (
                 <div
-                    className={cn(
+                    className={cx(
                         "absolute flex items-center justify-center bg-[var(--lumin-primary)]",
                         sizeClasses[size],
                         positionClasses[position],
-                        withBorder && "ring-2 ring-white dark:ring-gray-900",
+                        withBorder &&
+                            "ring-2 ring-white dark:ring-[var(--lumin-border)]",
                         content ? "min-w-4 px-1" : "",
                         classNames?.indicator
                     )}

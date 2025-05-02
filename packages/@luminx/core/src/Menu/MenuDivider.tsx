@@ -1,14 +1,15 @@
 import React from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { MenuDividerProps } from "./types";
 import { useMenu } from "./context";
+import "../style.css";
 
 export const MenuDivider = ({ className }: MenuDividerProps) => {
     const { classNames } = useMenu();
 
     return (
         <div
-            className={cn(
+            className={cx(
                 "my-1 h-px bg-[var(--lumin-border)]",
                 className,
                 classNames?.divider
@@ -18,4 +19,4 @@ export const MenuDivider = ({ className }: MenuDividerProps) => {
     );
 };
 
-MenuDivider.displayName = "Menu.Divider";
+MenuDivider.displayName = "@luminx/core/Menu.Divider";

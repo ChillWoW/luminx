@@ -4,6 +4,7 @@ import { cn } from "../_utils";
 import { Option, OptionGroup, SelectProps } from "./types";
 import { ClearIcon, ChevronIcon } from "./Icons";
 import { CheckIcon } from "../_icons";
+import { cx, getRadius, getShadow } from "../_theme";
 import "../style.css";
 
 export const Select = forwardRef<HTMLInputElement, SelectProps>(
@@ -268,36 +269,9 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 offset = 4,
                 transitionProps,
                 dropdownPadding = 4,
-                shadow = "sm",
+                shadow,
                 radius = props.radius || "md"
             } = comboboxProps || {};
-
-            const shadowClass = () => {
-                const styles: Record<string, string> = {
-                    none: "shadow-none",
-                    xs: "shadow-sm",
-                    sm: "shadow-sm",
-                    md: "shadow-md",
-                    lg: "shadow-lg",
-                    xl: "shadow-xl",
-                    "2xl": "shadow-2xl"
-                };
-
-                return styles[shadow] || "shadow-sm";
-            };
-
-            const radiusClass = () => {
-                const styles: Record<string, string> = {
-                    none: "rounded-none",
-                    xs: "rounded-sm",
-                    sm: "rounded-sm",
-                    md: "rounded-md",
-                    lg: "rounded-lg",
-                    xl: "rounded-xl"
-                };
-
-                return styles[radius] || "rounded-md";
-            };
 
             return (
                 <div
@@ -306,11 +280,9 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                         "absolute z-50 w-full bg-[var(--lumin-background)] border border-[var(--lumin-border)]",
                         "max-h-60 overflow-auto",
                         "lumin-scrollbar",
-                        shadowClass(),
                         position === "top"
                             ? "bottom-full mb-1"
                             : "top-full mt-1",
-                        radiusClass(),
                         "transition-opacity duration-200",
                         transitionProps?.transition === "pop" &&
                             "transform origin-top transition-transform",
@@ -318,7 +290,9 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                         classNames?.scrollbar
                     )}
                     style={{
-                        padding: dropdownPadding
+                        padding: dropdownPadding,
+                        ...getRadius(radius),
+                        ...getShadow(shadow)
                     }}
                 >
                     {filteredOptions.length === 0 ? (
@@ -473,4 +447,4 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
     }
 );
 
-Select.displayName = "Select";
+Select.displayName = "@luminx/core/Select";

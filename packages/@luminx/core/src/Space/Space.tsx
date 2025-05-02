@@ -31,4 +31,4 @@ export const Space = forwardRef<HTMLDivElement, SpaceProps>(
     }
 );
 
-Space.displayName = "Space";
+Space.displayName = "@luminx/core/Space";

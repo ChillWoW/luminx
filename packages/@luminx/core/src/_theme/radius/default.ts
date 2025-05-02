@@ -9,5 +9,6 @@ export const defaultRadiusValues: { name: Radius; value: string }[] = [
     { name: "xl", value: "0.75rem" }, // 12px
     { name: "2xl", value: "1rem" }, // 16px
     { name: "3xl", value: "1.5rem" }, // 24px
+    { name: "4xl", value: "2rem" }, // 32px
     { name: "full", value: "9999px" } // full rounding
 ];

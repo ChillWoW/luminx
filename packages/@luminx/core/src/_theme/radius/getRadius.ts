@@ -1,19 +1,21 @@
 import { defaultRadiusValues } from "./default";
-import { GetCornerRadiusProps, GetRadiusProps, Radius } from "./types";
+import { GetCornerRadiusProps, Radius } from "./types";
 
-export const getRadius = (props: GetRadiusProps | Radius) => {
-    const { radius, defaultRadius = "md" } =
-        typeof props === "string" ? { radius: props as Radius } : props;
-
+export const getRadius = (radius?: Radius) => {
     const radiusObj = defaultRadiusValues.find((r) => r.name === radius);
 
     if (radiusObj) return { borderRadius: radiusObj.value };
 
-    const defaultRadiusObj = defaultRadiusValues.find(
-        (r) => r.name === defaultRadius
-    );
+    const defaultRadiusObj = defaultRadiusValues.find((r) => r.name === "md");
 
     return { borderRadius: defaultRadiusObj?.value || "0rem" };
+};
+
+export const useRadius = (radius?: Radius) => {
+    const radiusToUse = radius || "md";
+    const radiusObj = defaultRadiusValues.find((r) => r.name === radiusToUse);
+
+    return radiusObj?.value || "0rem";
 };
 
 export const getCornerRadius = (props: GetCornerRadiusProps) => {

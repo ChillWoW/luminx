@@ -1,4 +1,4 @@
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 
 export interface AvatarGroupProps {
     children: React.ReactNode;
@@ -15,7 +15,7 @@ export const AvatarGroup = ({
 
     return (
         <div
-            className={cn("flex items-center", className)}
+            className={cx("flex items-center", className)}
             style={{ marginLeft: marginOffset }}
         >
             {children}

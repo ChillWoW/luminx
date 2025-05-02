@@ -1,17 +1,21 @@
 import { defaultPaddingValues } from "./default";
-import { GetPaddingProps, Padding } from "./types";
+import { Padding } from "./types";
 
-export const getPadding = (props: GetPaddingProps | Padding) => {
-    const { padding, defaultPadding = "md" } =
-        typeof props === "string" ? { padding: props as Padding } : props;
-
+export const getPadding = (padding?: Padding) => {
     const paddingObj = defaultPaddingValues.find((p) => p.name === padding);
 
     if (paddingObj) return { padding: paddingObj.value };
 
-    const defaultPaddingObj = defaultPaddingValues.find(
-        (p) => p.name === defaultPadding
-    );
+    const defaultPaddingObj = defaultPaddingValues.find((p) => p.name === "md");
 
     return { padding: defaultPaddingObj?.value || "0rem" };
+};
+
+export const usePadding = (padding?: Padding) => {
+    const paddingToUse = padding || "md";
+    const paddingObj = defaultPaddingValues.find(
+        (p) => p.name === paddingToUse
+    );
+
+    return paddingObj?.value || "0rem";
 };

@@ -1,8 +1,11 @@
+import { Radius, Shadow } from "../_theme";
+
 export interface CodeClassNames {
     container?: string;
     code?: string;
     copyButton?: string;
     scrollbar?: string;
+    title?: string;
 }
 
 export type CodeTheme =
@@ -17,9 +20,6 @@ export type CodeTheme =
     | "xcode"
     | "a11yDark"
     | "dracula";
-
-export type CodeRadius = "none" | "sm" | "md" | "lg" | "xl";
-export type CodeShadow = "none" | "sm" | "md" | "lg" | "xl";
 
 export interface CodeProps {
     children: string;
@@ -38,8 +38,8 @@ export interface CodeProps {
 
     showFileName?: boolean;
     fileName?: string;
-    radius?: CodeRadius;
-    shadow?: CodeShadow;
+    radius?: Radius;
+    shadow?: Shadow;
     maxHeight?: string | number;
     lineNumbersBackgroundColor?: string;
     lineNumbersStyle?: React.CSSProperties;

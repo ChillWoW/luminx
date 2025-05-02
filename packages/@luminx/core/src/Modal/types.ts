@@ -4,6 +4,7 @@ export type ModalPadding = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type ModalRadius = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type ModalShadow = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type ModalSize = "xs" | "sm" | "md" | "lg" | "xl" | "full" | "auto";
+export type AnimationState = "entering" | "entered" | "exiting" | "exited";
 
 export interface ModalProps {
     children: React.ReactNode;
@@ -28,6 +29,8 @@ export interface ModalProps {
     style?: CSSProperties;
     className?: string;
     classNames?: ModalClassNames;
+    transitionDuration?: number;
+    transitionTimingFunction?: string;
 }
 
 export interface ModalClassNames {
@@ -37,4 +40,8 @@ export interface ModalClassNames {
     title?: string;
     closeButton?: string;
     body?: string;
+}
+
+export interface ModalContextValue extends Partial<ModalProps> {
+    animationState?: AnimationState;
 }

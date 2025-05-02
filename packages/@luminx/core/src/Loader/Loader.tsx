@@ -1,7 +1,7 @@
 import React from "react";
 import "./Loader.css";
 import { LoaderProps } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 
 export const Loader = ({
     size = 40,
@@ -121,7 +121,7 @@ export const Loader = ({
 
     return (
         <div
-            className={cn("loader-container", className)}
+            className={cx("loader-container", className)}
             style={{ width: size, height: size }}
         >
             {renderLoader()}
@@ -129,4 +129,4 @@ export const Loader = ({
     );
 };
 
-Loader.displayName = "Loader";
+Loader.displayName = "@luminx/core/Loader";

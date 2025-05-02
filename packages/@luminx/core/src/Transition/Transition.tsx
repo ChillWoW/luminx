@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { useSpring, animated, config } from "@react-spring/web";
+import {
+    motion,
+    AnimatePresence,
+    Variants,
+    useAnimationControls
+} from "framer-motion";
 import { TransitionProps } from "./types";
 import { TRANSITIONS } from "./transitions";
 
@@ -12,11 +17,11 @@ export const Transition = ({
     enterDelay = 0,
     exitDelay = 0,
     keepMounted = false,
-    springConfig,
     onExited,
     onEntered
 }: TransitionProps) => {
     const [visible, setVisible] = useState(mounted);
+    const controls = useAnimationControls();
 
     const getTransition = () => {
         if (typeof transition === "string") {
@@ -27,81 +32,90 @@ export const Transition = ({
 
     const transitionStyles = getTransition();
 
-    const getFinalConfig = () => {
-        if (springConfig) return springConfig;
-
+    const getEasing = () => {
         switch (timingFunction) {
             case "ease-in":
-                return { ...config.gentle, tension: 200 };
+                return [0.4, 0, 1, 1];
             case "ease-out":
-                return { ...config.gentle, friction: 14 };
+                return [0, 0, 0.2, 1];
             case "ease-in-out":
-                return config.gentle;
+                return [0.4, 0, 0.2, 1];
             case "linear":
-                return config.default;
+                return [0, 0, 1, 1];
             default:
-                return {
-                    ...config.default,
-                    duration
-                };
+                return [0.25, 0.1, 0.25, 1];
         }
     };
-
-    const [styles, api] = useSpring(() => ({
-        ...transitionStyles.out,
-        ...(transitionStyles.common || {}),
-        config: getFinalConfig(),
-        immediate: true,
-        onRest: (result) => {
-            if (!result.value.opacity) {
-                !keepMounted && setVisible(false);
-                onExited?.();
-            } else {
-                onEntered?.();
-            }
-        }
-    }));
 
     useEffect(() => {
         if (mounted) {
             setVisible(true);
-            const timeout = window.setTimeout(() => {
-                api.start({
-                    ...transitionStyles.in,
-                    ...(transitionStyles.common || {}),
-                    config: getFinalConfig(),
-                    immediate: false
-                });
-            }, enterDelay);
-
-            return () => clearTimeout(timeout);
-        } else {
-            const timeout = window.setTimeout(() => {
-                api.start({
-                    ...transitionStyles.out,
-                    ...(transitionStyles.common || {}),
-                    config: getFinalConfig(),
-                    immediate: false
-                });
-            }, exitDelay);
-
-            return () => clearTimeout(timeout);
+        } else if (!keepMounted) {
         }
-    }, [mounted, api, enterDelay, exitDelay, transitionStyles]);
+    }, [mounted, keepMounted]);
 
-    if (!visible) {
-        return null;
-    }
+    const convertStyles = (styles: Record<string, any>) => {
+        const result: Record<string, any> = {};
+        for (const key in styles) {
+            result[key] = styles[key];
+        }
+        return result;
+    };
 
-    const AnimatedDiv = animated("div");
+    const initialStyles = convertStyles({
+        ...transitionStyles.out,
+        ...(transitionStyles.common || {})
+    });
+
+    const animateStyles = convertStyles({
+        ...transitionStyles.in,
+        ...(transitionStyles.common || {})
+    });
+
+    const exitStyles = convertStyles({
+        ...transitionStyles.out,
+        ...(transitionStyles.common || {})
+    });
+
+    const variants: Variants = {
+        initial: initialStyles,
+        animate: animateStyles,
+        exit: exitStyles
+    };
+
+    const currentStyles = mounted ? animateStyles : initialStyles;
 
     return (
-        <AnimatedDiv style={styles}>
-            {typeof children === "function"
-                ? children(styles as any)
-                : children}
-        </AnimatedDiv>
+        <AnimatePresence
+            onExitComplete={() => {
+                !keepMounted && setVisible(false);
+                onExited?.();
+            }}
+        >
+            {(mounted || (keepMounted && visible)) && (
+                <motion.div
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    variants={variants}
+                    transition={{
+                        duration: duration / 1000,
+                        ease: getEasing(),
+                        delay: mounted ? enterDelay / 1000 : exitDelay / 1000
+                    }}
+                    onAnimationComplete={() => {
+                        if (mounted) {
+                            onEntered?.();
+                        }
+                    }}
+                >
+                    {typeof children === "function"
+                        ? children(currentStyles)
+                        : children}
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 };
 
-Transition.displayName = "Transition";
+Transition.displayName = "@luminx/core/Transition";

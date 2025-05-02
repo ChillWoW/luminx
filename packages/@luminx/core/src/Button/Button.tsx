@@ -25,11 +25,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             fullWidth,
             href,
             target,
+            tooltip = false,
+            tooltipProps = {},
             style,
             className,
             classNames,
-            tooltip = false,
-            tooltipProps = {},
             ...props
         },
         ref
@@ -49,12 +49,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             if (variant === "unstyled") return "";
 
             const styles = {
-                filled: `bg-[var(--lumin-background)] border border-[var(--lumin-border)] ${
+                filled: `bg-[var(--lumin-background)] border border-[var(--lumin-border)] hover:bg-[var(--lumin-background-hover)] ${
                     active && "bg-[var(--lumin-background-hover)]"
-                } ${hover && "hover:bg-[var(--lumin-background-hover)]"}`,
-                outline: `bg-transparent border border-[var(--lumin-border)] hover:border-[var(--lumin-secondary)] ${
-                    active && "border-[var(--lumin-secondary)]"
-                } ${hover && "hover:border-[var(--lumin-secondary)]"}`
+                }`,
+                outline: `bg-transparent border border-[var(--lumin-border)] hover:border-[var(--lumin-border-hover)] ${
+                    active && "border-[var(--lumin-border-hover)]"
+                }`
             };
 
             return styles[variant] || styles.filled;
@@ -97,13 +97,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         const buttonElement = (
             <Element
                 className={cn(
-                    "inline-flex items-center justify-center gap-2 font-medium cursor-pointer relative whitespace-nowrap select-none transition-colors duration-200 text-[var(--lumin-text)]",
+                    "text-[var(--lumin-text)] inline-flex items-center justify-center gap-2 font-medium cursor-pointer relative whitespace-nowrap select-none transition-colors duration-200",
                     sizeClasses(),
                     variantClasses(),
                     fullWidth && "w-full",
                     (disabled || loading) && "opacity-60 cursor-not-allowed",
                     (disabled || loading) && classNames?.disabled,
-                    classNames?.container,
+                    classNames?.root,
                     className
                 )}
                 style={{
@@ -151,6 +151,4 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }
 );
 
-Button.displayName = "Button";
-
-export default Button;
+Button.displayName = "@luminx/core/Button";

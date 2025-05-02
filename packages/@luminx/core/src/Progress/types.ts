@@ -17,7 +17,6 @@ export interface ProgressSectionProps {
     value: number;
     color?: string;
     className?: string;
-    "aria-label"?: string;
     children?: ReactNode;
 }
 

@@ -2,9 +2,10 @@ import { useEffect, useRef } from "react";
 import { useMenu } from "./context";
 import { MenuDropdownProps } from "./types";
 import { getPadding, getRadius, getShadow } from "../_theme";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { Portal } from "../Portal";
 import { Transition } from "../Transition";
+import "../style.css";
 
 export const MenuDropdown = ({
     children,
@@ -186,7 +187,7 @@ export const MenuDropdown = ({
                         id={dropdownId}
                         role="menu"
                         aria-labelledby={targetId}
-                        className={cn(
+                        className={cx(
                             "menu-dropdown absolute z-[var(--menu-z-index,300)] w-[var(--menu-width,auto)] bg-[var(--lumin-background)] overflow-hidden",
                             className,
                             classNames?.dropdown

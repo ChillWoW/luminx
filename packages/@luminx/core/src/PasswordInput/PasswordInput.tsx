@@ -55,3 +55,5 @@ export const PasswordInput = ({
         />
     );
 };
+
+PasswordInput.displayName = "@luminx/core/PasswordInput";

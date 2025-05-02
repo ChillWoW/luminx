@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { SwitchProps } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import "../style.css";
 
 export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
@@ -85,7 +85,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
 
         return (
             <div
-                className={cn(
+                className={cx(
                     "flex flex-col gap-1",
                     fullWidth && "w-full",
                     className,
@@ -93,14 +93,14 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                 )}
             >
                 <div
-                    className={cn(
+                    className={cx(
                         "flex items-center gap-2",
                         disabled && "opacity-60 cursor-not-allowed",
                         classNames?.wrapper
                     )}
                 >
                     <div
-                        className={cn("relative inline-flex", classNames?.body)}
+                        className={cx("relative inline-flex", classNames?.body)}
                     >
                         <input
                             ref={ref}
@@ -116,7 +116,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                         />
 
                         <div
-                            className={cn(
+                            className={cx(
                                 "relative inline-flex items-center rounded-full transition-colors duration-200 ease-in-out cursor-pointer",
                                 currentSize.track,
                                 checked
@@ -139,7 +139,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                         >
                             {(onLabel || offLabel) && (
                                 <div
-                                    className={cn(
+                                    className={cx(
                                         "absolute inset-0 flex items-center justify-center text-white font-medium",
                                         currentSize.trackLabel,
                                         classNames?.trackLabel
@@ -150,7 +150,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                             )}
 
                             <span
-                                className={cn(
+                                className={cx(
                                     "absolute rounded-full bg-white transition-transform duration-200 ease-in-out",
                                     currentSize.thumb,
                                     "top-[2px] left-[2px]",
@@ -170,14 +170,14 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
 
                     {(label || hint || error) && (
                         <div
-                            className={cn(
+                            className={cx(
                                 "flex flex-col",
                                 classNames?.labelWrapper
                             )}
                         >
                             {label && (
                                 <label
-                                    className={cn(
+                                    className={cx(
                                         currentSize.label,
                                         "text-[var(--lumin-text)]",
                                         disabled && "cursor-not-allowed",
@@ -187,7 +187,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                                     {label}
                                     {required && (
                                         <span
-                                            className={cn(
+                                            className={cx(
                                                 "text-[var(--lumin-error)] ml-1",
                                                 classNames?.required
                                             )}
@@ -201,7 +201,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
 
                             {hint && !error && (
                                 <p
-                                    className={cn(
+                                    className={cx(
                                         "text-[var(--lumin-hint)] text-sm",
                                         classNames?.hint
                                     )}
@@ -212,7 +212,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
 
                             {error && (
                                 <p
-                                    className={cn(
+                                    className={cx(
                                         "text-[var(--lumin-error)] text-sm",
                                         classNames?.error
                                     )}
@@ -228,4 +228,4 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
     }
 );
 
-Switch.displayName = "Switch";
+Switch.displayName = "@luminx/core/Switch";

@@ -13,9 +13,9 @@ import {
     a11yDark,
     dracula
 } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { cn } from "../_utils";
 import { CodeProps } from "./types";
 import "../style.css";
+import { cx, getRadius, getShadow } from "../_theme";
 
 const themeStyles = {
     light: github,
@@ -47,8 +47,8 @@ export const Code = ({
     copiedText = "Copied!",
     showFileName = false,
     fileName,
-    radius = "md",
-    shadow = "sm",
+    radius,
+    shadow,
     maxHeight,
     lineNumbersBackgroundColor,
     lineNumbersStyle,
@@ -68,28 +68,6 @@ export const Code = ({
         }
         onCopy?.(children);
     };
-
-    const radiusClass = useMemo(() => {
-        const radiusMap = {
-            none: "rounded-none",
-            sm: "rounded-sm",
-            md: "rounded-md",
-            lg: "rounded-lg",
-            xl: "rounded-xl"
-        };
-        return radiusMap[radius] || radiusMap.md;
-    }, [radius]);
-
-    const shadowClass = useMemo(() => {
-        const shadowMap = {
-            none: "shadow-none",
-            sm: "shadow-sm",
-            md: "shadow-md",
-            lg: "shadow-lg",
-            xl: "shadow-xl"
-        };
-        return shadowMap[shadow] || shadowMap.sm;
-    }, [shadow]);
 
     const lineProps = (lineNumber: number) => {
         const style: React.CSSProperties = { display: "block" };
@@ -114,25 +92,22 @@ export const Code = ({
 
     return (
         <div
-            className={cn(
-                "relative group",
-                radiusClass,
-                shadowClass,
-                classNames?.container,
-                className
-            )}
+            className={cx("relative group", classNames?.container, className)}
             style={{
                 maxHeight: maxHeight,
-                overflow: maxHeight ? "auto" : undefined
+                overflow: maxHeight ? "auto" : undefined,
+                ...getRadius(radius),
+                ...getShadow(shadow)
             }}
         >
             {(title || showFileName) && (
                 <div
-                    className={cn(
+                    className={cx(
                         "text-sm font-medium px-4 py-2 border-b",
                         theme === "light"
-                            ? "bg-gray-100 border-gray-200 text-gray-700"
-                            : "bg-[var(--lumin-secondary)] border-[var(--lumin-border)] text-[var(--lumin-text)]"
+                            ? "bg-[var(--lumin-background)] border-[var(--lumin-border)] text-[var(--lumin-text)]"
+                            : "bg-[var(--lumin-secondary)] border-[var(--lumin-border)] text-[var(--lumin-text)]",
+                        classNames?.title
                     )}
                 >
                     {title || (showFileName && fileName) || language}
@@ -142,11 +117,11 @@ export const Code = ({
             {copyable && (
                 <button
                     onClick={handleCopy}
-                    className={cn(
+                    className={cx(
                         "absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity rounded-md px-2 py-1",
                         theme === "light"
-                            ? "text-gray-700 bg-gray-200 hover:text-gray-900 hover:bg-gray-300"
-                            : "text-[var(--lumin-text)] bg-[var(--lumin-secondary)] hover:bg-[var(--lumin-border)]",
+                            ? "text-[var(--lumin-text)] bg-[var(--lumin-background)] hover:text-[var(--lumin-text)] hover:bg-[var(--lumin-background-hover)]"
+                            : "text-[var(--lumin-text)] bg-[var(--lumin-secondary)] hover:text-[var(--lumin-text)] hover:bg-[var(--lumin-secondary-hover)]",
                         classNames?.copyButton
                     )}
                     aria-label="Copy code"
@@ -155,39 +130,32 @@ export const Code = ({
                 </button>
             )}
 
-            <div
-                className={cn(
-                    maxHeight && "lumin-scrollbar",
+            <SyntaxHighlighter
+                language={language}
+                style={codeStyle}
+                showLineNumbers={showLineNumbers}
+                wrapLines={wrapLines || highlightLines.length > 0}
+                wrapLongLines={wrapLongLines}
+                lineProps={lineProps}
+                lineNumberStyle={customLineNumberStyle}
+                startingLineNumber={startingLineNumber}
+                className={cx(
+                    "rounded-md overflow-auto lumin-scrollbar",
                     classNames?.scrollbar
                 )}
+                customStyle={{
+                    margin: 0,
+                    borderRadius:
+                        title || showFileName
+                            ? "0 0 0.375rem 0.375rem"
+                            : undefined
+                }}
+                codeTagProps={{ className: classNames?.code }}
             >
-                <SyntaxHighlighter
-                    language={language}
-                    style={codeStyle}
-                    showLineNumbers={showLineNumbers}
-                    wrapLines={wrapLines || highlightLines.length > 0}
-                    wrapLongLines={wrapLongLines}
-                    lineProps={lineProps}
-                    lineNumberStyle={customLineNumberStyle}
-                    startingLineNumber={startingLineNumber}
-                    className={cn(
-                        "rounded-md overflow-auto",
-                        classNames?.scrollbar
-                    )}
-                    customStyle={{
-                        margin: 0,
-                        borderRadius:
-                            title || showFileName
-                                ? "0 0 0.375rem 0.375rem"
-                                : undefined
-                    }}
-                    codeTagProps={{ className: classNames?.code }}
-                >
-                    {children as string}
-                </SyntaxHighlighter>
-            </div>
+                {children as string}
+            </SyntaxHighlighter>
         </div>
     );
 };
 
-Code.displayName = "Code";
+Code.displayName = "@luminx/core/Code";

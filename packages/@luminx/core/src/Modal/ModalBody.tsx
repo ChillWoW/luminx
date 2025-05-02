@@ -1,11 +1,11 @@
 import { ReactNode } from "react";
 import { useModalContext } from "./context";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 
 export const ModalBody = ({ children }: { children: ReactNode }) => {
     const { classNames } = useModalContext();
 
-    return <div className={cn(classNames?.body)}>{children}</div>;
+    return <div className={cx(classNames?.body)}>{children}</div>;
 };
 
-ModalBody.displayName = "ModalBody";
+ModalBody.displayName = "@luminx/core/Modal.Body";

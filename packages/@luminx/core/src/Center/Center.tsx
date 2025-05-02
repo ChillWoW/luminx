@@ -1,12 +1,12 @@
 import { forwardRef } from "react";
 import { CenterProps } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 
 export const Center = forwardRef<HTMLDivElement, CenterProps>(
     ({ children, style, className, ...props }, ref) => {
         return (
             <div
-                className={cn(
+                className={cx(
                     "h-full w-full flex items-center justify-center",
                     className
                 )}
@@ -20,4 +20,4 @@ export const Center = forwardRef<HTMLDivElement, CenterProps>(
     }
 );
 
-Center.displayName = "Center";
+Center.displayName = "@luminx/core/Center";

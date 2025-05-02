@@ -5,3 +5,5 @@ import { InputProps } from "../Input/types";
 export const TextInput = (props: InputProps) => {
     return <Input type="text" {...props} />;
 };
+
+TextInput.displayName = "@luminx/core/TextInput";

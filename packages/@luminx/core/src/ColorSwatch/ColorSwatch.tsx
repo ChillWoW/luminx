@@ -1,7 +1,6 @@
 import React, { forwardRef } from "react";
-import { cn } from "../_utils";
 import { ColorSwatchProps } from "./types";
-import { getRadius, getShadow } from "../_theme";
+import { cx, getRadius, getShadow } from "../_theme";
 
 export const ColorSwatch = forwardRef<HTMLDivElement, ColorSwatchProps>(
     (
@@ -9,9 +8,9 @@ export const ColorSwatch = forwardRef<HTMLDivElement, ColorSwatchProps>(
             children,
             color,
             as = "div",
-            shadow = "none",
+            shadow,
             size = 25,
-            radius = "sm",
+            radius,
             style,
             className,
             classNames,
@@ -24,7 +23,7 @@ export const ColorSwatch = forwardRef<HTMLDivElement, ColorSwatchProps>(
         return (
             <Element
                 ref={ref}
-                className={cn(
+                className={cx(
                     "relative inline-flex items-center justify-center overflow-hidden",
                     classNames?.root,
                     className
@@ -39,12 +38,12 @@ export const ColorSwatch = forwardRef<HTMLDivElement, ColorSwatchProps>(
                 {...props}
             >
                 <div
-                    className={cn("absolute inset-0", classNames?.colorOverlay)}
+                    className={cx("absolute inset-0", classNames?.colorOverlay)}
                     style={{ backgroundColor: color }}
                 />
 
                 {children && (
-                    <div className={cn("relative z-10", classNames?.child)}>
+                    <div className={cx("relative z-10", classNames?.child)}>
                         {children}
                     </div>
                 )}
@@ -53,6 +52,6 @@ export const ColorSwatch = forwardRef<HTMLDivElement, ColorSwatchProps>(
     }
 );
 
-ColorSwatch.displayName = "ColorSwatch";
+ColorSwatch.displayName = "@luminx/core/ColorSwatch";
 
 export default ColorSwatch;

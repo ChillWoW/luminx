@@ -1,3 +1,5 @@
+import "./style.css";
+
 export * from "./_theme";
 export * from "./_utils";
 export * from "./Alert";
@@ -21,6 +23,7 @@ export * from "./Indicator";
 export * from "./Input";
 export * from "./List";
 export * from "./Loader";
+export * from "./Menu";
 export * from "./Modal";
 export * from "./NativeSelect";
 export * from "./Notification";

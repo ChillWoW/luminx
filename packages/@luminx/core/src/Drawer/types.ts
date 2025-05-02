@@ -26,6 +26,7 @@ export interface DrawerProps {
     zIndex?: number;
     position?: DrawerPosition;
     offset?: number;
+    transitionDuration?: number;
     style?: CSSProperties;
     className?: string;
     classNames?: DrawerClassNames;

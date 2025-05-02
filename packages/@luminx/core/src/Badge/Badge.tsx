@@ -1,17 +1,15 @@
 import React, { forwardRef } from "react";
-import { cn } from "../_utils";
 import { BadgeProps } from "./types";
-import { getRadius, getShadow } from "../_theme";
-import "../style.css";
+import { getRadius, getShadow, cx } from "../_theme";
 
 export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
     (
         {
             children,
             variant = "filled",
-            size = "md",
+            size = "sm",
             radius = "xl",
-            shadow = "none",
+            shadow,
             leftSection,
             rightSection,
             fullWidth = false,
@@ -22,22 +20,28 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
         },
         ref
     ) => {
-        const sizeClasses = {
-            xs: "text-xs px-2 py-0.5",
-            sm: "text-sm px-2.5 py-0.5",
-            md: "text-base px-3 py-1",
-            lg: "text-lg px-3.5 py-1.5",
-            xl: "text-xl px-4 py-2"
+        const getSize = () => {
+            switch (size) {
+                case "xs":
+                    return "text-xs px-2 py-0.5";
+                case "md":
+                    return "text-base px-3 py-1.5";
+                case "lg":
+                    return "text-lg px-4 py-2";
+                case "xl":
+                    return "text-xl px-5 py-2.5";
+                default:
+                    return "text-sm px-2.5 py-1";
+            }
         };
 
-        const variantClasses = () => {
-            const variants = {
-                filled: "bg-[var(--lumin-primary)]",
-                outline:
-                    "bg-transparent border border-[var(--lumin-primary)] text-[var(--lumin-primary)]"
-            };
-
-            return variants[variant] || variants.filled;
+        const getVariant = () => {
+            switch (variant) {
+                case "outline":
+                    return "border border-[var(--lumin-primary)] text-[var(--lumin-text)]";
+                default:
+                    return "bg-[var(--lumin-primary)] text-[var(--lumin-text)]";
+            }
         };
 
         const renderSection = (
@@ -46,11 +50,20 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
         ) => {
             if (!content) return null;
 
+            const getPosition = () => {
+                switch (position) {
+                    case "right":
+                        return "ml-2";
+                    default:
+                        return "mr-2";
+                }
+            };
+
             return (
                 <div
-                    className={cn(
-                        "flex items-center",
-                        position === "left" ? "mr-1" : "ml-1",
+                    className={cx(
+                        "inline-flex items-center",
+                        getPosition(),
                         classNames?.section
                     )}
                 >
@@ -62,11 +75,11 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
         return (
             <Component
                 ref={ref}
-                className={cn(
-                    "inline-flex items-center whitespace-nowrap font-medium",
-                    sizeClasses[size],
-                    variantClasses(),
-                    fullWidth && "w-full justify-center",
+                className={cx(
+                    "inline-flex items-center whitespace-nowrap font-medium w-fit",
+                    getVariant(),
+                    getSize(),
+                    fullWidth && "lumin-badge-root-fw",
                     classNames?.root,
                     className
                 )}
@@ -77,13 +90,11 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
                 {...props}
             >
                 {renderSection(leftSection, "left")}
-                <span className={cn(classNames?.label)}>{children}</span>
+                <span className={cx(classNames?.label)}>{children}</span>
                 {renderSection(rightSection, "right")}
             </Component>
         );
     }
 );
 
-Badge.displayName = "Badge";
-
-export default Badge;
+Badge.displayName = "@luminx/core/Badge";

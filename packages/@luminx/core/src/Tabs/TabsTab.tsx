@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { useTabs } from "./context";
 import { TabsTabProps } from "./types";
 import "../style.css";
@@ -60,7 +60,7 @@ export const TabsTab = ({
             aria-selected={isActive}
             aria-disabled={disabled}
             tabIndex={disabled ? -1 : 0}
-            className={cn(
+            className={cx(
                 "flex items-center gap-2 cursor-pointer transition-all duration-200",
                 orientation === "horizontal" ? "rounded-t-md" : "rounded-l-md",
                 sizeClasses[size],
@@ -84,7 +84,7 @@ export const TabsTab = ({
         >
             {leftSection && (
                 <span
-                    className={cn(
+                    className={cx(
                         "text-[var(--lumin-hint)]",
                         isActive && "text-[var(--lumin-text)]",
                         classNames?.tabIcon
@@ -96,7 +96,7 @@ export const TabsTab = ({
 
             <div className="flex flex-col">
                 <span
-                    className={cn(
+                    className={cx(
                         "font-medium",
                         isActive
                             ? "text-[var(--lumin-text)]"
@@ -109,7 +109,7 @@ export const TabsTab = ({
 
                 {description && (
                     <span
-                        className={cn(
+                        className={cx(
                             "text-xs text-[var(--lumin-hint)]",
                             classNames?.tabDescription
                         )}
@@ -128,4 +128,4 @@ export const TabsTab = ({
     );
 };
 
-TabsTab.displayName = "TabsTab";
+TabsTab.displayName = "@luminx/core/Tabs.Tab";

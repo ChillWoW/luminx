@@ -1,4 +1,4 @@
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { AnchorProps } from "./types";
 
 export const Anchor = ({
@@ -8,8 +8,8 @@ export const Anchor = ({
 }: AnchorProps) => {
     return (
         <a
-            className={cn(
-                "text-[var(--lumin-blue)]",
+            className={cx(
+                "text-[var(--lumin-primary)]",
                 underline === "always" && "underline",
                 underline === "hover" && "hover:underline",
                 underline === "never" && "no-underline"
@@ -21,4 +21,4 @@ export const Anchor = ({
     );
 };
 
-Anchor.displayName = "Anchor";
+Anchor.displayName = "@luminx/core/Anchor";

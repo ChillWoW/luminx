@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { useTabs } from "./context";
 import { TabsPanelProps } from "./types";
 import "../style.css";
@@ -21,7 +21,7 @@ export const TabsPanel = ({
         <div
             role="tabpanel"
             aria-hidden={!isActive}
-            className={cn(
+            className={cx(
                 "p-4",
                 withBorder && "border-t-0 border-[var(--lumin-border)]",
                 !isActive && "hidden",
@@ -34,4 +34,4 @@ export const TabsPanel = ({
     );
 };
 
-TabsPanel.displayName = "TabsPanel";
+TabsPanel.displayName = "@luminx/core/Tabs.Panel";

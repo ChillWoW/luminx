@@ -1,3 +1,4 @@
+import { Radius, Shadow } from "../_theme";
 import { InputProps } from "../Input";
 
 export interface Option {
@@ -35,8 +36,8 @@ export interface SelectProps
         transitionProps?: { transition: string; duration: number };
         dropdownPadding?: number;
         dropdownStayOpen?: boolean;
-        shadow?: string;
-        radius?: string;
+        shadow?: Shadow;
+        radius?: Radius;
         checkIcon?: React.ReactNode;
         checkIconPosition?: "start" | "end";
         withCheckIcon?: boolean;

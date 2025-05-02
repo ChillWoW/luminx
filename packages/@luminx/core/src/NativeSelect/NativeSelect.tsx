@@ -19,4 +19,4 @@ export const NativeSelect = ({
     );
 };
 
-NativeSelect.displayName = "NativeSelect";
+NativeSelect.displayName = "@luminx/core/NativeSelect";

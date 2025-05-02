@@ -1,8 +1,8 @@
 import { forwardRef } from "react";
 import { MenuItemProps } from "./types";
 import { useMenu } from "./context";
-import { cn } from "../_utils";
-import { getRadius } from "../_theme";
+import { getRadius, cx } from "../_theme";
+import "../style.css";
 
 export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
     (props, ref) => {
@@ -51,7 +51,7 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
             role: "menuitem",
             onClick: handleClick,
             onKeyDown: handleKeyDown,
-            className: cn(
+            className: cx(
                 "flex items-center w-full text-left px-3 py-2 text-sm transition-colors",
                 "hover:bg-[var(--lumin-background-hover)]",
                 disabled &&
@@ -68,15 +68,15 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
         return (
             <Component {...commonProps}>
                 {leftSection && (
-                    <span className={cn("mr-2", classNames?.itemSection)}>
+                    <span className={cx("mr-2", classNames?.itemSection)}>
                         {leftSection}
                     </span>
                 )}
-                <span className={cn("flex-grow", classNames?.itemLabel)}>
+                <span className={cx("flex-grow", classNames?.itemLabel)}>
                     {children}
                 </span>
                 {rightSection && (
-                    <span className={cn("ml-2", classNames?.itemSection)}>
+                    <span className={cx("ml-2", classNames?.itemSection)}>
                         {rightSection}
                     </span>
                 )}
@@ -85,4 +85,4 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
     }
 );
 
-MenuItem.displayName = "Menu.Item";
+MenuItem.displayName = "@luminx/core/Menu.Item";

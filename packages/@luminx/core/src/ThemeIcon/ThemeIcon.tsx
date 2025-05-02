@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { ThemeIconProps } from "./types";
 import { getRadius, getShadow } from "../_theme";
 import "../style.css";
@@ -29,7 +29,7 @@ export const ThemeIcon = forwardRef<HTMLDivElement, ThemeIconProps>(
         return (
             <Component
                 ref={ref}
-                className={cn(
+                className={cx(
                     "flex items-center justify-center",
                     "bg-[var(--lumin-primary)]",
                     sizeClasses[size],
@@ -48,6 +48,4 @@ export const ThemeIcon = forwardRef<HTMLDivElement, ThemeIconProps>(
     }
 );
 
-ThemeIcon.displayName = "ThemeIcon";
-
-export default ThemeIcon;
+ThemeIcon.displayName = "@luminx/core/ThemeIcon";

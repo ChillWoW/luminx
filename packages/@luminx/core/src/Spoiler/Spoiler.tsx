@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, forwardRef } from "react";
 import { SpoilerProps } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
+import "../style.css";
 
 export const Spoiler = forwardRef<HTMLDivElement, SpoilerProps>(
     (
@@ -43,7 +44,7 @@ export const Spoiler = forwardRef<HTMLDivElement, SpoilerProps>(
         };
 
         return (
-            <div ref={ref} className={cn("relative", className)} {...props}>
+            <div ref={ref} className={cx("relative", className)} {...props}>
                 <div
                     ref={contentRef}
                     style={{
@@ -78,4 +79,4 @@ export const Spoiler = forwardRef<HTMLDivElement, SpoilerProps>(
     }
 );
 
-Spoiler.displayName = "Spoiler";
+Spoiler.displayName = "@luminx/core/Spoiler";

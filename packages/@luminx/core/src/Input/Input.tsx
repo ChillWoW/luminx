@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { cn } from "../_utils";
 import { InputProps } from "./types";
+import { getShadow, getRadius, cx } from "../_theme";
 import "../style.css";
-import { getShadow } from "../_theme";
-import { getRadius } from "../_theme";
 
 export const Input = ({
     // Component type
@@ -111,7 +109,7 @@ export const Input = ({
 
         return (
             <div
-                className={cn(
+                className={cx(
                     baseClasses,
                     sideClasses,
                     sectionClasses,
@@ -126,7 +124,7 @@ export const Input = ({
     const renderLabel = () =>
         label && (
             <label
-                className={cn(
+                className={cx(
                     "ml-1 flex items-center gap-1",
                     disabled && "opacity-60 cursor-not-allowed",
                     classNames?.label
@@ -135,7 +133,7 @@ export const Input = ({
                 {label}
                 {required && (
                     <span
-                        className={cn(
+                        className={cx(
                             "text-[var(--lumin-error)]",
                             classNames?.required
                         )}
@@ -151,7 +149,7 @@ export const Input = ({
         !error &&
         !success && (
             <p
-                className={cn(
+                className={cx(
                     "ml-1 text-sm text-[var(--lumin-hint)]",
                     classNames?.hint
                 )}
@@ -163,7 +161,7 @@ export const Input = ({
     const renderError = () =>
         error && (
             <p
-                className={cn(
+                className={cx(
                     "ml-1 text-sm text-[var(--lumin-error)]",
                     classNames?.error
                 )}
@@ -176,7 +174,7 @@ export const Input = ({
         success &&
         !error && (
             <p
-                className={cn(
+                className={cx(
                     "ml-1 text-sm text-[var(--lumin-success)]",
                     classNames?.success
                 )}
@@ -187,7 +185,7 @@ export const Input = ({
 
     const renderFormControl = () => (
         <div
-            className={cn(
+            className={cx(
                 "flex items-center overflow-hidden transition-colors",
                 !unstyled && [
                     "bg-[var(--lumin-background)] border border-[var(--lumin-border)]",
@@ -229,13 +227,12 @@ export const Input = ({
             });
         }
 
-        const baseStyles = cn(
+        const baseStyles = cx(
             !unstyled &&
-                "w-full border-none bg-transparent outline-none text-white px-3 py-2 placeholder:[color:var(--lumin-placeholder)] leading-none",
+                "w-full border-none bg-transparent outline-none text-white px-3 py-2 flex items-center justify-center h-full leading-normal placeholder:[color:var(--lumin-placeholder)]",
             disabled && "opacity-60 cursor-not-allowed"
         );
 
-        // Handle standard components
         switch (component) {
             case "select":
                 return (
@@ -262,7 +259,7 @@ export const Input = ({
                                 onEnterPress(e as any);
                             }
                         }}
-                        className={cn(
+                        className={cx(
                             baseStyles,
                             "appearance-none bg-[var(--lumin-background)]",
                             classNames?.input
@@ -311,7 +308,7 @@ export const Input = ({
                         }}
                         rows={rows}
                         cols={cols}
-                        className={cn(
+                        className={cx(
                             baseStyles,
                             "resize-" + resize,
                             classNames?.input
@@ -353,7 +350,7 @@ export const Input = ({
                         minLength={minLength}
                         maxLength={maxLength}
                         pattern={pattern}
-                        className={cn(
+                        className={cx(
                             baseStyles,
                             "[-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
                             classNames?.input
@@ -375,7 +372,7 @@ export const Input = ({
 
     return (
         <div
-            className={cn(
+            className={cx(
                 !unstyled &&
                     "flex flex-col items-start text-[var(--lumin-text)] space-y-1",
                 fullWidth && "w-full",

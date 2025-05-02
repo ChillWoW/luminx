@@ -1,32 +1,23 @@
 import { forwardRef } from "react";
 import { CardProps } from "./types";
-import { cn } from "../_utils";
-import { getPadding, getRadius, getShadow } from "../_theme";
+import { cx, getPadding, getRadius, getShadow } from "../_theme";
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
     (
-        {
-            children,
-            padding = "sm",
-            radius = "md",
-            shadow = "none",
-            withBorder,
-            className,
-            ...props
-        },
+        { children, padding, radius, shadow, withBorder, className, ...props },
         ref
     ) => {
         return (
             <div
                 ref={ref}
-                className={cn(
+                className={cx(
                     "bg-[var(--lumin-background)]",
                     withBorder && "border border-[var(--lumin-border)]",
                     className
                 )}
                 style={{
-                    ...getPadding(padding),
                     ...getRadius(radius),
+                    ...getPadding(padding),
                     ...getShadow(shadow)
                 }}
                 {...props}
@@ -36,3 +27,5 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         );
     }
 );
+
+Card.displayName = "@luminx/core/Card";

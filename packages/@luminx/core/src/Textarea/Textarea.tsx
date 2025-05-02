@@ -26,3 +26,5 @@ export const Textarea = ({
         />
     );
 };
+
+Textarea.displayName = "@luminx/core/Textarea";

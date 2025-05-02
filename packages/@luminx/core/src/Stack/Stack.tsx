@@ -1,6 +1,6 @@
 import React from "react";
 import { StackAlign, StackJustify, StackProps } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 
 export const Stack = ({
     children,
@@ -50,7 +50,7 @@ export const Stack = ({
 
     return (
         <div
-            className={cn(
+            className={cx(
                 "flex flex-col",
                 getAlignClass(),
                 getJustifyClass(),
@@ -62,3 +62,5 @@ export const Stack = ({
         </div>
     );
 };
+
+Stack.displayName = "@luminx/core/Stack";

@@ -1,37 +1,27 @@
-// src/ui/ColorPicker/ColorPicker.tsx
-import React, { useState, useEffect } from "react";
-import { ColorPickerProps } from "./types";
-import { HueSlider } from "./HueSlider";
-import { AlphaSlider } from "./AlphaSlider";
-import { Saturation } from "./Saturation";
-import {
-    HSVColor,
-    parseColor,
-    formatColor,
-    hsvToRgb,
-    rgbToHex
-} from "./ColorUtils";
-import "./ColorPicker.css";
-import { Tooltip } from "../Tooltip";
+import { forwardRef, Ref, useEffect, useState } from "react";
+import { ColorPickerProps, HSVColor } from "./types";
+import { cx } from "../_theme";
+import { formatColor, hsvToRgb, parseColor, rgbToHex } from "./utils";
+import { ColorSwatch } from "../ColorSwatch";
+import { Saturation } from "./Saturation/index";
+import { HueSlider } from "./HueSlider/index";
+import { AlphaSlider } from "./AlphaSlider/index";
 
-export const ColorPicker = ({
-    value,
-    defaultValue = "#ffffff",
-    onChange,
-    format = "hex",
-    size = "md",
-    fullWidth = false,
-    swatches,
-    swatchesPerRow = 7,
-    swatchesTooltip = false,
-    withPicker = true,
-    saturationLabel = "Saturation",
-    hueLabel = "Hue",
-    alphaLabel = "Alpha",
-    className,
-    classNames = {},
-    ...rest
-}: ColorPickerProps) => {
+const ColorPickerBase = (props: ColorPickerProps, ref: Ref<HTMLDivElement>) => {
+    const {
+        value,
+        defaultValue = "#ffffff",
+        onChange,
+        format = "hex",
+        fullWidth,
+        showColorPreview,
+        withPicker = true,
+        swatches,
+        className,
+        classNames,
+        ...rest
+    } = props;
+
     const [color, setColor] = useState<HSVColor>(() => {
         try {
             return parseColor(value || defaultValue);
@@ -39,8 +29,7 @@ export const ColorPicker = ({
             return parseColor("#ffffff");
         }
     });
-
-    const supportsAlpha = ["hexa", "rgba", "hsla", "hsva"].includes(format);
+    const useAlpha = ["hexa", "rgba", "hsla", "hsva"].includes(format);
 
     useEffect(() => {
         if (value) {
@@ -79,116 +68,112 @@ export const ColorPicker = ({
         }
     };
 
-    const getContainerClass = () => {
-        const classes = [
-            "lumin-color-picker",
-            `lumin-color-picker-${size}`,
-            classNames.wrapper || "",
-            className || ""
-        ];
-
-        if (fullWidth) {
-            classes.push("lumin-color-picker-fullwidth");
-        }
-
-        return classes.filter(Boolean).join(" ");
-    };
-
     const previewColor = formatColor(color, format);
     const rgbColor = hsvToRgb(color);
     const hexColor = rgbToHex(rgbColor, false);
 
     const renderSwatch = (swatch: string, index: number) => {
         return (
-            <button
+            <ColorSwatch
                 key={`${swatch}-${index}`}
-                className={`lumin-color-swatch ${classNames.swatch || ""}`}
-                style={{ backgroundColor: swatch }}
+                color={swatch}
                 onClick={() => handleSwatchClick(swatch)}
-                aria-label={`Color swatch: ${swatch}`}
-                type="button"
+                className={cx("cursor-pointer", classNames?.swatch)}
             />
         );
     };
 
     return (
-        <div className={getContainerClass()} {...rest}>
-            {withPicker && (
-                <div
-                    className={`lumin-color-picker-body ${
-                        classNames.body || ""
-                    }`}
-                >
-                    <Saturation
-                        value={color}
-                        onChange={handleSaturationChange}
-                        color={hexColor}
-                        size={size}
-                        className={classNames.saturation}
-                        label={saturationLabel}
-                    />
-
-                    <div
-                        className={`lumin-color-picker-sliders ${
-                            classNames.sliders || ""
-                        }`}
-                    >
-                        <HueSlider
-                            value={color.h}
-                            onChange={handleHueChange}
-                            size={size}
-                            className={classNames.slider}
-                            label={hueLabel}
+        <div
+            className={cx(
+                "w-56",
+                fullWidth && "w-full",
+                classNames?.root,
+                className
+            )}
+        >
+            <div
+                className={cx("flex flex-col gap-2", classNames?.body)}
+                {...rest}
+            >
+                {withPicker && (
+                    <>
+                        <Saturation
+                            value={color}
+                            onChange={handleSaturationChange}
+                            color={hexColor}
+                            className={classNames?.saturation}
                         />
 
-                        {supportsAlpha && (
-                            <AlphaSlider
-                                value={color.a}
-                                onChange={handleAlphaChange}
-                                color={hexColor}
-                                size={size}
-                                className={classNames.slider}
-                                label={alphaLabel}
-                            />
-                        )}
-
-                        {supportsAlpha && (
-                            <div
-                                className={`lumin-color-preview ${
-                                    classNames.preview || ""
-                                }`}
-                            >
-                                <div className="lumin-color-preview-checker" />
-                                <div
-                                    className="lumin-color-preview-color"
-                                    style={{ backgroundColor: previewColor }}
+                        <div className={cx("flex gap-3", classNames?.sliders)}>
+                            <div className="flex items-center w-full flex-col gap-2">
+                                <HueSlider
+                                    value={color.h}
+                                    onChange={handleHueChange}
+                                    className={cx(
+                                        "w-full",
+                                        classNames?.hueSlider
+                                    )}
                                 />
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
 
-            {swatches && swatches.length > 0 && (
-                <div
-                    className={`lumin-color-swatches ${
-                        classNames.swatches || ""
-                    }`}
-                    style={{
-                        gridTemplateColumns: `repeat(${swatchesPerRow}, 1fr)`
-                    }}
-                >
-                    {swatches.map((swatch, index) =>
-                        swatchesTooltip ? (
-                            <Tooltip label={swatch} key={index}>
-                                {renderSwatch(swatch, index)}
-                            </Tooltip>
-                        ) : (
-                            renderSwatch(swatch, index)
-                        )
-                    )}
-                </div>
-            )}
+                                {useAlpha && (
+                                    <AlphaSlider
+                                        value={color.a}
+                                        onChange={handleAlphaChange}
+                                        color={hexColor}
+                                        className={cx(
+                                            "w-full",
+                                            classNames?.alphaSlider
+                                        )}
+                                    />
+                                )}
+                            </div>
+
+                            {showColorPreview && (
+                                <div
+                                    className={cx(
+                                        "w-10 h-8 rounded-md relative overflow-hidden",
+                                        classNames?.colorPreview
+                                    )}
+                                >
+                                    <div
+                                        className="absolute inset-0 bg-[length:8px_8px] bg-white"
+                                        style={{
+                                            backgroundImage: `
+                                linear-gradient(45deg, #ccc 25%, transparent 25%),
+                                linear-gradient(-45deg, #ccc 25%, transparent 25%),
+                                linear-gradient(45deg, transparent 75%, #ccc 75%),
+                                linear-gradient(-45deg, transparent 75%, #ccc 75%)
+                                `,
+                                            backgroundSize: "8px 8px",
+                                            backgroundPosition:
+                                                "0 0, 0 4px, 4px -4px, -4px 0px"
+                                        }}
+                                    />
+                                    <div
+                                        className="absolute inset-0"
+                                        style={{
+                                            backgroundColor: previewColor
+                                        }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
+
+                {swatches && swatches.length > 0 && (
+                    <div className="flex gap-1 flex-wrap">
+                        {swatches.map(renderSwatch)}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
+
+export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(
+    (props, ref) => ColorPickerBase(props, ref)
+);
+
+ColorPicker.displayName = "@luminx/core/ColorPicker";

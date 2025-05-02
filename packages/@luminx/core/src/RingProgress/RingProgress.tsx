@@ -133,4 +133,4 @@ export const RingProgress = forwardRef<HTMLDivElement, RingProgressProps>(
     }
 );
 
-RingProgress.displayName = "RingProgress";
+RingProgress.displayName = "@luminx/core/RingProgress";

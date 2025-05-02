@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { useDrawerContext } from "./context";
-import { cn } from "../_utils";
+import "../style.css";
+import { cx } from "../_theme";
 
 export const DrawerRoot = ({ children }: { children: ReactNode }) => {
     const {
@@ -10,7 +11,9 @@ export const DrawerRoot = ({ children }: { children: ReactNode }) => {
         overlayOpacity,
         canClose,
         closeOnClickOutside,
-        onClose
+        onClose,
+        opened,
+        transitionDuration = 300
     } = useDrawerContext();
 
     const handleOverlayClick = () => {
@@ -25,26 +28,28 @@ export const DrawerRoot = ({ children }: { children: ReactNode }) => {
         <>
             {withOverlay && (
                 <div
-                    className={cn(
+                    className={cx(
                         "fixed inset-0 bg-black",
                         classNames?.overlay
                     )}
                     style={{
                         zIndex: z,
-                        opacity: overlayOpacity,
-                        transition: `opacity 200ms ease`
+                        opacity: opened ? overlayOpacity : 0,
+                        transition: `opacity ${transitionDuration}ms ease`,
+                        pointerEvents: opened ? "auto" : "none"
                     }}
                     onClick={handleOverlayClick}
                     aria-hidden="true"
                 />
             )}
             <div
-                className={cn(
+                className={cx(
                     "fixed inset-0 flex overflow-hidden",
                     classNames?.root
                 )}
                 style={{
-                    zIndex: z + 1
+                    zIndex: z + 1,
+                    pointerEvents: opened ? "auto" : "none"
                 }}
                 role="dialog"
                 aria-modal="true"

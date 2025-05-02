@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
-import { ModalProps } from "./types";
+import { ModalContextValue } from "./types";
 
-export const ModalContext = createContext<Partial<ModalProps> | null>(null);
+export const ModalContext = createContext<ModalContextValue | null>(null);
 
 export const useModalContext = () => {
     const context = useContext(ModalContext);

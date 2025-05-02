@@ -1,6 +1,6 @@
-import React, { createContext, useContext } from "react";
-import { cn } from "../_utils";
-import { ListProps, ListItemProps, ListContextValue } from "./types";
+import React from "react";
+import { cx } from "../_theme";
+import { ListProps, ListContextValue } from "./types";
 import { ListContext } from "./context";
 import { ListItem } from "./ListItem";
 
@@ -12,44 +12,84 @@ export function List({
     icon = null,
     spacing = 0,
     center = false,
-    withPadding = false,
+    withPadding = true,
     className,
     ...others
 }: ListProps) {
     const Component = type === "ordered" ? "ol" : "ul";
 
-    let spacingValue: string;
+    let spacingClass = "";
     if (typeof spacing === "number") {
-        spacingValue = `${spacing}px`;
+        if (spacing === 0) {
+            spacingClass = "space-y-0";
+        } else if (spacing <= 1) {
+            spacingClass = "space-y-px";
+        } else if (spacing <= 4) {
+            spacingClass = "space-y-1";
+        } else if (spacing <= 8) {
+            spacingClass = "space-y-2";
+        } else if (spacing <= 12) {
+            spacingClass = "space-y-3";
+        } else if (spacing <= 16) {
+            spacingClass = "space-y-4";
+        } else if (spacing <= 24) {
+            spacingClass = "space-y-6";
+        } else {
+            spacingClass = "space-y-8";
+        }
     } else {
         switch (spacing) {
             case "xs":
-                spacingValue = "0.25rem";
+                spacingClass = "space-y-1";
                 break;
             case "sm":
-                spacingValue = "0.5rem";
+                spacingClass = "space-y-2";
                 break;
             case "md":
-                spacingValue = "0.75rem";
+                spacingClass = "space-y-3";
                 break;
             case "lg":
-                spacingValue = "1rem";
+                spacingClass = "space-y-4";
                 break;
             case "xl":
-                spacingValue = "1.5rem";
+                spacingClass = "space-y-6";
                 break;
             default:
-                spacingValue = spacing;
+                spacingClass = "";
         }
     }
 
-    const classes = cn(
-        icon ? "list-none" : `list-${listStyleType}`,
+    let listStyleClass = "";
+    if (icon) {
+        listStyleClass = "list-none";
+    } else {
+        switch (listStyleType) {
+            case "disc":
+                listStyleClass = "list-disc";
+                break;
+            case "circle":
+                listStyleClass = "list-[circle]";
+                break;
+            case "square":
+                listStyleClass = "list-[square]";
+                break;
+            case "decimal":
+                listStyleClass = "list-decimal";
+                break;
+            case "none":
+                listStyleClass = "list-none";
+                break;
+            default:
+                listStyleClass = `list-[${listStyleType}]`;
+        }
+    }
+
+    const classes = cx(
+        listStyleClass,
+        spacingClass,
         withPadding && "pl-6",
         className
     );
-
-    const itemStyle = spacing ? { marginTop: spacingValue } : undefined;
 
     const contextValue: ListContextValue = {
         spacing,
@@ -61,20 +101,11 @@ export function List({
     return (
         <ListContext.Provider value={contextValue}>
             <Component className={classes} {...others}>
-                {React.Children.map(children, (child, index) => {
-                    if (!React.isValidElement(child)) return child;
-
-                    const style = index === 0 ? {} : itemStyle;
-
-                    return React.cloneElement(child, {
-                        ...(child.props as any),
-                        style: { ...style, ...(child.props as any).style }
-                    });
-                })}
+                {children}
             </Component>
         </ListContext.Provider>
     );
 }
 
 List.Item = ListItem;
-List.displayName = "List";
+List.displayName = "@luminx/core/List";

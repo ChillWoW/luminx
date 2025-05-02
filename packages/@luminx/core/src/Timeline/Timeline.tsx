@@ -4,7 +4,7 @@ import React, {
     forwardRef,
     isValidElement
 } from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { TimelineProps } from "./types";
 import { TimelineProvider } from "./context";
 import { TimelineItem } from "./TimelineItem";
@@ -50,7 +50,7 @@ const Timeline = forwardRef<HTMLDivElement, TimelineProps>(
             >
                 <div
                     ref={ref}
-                    className={cn(
+                    className={cx(
                         align === "left" ? "text-left" : "text-right",
                         className,
                         classNames?.root
@@ -68,6 +68,6 @@ const ExtendedTimeline = Object.assign(Timeline, {
     Item: TimelineItem
 });
 
-ExtendedTimeline.displayName = "Timeline";
+ExtendedTimeline.displayName = "@luminx/core/Timeline";
 
 export { ExtendedTimeline as Timeline };

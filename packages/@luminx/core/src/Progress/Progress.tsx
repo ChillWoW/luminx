@@ -5,8 +5,9 @@ import {
     ProgressRootProps,
     ProgressSectionProps
 } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { getRadius } from "../_theme";
+import "../style.css";
 
 const ProgressRoot = forwardRef<HTMLDivElement, ProgressRootProps>(
     (props, ref) => {
@@ -37,7 +38,7 @@ const ProgressRoot = forwardRef<HTMLDivElement, ProgressRootProps>(
         return (
             <div
                 ref={ref}
-                className={cn(
+                className={cx(
                     "relative w-full overflow-hidden bg-dark-300",
                     actualSize,
                     className
@@ -63,7 +64,6 @@ const ProgressSection = forwardRef<HTMLDivElement, ProgressSectionProps>(
             color = "var(--lumin-primary)",
             className,
             children,
-            "aria-label": ariaLabel,
             ...others
         } = props;
 
@@ -80,8 +80,7 @@ const ProgressSection = forwardRef<HTMLDivElement, ProgressSectionProps>(
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-valuenow={value}
-                aria-label={ariaLabel}
-                className={cn("h-full relative", className)}
+                className={cx("h-full relative", className)}
                 style={style}
                 {...others}
             >
@@ -98,7 +97,7 @@ const ProgressLabel = forwardRef<HTMLDivElement, ProgressLabelProps>(
         return (
             <div
                 ref={ref}
-                className={cn(
+                className={cx(
                     "px-2 absolute left-0 top-1/2 -translate-y-1/2 text-white text-xs font-medium whitespace-nowrap",
                     className
                 )}
@@ -129,10 +128,10 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>((props, ref) => {
     );
 }) as ProgressComponentType;
 
-ProgressRoot.displayName = "Progress.Root";
-ProgressSection.displayName = "Progress.Section";
-ProgressLabel.displayName = "Progress.Label";
-Progress.displayName = "Progress";
+ProgressRoot.displayName = "@luminx/core/Progress.Root";
+ProgressSection.displayName = "@luminx/core/Progress.Section";
+ProgressLabel.displayName = "@luminx/core/Progress.Label";
+Progress.displayName = "@luminx/core/Progress";
 
 Progress.Root = ProgressRoot;
 Progress.Section = ProgressSection;

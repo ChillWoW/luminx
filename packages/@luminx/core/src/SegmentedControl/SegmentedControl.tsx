@@ -1,8 +1,7 @@
 import React, { forwardRef, useState, useRef, useEffect } from "react";
 import { SegmentedControlProps, SegmentedControlItem } from "./types";
-import { cn } from "../_utils";
 import "../style.css";
-import { getRadius } from "../_theme";
+import { cx, getRadius } from "../_theme";
 
 export const SegmentedControl = forwardRef<
     HTMLDivElement,
@@ -131,7 +130,7 @@ export const SegmentedControl = forwardRef<
         return (
             <div
                 ref={ref || rootRef}
-                className={cn(
+                className={cx(
                     "inline-flex relative bg-[var(--lumin-background)] p-1 rounded-md",
                     orientation === "vertical" ? "flex-col" : "flex-row",
                     fullWidth && "w-full",
@@ -146,7 +145,7 @@ export const SegmentedControl = forwardRef<
                 {...props}
             >
                 <div
-                    className={cn(
+                    className={cx(
                         "flex gap-1 w-full",
                         orientation === "vertical" ? "flex-col" : "flex-row",
                         classNames?.control
@@ -155,7 +154,7 @@ export const SegmentedControl = forwardRef<
                     {items.map((item, index) => (
                         <div
                             key={item.value}
-                            className={cn(
+                            className={cx(
                                 "flex-1 rounded-md",
                                 activeValue === item.value
                                     ? "bg-[var(--lumin-primary-light)] text-[var(--lumin-text)]"
@@ -169,7 +168,7 @@ export const SegmentedControl = forwardRef<
                         >
                             <input
                                 id={`segmented-control-${item.value}`}
-                                className={cn("sr-only", classNames?.input)}
+                                className={cx("sr-only", classNames?.input)}
                                 type="radio"
                                 name="segmented-control"
                                 value={item.value}
@@ -185,7 +184,7 @@ export const SegmentedControl = forwardRef<
                                     }
                                 }}
                                 htmlFor={`segmented-control-${item.value}`}
-                                className={cn(
+                                className={cx(
                                     "flex items-center justify-center text-center transition-colors w-full rounded-md",
                                     sizeClass(),
                                     "cursor-pointer",
@@ -201,13 +200,13 @@ export const SegmentedControl = forwardRef<
                             >
                                 {item.icon && (
                                     <span
-                                        className={cn("mr-2", classNames?.icon)}
+                                        className={cx("mr-2", classNames?.icon)}
                                     >
                                         {item.icon}
                                     </span>
                                 )}
                                 <span
-                                    className={cn(
+                                    className={cx(
                                         "relative z-[2]",
                                         classNames?.innerLabel
                                     )}
@@ -223,4 +222,4 @@ export const SegmentedControl = forwardRef<
     }
 );
 
-SegmentedControl.displayName = "SegmentedControl";
+SegmentedControl.displayName = "@luminx/core/SegmentedControl";

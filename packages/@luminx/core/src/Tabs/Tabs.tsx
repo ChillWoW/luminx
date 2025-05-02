@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { TabsList } from "./TabsList";
 import { TabsTab } from "./TabsTab";
 import { TabsPanel } from "./TabsPanel";
@@ -55,7 +55,7 @@ export const Tabs = ({
     return (
         <TabsContext.Provider value={contextValue}>
             <div
-                className={cn(
+                className={cx(
                     "tabs-root",
                     isVertical ? "flex flex-row" : "flex flex-col",
                     className,
@@ -74,4 +74,4 @@ Tabs.List = TabsList;
 Tabs.Tab = TabsTab;
 Tabs.Panel = TabsPanel;
 
-Tabs.displayName = "Tabs";
+Tabs.displayName = "@luminx/core/Tabs";

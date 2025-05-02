@@ -1,7 +1,8 @@
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { PillGroupContext } from "./context";
 import { PillGroupProps } from "./types";
 import { PillGroupItem } from "./PillGroupItem";
+import "../style.css";
 
 export const PillGroup = ({
     size = "md",
@@ -9,13 +10,22 @@ export const PillGroup = ({
     onRemove,
     disabled,
     children,
+    radius,
+    shadow,
     className
 }: PillGroupProps) => {
     return (
         <PillGroupContext.Provider
-            value={{ size, withRemoveButton, disabled, onRemove }}
+            value={{
+                size,
+                withRemoveButton,
+                disabled,
+                onRemove,
+                radius,
+                shadow
+            }}
         >
-            <div className={cn("flex flex-wrap gap-1", className)}>
+            <div className={cx("flex flex-wrap gap-1", className)}>
                 {children}
             </div>
         </PillGroupContext.Provider>
@@ -24,4 +34,4 @@ export const PillGroup = ({
 
 PillGroup.Item = PillGroupItem;
 
-PillGroup.displayName = "PillGroup";
+PillGroup.displayName = "@luminx/core/PillGroup";

@@ -1,13 +1,7 @@
 import React, { useState } from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { PaginationProps } from "./types";
-import {
-    ChevronIcon,
-    FirstIcon,
-    LastIcon,
-    NextIcon,
-    PreviousIcon
-} from "../_icons";
+import { FirstIcon, LastIcon, NextIcon, PreviousIcon } from "../_icons";
 
 export const Pagination = ({
     total,
@@ -133,7 +127,7 @@ export const Pagination = ({
     const currentSize = getSize();
 
     const paginationClass = "flex items-center gap-2";
-    const paginationButtonClass = cn(
+    const paginationButtonClass = cx(
         "flex items-center justify-center cursor-pointer user-select-none px-[8px] rounded-md",
         "border border-[var(--lumin-border)] bg-[var(--lumin-background)] text-[var(--lumin-text)]",
         "hover:bg-[var(--lumin-background-hover)] transition-colors duration-200",
@@ -143,13 +137,13 @@ export const Pagination = ({
         currentSize.fontSize,
         classNames?.control
     );
-    const paginationButtonActiveClass = cn(
+    const paginationButtonActiveClass = cx(
         "bg-[var(--lumin-primary)] text-white border-[var(--lumin-primary)] hover:bg-[var(--lumin-primary-hover)]",
         classNames?.active
     );
     const paginationButtonDisabledClass = "cursor-not-allowed";
-    const prevNextButtonClass = cn(paginationButtonClass, classNames?.control);
-    const dotsClass = cn(
+    const prevNextButtonClass = cx(paginationButtonClass, classNames?.control);
+    const dotsClass = cx(
         "border-transparent bg-transparent cursor-default",
         "hover:bg-transparent hover:border-transparent",
         classNames?.dots
@@ -157,7 +151,7 @@ export const Pagination = ({
 
     return (
         <div
-            className={cn(paginationClass, className, classNames?.root)}
+            className={cx(paginationClass, className, classNames?.root)}
             role="navigation"
             aria-label="Pagination"
         >
@@ -173,21 +167,23 @@ export const Pagination = ({
                 </button>
             )}
 
-            <button
-                className={prevNextButtonClass}
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={disabled || currentPage === 1}
-                aria-label="Go to previous page"
-                title="Previous page"
-            >
-                <PreviousIcon size={18} />
-            </button>
+            {withControls && (
+                <button
+                    className={prevNextButtonClass}
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={disabled || currentPage === 1}
+                    aria-label="Go to previous page"
+                    title="Previous page"
+                >
+                    <PreviousIcon size={18} />
+                </button>
+            )}
 
             {withPages ? (
                 getPageNumbers().map((pageNumber, i) => (
                     <button
                         key={i}
-                        className={cn(
+                        className={cx(
                             paginationButtonClass,
                             pageNumber === currentPage &&
                                 paginationButtonActiveClass,
@@ -218,7 +214,7 @@ export const Pagination = ({
                 ))
             ) : (
                 <div
-                    className={cn(
+                    className={cx(
                         "flex items-center text-[var(--lumin-hint)] px-2 font-medium",
                         classNames?.label
                     )}
@@ -256,4 +252,4 @@ export const Pagination = ({
     );
 };
 
-Pagination.displayName = "Pagination";
+Pagination.displayName = "@luminx/core/Pagination";

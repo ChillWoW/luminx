@@ -1,4 +1,3 @@
-export type ScrollAreaType = "auto" | "always" | "never";
 export type ScrollAreaScrollbars = "x" | "y" | "xy" | "never";
 
 export interface ScrollAreaClassNames {
@@ -10,7 +9,6 @@ export interface ScrollAreaProps {
     children: React.ReactNode;
     className?: string;
     classNames?: ScrollAreaClassNames;
-    type?: ScrollAreaType;
     scrollbars?: ScrollAreaScrollbars;
     height?: number | string;
     width?: number | string;

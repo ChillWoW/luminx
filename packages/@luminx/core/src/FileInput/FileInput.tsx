@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Input } from "../Input";
 import { FileInputProps } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
+import "../style.css";
 
 const DefaultValueComponent: React.FC<{ value: File | null | File[] }> = ({
     value
@@ -85,7 +86,7 @@ export const FileInput = ({
             <button
                 type="button"
                 onClick={clearFiles}
-                className={cn(
+                className={cx(
                     "flex items-center justify-center w-6 h-6 rounded-full hover:bg-[var(--lumin-secondary)] transition-colors",
                     classNames?.clearButton
                 )}
@@ -108,7 +109,7 @@ export const FileInput = ({
     return (
         <div
             onClick={handleClick}
-            className={cn(
+            className={cx(
                 "cursor-pointer",
                 props.disabled && "cursor-not-allowed"
             )}
@@ -123,7 +124,7 @@ export const FileInput = ({
                 value=""
                 leftSection={
                     <div
-                        className={cn(
+                        className={cx(
                             "flex items-center w-full overflow-hidden",
                             classNames?.valueComponent
                         )}
@@ -150,3 +151,5 @@ export const FileInput = ({
         </div>
     );
 };
+
+FileInput.displayName = "@luminx/core/FileInput";

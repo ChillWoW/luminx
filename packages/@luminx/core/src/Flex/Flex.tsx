@@ -1,6 +1,6 @@
 import { forwardRef, createElement } from "react";
 import { FlexProps } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 
 const getSpacingClass = (value: string | number | undefined) => {
     if (value === undefined) return "";
@@ -150,7 +150,7 @@ export const Flex = forwardRef<HTMLDivElement, FlexProps>(
         return createElement(
             as as any,
             {
-                className: cn(
+                className: cx(
                     "flex",
                     gapClasses,
                     rowGapClasses,

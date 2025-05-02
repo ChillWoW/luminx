@@ -1,7 +1,6 @@
-// src/ui/ColorPicker/types.ts
 import { HTMLAttributes } from "react";
 
-export type ColorFormat =
+export type ColorPickerFormat =
     | "hex"
     | "hexa"
     | "rgb"
@@ -10,77 +9,45 @@ export type ColorFormat =
     | "hsla"
     | "hsv"
     | "hsva";
-export type ColorPickerSize = "xs" | "sm" | "md" | "lg" | "xl";
+
+export interface ColorPickerClassNames {
+    root?: string;
+    swatch?: string;
+    swatches?: string;
+    body?: string;
+    sliders?: string;
+    saturation?: string;
+    hueSlider?: string;
+    alphaSlider?: string;
+    colorPreview?: string;
+}
 
 export interface ColorPickerProps
     extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
-    // Core functionality
     value?: string;
     defaultValue?: string;
     onChange?: (value: string) => void;
-    format?: ColorFormat;
-
-    // Appearance
-    size?: ColorPickerSize;
+    format?: ColorPickerFormat;
     fullWidth?: boolean;
-
-    // Features
-    swatches?: string[];
-    swatchesPerRow?: number;
-    swatchesTooltip?: boolean;
+    showColorPreview?: boolean;
     withPicker?: boolean;
 
-    // Accessibility
-    saturationLabel?: string;
-    hueLabel?: string;
-    alphaLabel?: string;
-
-    // Styling
+    // Swatches
+    swatches?: string[];
     className?: string;
     classNames?: ColorPickerClassNames;
 }
 
-export interface ColorPickerClassNames {
-    wrapper?: string;
-    preview?: string;
-    body?: string;
-    slider?: string;
-    sliderOverlay?: string;
-    saturation?: string;
-    saturationOverlay?: string;
-    sliders?: string;
-    thumb?: string;
-    swatch?: string;
-    swatches?: string;
+export interface HSVColor {
+    h: number;
+    s: number;
+    v: number;
+    a: number;
 }
 
-export interface HueSliderProps
-    extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
-    value: number;
-    onChange: (value: number) => void;
-    size?: ColorPickerSize;
-    className?: string;
-    thumbSize?: number;
-    label?: string;
-}
-
-export interface AlphaSliderProps
-    extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
-    value: number;
-    onChange: (value: number) => void;
-    color: string;
-    size?: ColorPickerSize;
-    className?: string;
-    thumbSize?: number;
-    label?: string;
-}
-
-export interface SaturationProps
-    extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
-    value: { h: number; s: number; v: number; a: number };
-    onChange: (value: { h: number; s: number; v: number; a: number }) => void;
-    size?: ColorPickerSize;
-    color: string;
-    className?: string;
-    label?: string;
+export interface RGBColor {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
 }

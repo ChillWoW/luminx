@@ -1,6 +1,7 @@
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { useMenu } from "./context";
 import { MenuLabelProps } from "./types";
+import "../style.css";
 
 const getPosition = (position: MenuLabelProps["position"]) => {
     switch (position) {
@@ -21,7 +22,7 @@ export const MenuLabel = ({
 
     return (
         <div
-            className={cn(
+            className={cx(
                 "text-xs font-medium text-[var(--lumin-hint)]",
                 getPosition(position),
                 className,
@@ -33,4 +34,4 @@ export const MenuLabel = ({
     );
 };
 
-MenuLabel.displayName = "Menu.Label";
+MenuLabel.displayName = "@luminx/core/Menu.Label";

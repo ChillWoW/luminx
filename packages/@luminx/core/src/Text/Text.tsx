@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { TextProps } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 
 export const Text = forwardRef<HTMLParagraphElement, TextProps>(
     (
@@ -89,7 +89,7 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(
         return (
             <Component
                 ref={ref}
-                className={cn(className)}
+                className={cx(className)}
                 style={combinedStyle}
                 {...props}
             >
@@ -98,3 +98,5 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(
         );
     }
 );
+
+Text.displayName = "@luminx/core/Text";

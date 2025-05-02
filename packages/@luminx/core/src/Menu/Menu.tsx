@@ -1,12 +1,13 @@
 import { forwardRef, useId, useEffect, useRef, useState } from "react";
 import { MenuProps } from "./types";
 import { MenuContext } from "./context";
-import { cn } from "../_utils";
 import { MenuTarget } from "./MenuTarget";
 import { MenuDropdown } from "./MenuDropdown";
 import { MenuLabel } from "./MenuLabel";
 import { MenuItem } from "./MenuItem";
 import { MenuDivider } from "./MenuDivider";
+import { cx } from "../_theme";
+import "../style.css";
 
 const defaultProps = (props: MenuProps) => {
     return {
@@ -129,7 +130,7 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
     return (
         <MenuContext.Provider value={contextValue}>
             <div
-                className={cn("relative inline-block", props.classNames?.root)}
+                className={cx("relative inline-block", props.classNames?.root)}
                 data-menu-opened={currentOpened || undefined}
                 data-position={props.position}
                 style={{

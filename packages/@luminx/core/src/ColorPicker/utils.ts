@@ -1,26 +1,6 @@
-// src/ui/ColorPicker/ColorUtils.ts
-export interface HSVColor {
-    h: number;
-    s: number;
-    v: number;
-    a: number;
-}
+import { RGBColor, HSVColor } from "./types";
 
-export interface RGBColor {
-    r: number;
-    g: number;
-    b: number;
-    a: number;
-}
-
-export interface HSLColor {
-    h: number;
-    s: number;
-    l: number;
-    a: number;
-}
-
-// Convert hex to RGB
+// Converts hex to RGB
 export function hexToRgb(hex: string): RGBColor {
     hex = hex.replace(/^#/, "");
 
@@ -48,13 +28,13 @@ export function hexToRgb(hex: string): RGBColor {
         b = parseInt(hex.substring(4, 6), 16);
         a = parseInt(hex.substring(6, 8), 16) / 255;
     } else {
-        throw new Error("Invalid hex color format");
+        throw new Error("[@luminx/core] Invalid hex color format");
     }
 
     return { r, g, b, a };
 }
 
-// Convert RGB to hex
+// Converts RGB to hex
 export function rgbToHex(rgb: RGBColor, includeAlpha: boolean = false): string {
     const toHex = (value: number) => {
         const hex = Math.round(value).toString(16);
@@ -70,7 +50,7 @@ export function rgbToHex(rgb: RGBColor, includeAlpha: boolean = false): string {
     return hex;
 }
 
-// Convert RGB to HSV
+// Converts RGB to HSV
 export function rgbToHsv(rgb: RGBColor): HSVColor {
     const r = rgb.r / 255;
     const g = rgb.g / 255;
@@ -107,7 +87,7 @@ export function rgbToHsv(rgb: RGBColor): HSVColor {
     };
 }
 
-// Convert HSV to RGB
+// Converts HSV to RGB
 export function hsvToRgb(hsv: HSVColor): RGBColor {
     const h = hsv.h / 360;
     const s = hsv.s;
@@ -166,7 +146,7 @@ export function hsvToRgb(hsv: HSVColor): RGBColor {
     };
 }
 
-// Parse color string to HSV
+// Parses color string to HSV
 export function parseColor(color: string): HSVColor {
     color = color.trim().toLowerCase();
 
@@ -209,7 +189,7 @@ export function parseColor(color: string): HSVColor {
     throw new Error("Unsupported color format");
 }
 
-// Format color based on specified format
+// Formats color based on specified format
 export function formatColor(hsv: HSVColor, format: string): string {
     const rgb = hsvToRgb(hsv);
 
@@ -223,7 +203,7 @@ export function formatColor(hsv: HSVColor, format: string): string {
         case "rgba":
             return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${hsv.a.toFixed(2)})`;
         case "hsl": {
-            // Convert to HSL
+            // Converts to HSL
             const l = hsv.v * (1 - hsv.s / 2);
             const s = l === 0 || l === 1 ? 0 : (hsv.v - l) / Math.min(l, 1 - l);
             return `hsl(${hsv.h}, ${Math.round(s * 100)}%, ${Math.round(
@@ -231,7 +211,7 @@ export function formatColor(hsv: HSVColor, format: string): string {
             )}%)`;
         }
         case "hsla": {
-            // Convert to HSL
+            // Converts to HSL
             const l = hsv.v * (1 - hsv.s / 2);
             const s = l === 0 || l === 1 ? 0 : (hsv.v - l) / Math.min(l, 1 - l);
             return `hsla(${hsv.h}, ${Math.round(s * 100)}%, ${Math.round(

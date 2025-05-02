@@ -1,8 +1,9 @@
 import { ButtonHTMLAttributes, ElementType } from "react";
+import { Radius, Shadow } from "../_theme";
+import { TooltipProps } from "../Tooltip";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type ButtonVariant = "filled" | "outline" | "unstyled";
-export type ButtonRadius = "none" | "sm" | "md" | "lg" | "xl" | "full";
 export type ButtonLoaderPosition = "left" | "right";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -11,9 +12,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     leftSection?: React.ReactNode;
     rightSection?: React.ReactNode;
     variant?: ButtonVariant;
-    radius?: ButtonRadius;
+    radius?: Radius;
+    shadow?: Shadow;
     size?: ButtonSize;
-    color?: string;
     disabled?: boolean;
     active?: boolean;
     hover?: boolean;
@@ -25,14 +26,14 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     target?: string;
     preventDefault?: boolean;
     tooltip?: boolean;
-    tooltipProps?: Record<string, any>;
+    tooltipProps?: Omit<TooltipProps, "children">;
     style?: React.CSSProperties;
     className?: string;
     classNames?: ButtonClassNames;
 }
 
 export interface ButtonClassNames {
-    container?: string;
+    root?: string;
     leftSection?: string;
     rightSection?: string;
     disabled?: string;

@@ -1,32 +1,17 @@
-// src/ui/ColorPicker/HueSlider.tsx
-import React, { useRef, useEffect, useState } from "react";
-import { HueSliderProps } from "./types";
+import { useEffect, useState } from "react";
+import { useRef } from "react";
+import { AlphaSliderProps } from "./types";
+import { cx } from "../../_theme";
 
-export const HueSlider = ({
+export const AlphaSlider = ({
     value,
     onChange,
-    size = "md",
+    color,
     className,
-    thumbSize,
-    label = "Hue",
     ...rest
-}: HueSliderProps) => {
+}: AlphaSliderProps) => {
     const sliderRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
-
-    const getThumbSize = () => {
-        if (thumbSize) return thumbSize;
-
-        const sizes = {
-            xs: 8,
-            sm: 12,
-            md: 16,
-            lg: 20,
-            xl: 24
-        };
-
-        return sizes[size];
-    };
 
     const getPosition = (clientX: number) => {
         if (!sliderRef.current) return 0;
@@ -36,23 +21,13 @@ export const HueSlider = ({
         const left = clientX - rect.left;
 
         let position = Math.max(0, Math.min(left, width));
-        return Math.round((position / width) * 360);
+        return parseFloat((position / width).toFixed(2));
     };
 
     const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
         setIsDragging(true);
         onChange(getPosition(e.clientX));
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === "ArrowRight") {
-            e.preventDefault();
-            onChange(Math.min(value + 1, 360));
-        } else if (e.key === "ArrowLeft") {
-            e.preventDefault();
-            onChange(Math.max(value - 1, 0));
-        }
     };
 
     useEffect(() => {
@@ -80,29 +55,26 @@ export const HueSlider = ({
     return (
         <div
             ref={sliderRef}
-            className={`lumin-hue-slider lumin-hue-slider-${size} ${
-                className || ""
-            }`}
+            className={cx(
+                "relative h-3 rounded-full cursor-pointer overflow-hidden",
+                className
+            )}
+            style={{
+                background: `linear-gradient(to right, transparent, ${color})`
+            }}
             onMouseDown={handleMouseDown}
-            onKeyDown={handleKeyDown}
-            tabIndex={0}
-            role="slider"
-            aria-label={label}
-            aria-valuenow={value}
-            aria-valuemin={0}
-            aria-valuemax={360}
-            {...rest}
         >
-            <div className="lumin-hue-slider-overlay" />
             <div
-                className="lumin-hue-slider-thumb"
+                className="absolute bg-[var(--lumin-text)] rounded-full"
                 style={{
-                    left: `${(value / 360) * 100}%`,
-                    width: getThumbSize(),
-                    height: getThumbSize(),
+                    left: `min(max(6px, ${value * 100}%), calc(100% - 6px))`,
+                    width: "12px",
+                    height: "12px",
                     transform: "translateX(-50%)",
                     top: "50%",
-                    marginTop: `-${getThumbSize() / 1.8}px`
+                    marginTop: "-6px",
+                    border: "2px solid white",
+                    boxSizing: "border-box"
                 }}
             />
         </div>

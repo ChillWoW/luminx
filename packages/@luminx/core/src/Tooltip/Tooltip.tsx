@@ -6,9 +6,8 @@ import React, {
     useState
 } from "react";
 import { TooltipProps } from "./types";
-import { cn } from "../_utils";
 import "../style.css";
-import { getRadius } from "../_theme";
+import { getRadius, cx } from "../_theme";
 import { Transition } from "../Transition";
 
 export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
@@ -31,7 +30,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
             closeDelay = 0,
             refProp = "ref",
             color,
-            radius = "md",
+            radius,
             className,
             classNames,
             style,
@@ -217,7 +216,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                         }}
                         role="tooltip"
                         id="tooltip"
-                        className={cn(
+                        className={cx(
                             "fixed z-50 pointer-events-none bg-[var(--lumin-background)]",
                             "transition-opacity duration-200",
                             visible ? "opacity-100" : "opacity-0",
@@ -231,7 +230,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                         {...others}
                     >
                         <div
-                            className={cn(
+                            className={cx(
                                 "py-1 px-2 text-sm text-[var(--lumin-text)]",
                                 multiline
                                     ? "text-left max-w-xs"
@@ -244,7 +243,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                         >
                             {withArrow && (
                                 <div
-                                    className={cn(
+                                    className={cx(
                                         "absolute w-2 h-2 bg-inherit transform rotate-45",
                                         position.startsWith("top")
                                             ? "bottom-0 translate-y-1/2"
@@ -263,7 +262,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                                 />
                             )}
                             <div
-                                className={cn(
+                                className={cx(
                                     "tooltip-content",
                                     classNames?.content
                                 )}
@@ -278,7 +277,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
 
         return (
             <div
-                className={cn(
+                className={cx(
                     "tooltip-wrapper relative",
                     inline ? "inline" : "inline-block",
                     className
@@ -291,6 +290,4 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
     }
 );
 
-Tooltip.displayName = "Tooltip";
-
-export default Tooltip;
+Tooltip.displayName = "@luminx/core/Tooltip";

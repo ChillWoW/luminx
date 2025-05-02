@@ -1,58 +1,26 @@
 import React, { forwardRef, useState } from "react";
-import {
-    AlertProps,
-    AlertTitleProps,
-    AlertDescriptionProps,
-    IconPosition
-} from "./types";
-import { getRadius, getShadow } from "../_theme";
-
-interface AlertComponent extends React.ForwardRefExoticComponent<AlertProps> {
-    Title: React.ForwardRefExoticComponent<AlertTitleProps>;
-    Description: React.ForwardRefExoticComponent<AlertDescriptionProps>;
-}
-
-const AlertTitle = forwardRef<HTMLDivElement, AlertTitleProps>(
-    ({ children, className, ...props }, ref) => {
-        return (
-            <div
-                ref={ref}
-                className={`text-sm font-semibold mb-1 ${className || ""}`}
-                {...props}
-            >
-                {children}
-            </div>
-        );
-    }
-);
-
-AlertTitle.displayName = "Alert.Title";
-
-const AlertDescription = forwardRef<HTMLDivElement, AlertDescriptionProps>(
-    ({ children, className, ...props }, ref) => {
-        return (
-            <div ref={ref} className={`text-sm ${className || ""}`} {...props}>
-                {children}
-            </div>
-        );
-    }
-);
-
-AlertDescription.displayName = "Alert.Description";
+import { AlertProps } from "./types";
+import { getRadius, getShadow, cx, getPadding } from "../_theme";
+import { IconX } from "@tabler/icons-react";
+import { AlertTitle } from "./AlertTitle";
+import { AlertDescription } from "./AlertDescription";
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(
     (
         {
             variant = "filled",
             icon,
-            iconPosition = "start",
-            radius = "md",
-            shadow = "none",
+            iconPosition = "center",
+            radius,
+            shadow,
+            padding,
             withCloseButton = false,
             closeButtonLabel = "Close",
             onClose,
+            withBorder,
             children,
-            className = "",
+            className,
+            classNames,
             ...props
         },
         ref
@@ -64,68 +32,87 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
             onClose?.();
         };
 
-        const variantClasses = {
-            filled: `bg-[var(--lumin-primary)] text-[var(--lumin-text)]`,
-            outline: `border border-[var(--lumin-primary)] text-[var(--lumin-primary)]`
+        const getIconPosition = () => {
+            switch (iconPosition) {
+                case "start":
+                    return "items-start";
+                case "end":
+                    return "items-end";
+                default:
+                    return "items-center";
+            }
         };
 
-        const iconPositionClasses = {
-            start: "items-start",
-            center: "items-center",
-            end: "items-end"
+        const getVariant = () => {
+            switch (variant) {
+                case "outline":
+                    return "border border-[var(--lumin-border)]";
+                default:
+                    return "bg-[var(--lumin-background)]";
+            }
         };
-
         if (hidden) return null;
 
         return (
             <div
                 ref={ref}
                 role="alert"
-                className={`p-4 ${variantClasses[variant]} ${className}`}
+                className={cx(
+                    getVariant(),
+                    withBorder && "border border-[var(--lumin-border)]",
+                    classNames?.root,
+                    className
+                )}
                 style={{
                     ...getRadius(radius),
+                    ...getPadding(padding),
                     ...getShadow(shadow)
                 }}
                 {...props}
             >
-                <div className="flex gap-3">
-                    {icon && (
-                        <div
-                            className={`flex ${iconPositionClasses[iconPosition]} mt-0.5`}
-                        >
-                            {icon}
-                        </div>
+                <div
+                    className={cx(
+                        "flex justify-between gap-2",
+                        classNames?.wrapper
                     )}
-                    <div className="flex-1">{children}</div>
-                    {withCloseButton && (
-                        <button
-                            onClick={handleClose}
-                            aria-label={closeButtonLabel}
-                            className="self-start text-current opacity-70 hover:opacity-100 transition-opacity"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                                className="w-5 h-5"
+                >
+                    <div className={cx("flex gap-2", classNames?.container)}>
+                        {icon && (
+                            <div
+                                className={cx(
+                                    "flex",
+                                    getIconPosition(),
+                                    classNames?.icon
+                                )}
                             >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                        </button>
+                                {icon}
+                            </div>
+                        )}
+                        <div className="flex-1">{children}</div>
+                    </div>
+                    {withCloseButton && (
+                        <div className={classNames?.closeButton}>
+                            <IconX
+                                aria-label={closeButtonLabel}
+                                style={{
+                                    cursor: "pointer"
+                                }}
+                                size={18}
+                                onClick={handleClose}
+                            />
+                        </div>
                     )}
                 </div>
             </div>
         );
     }
-) as AlertComponent;
+);
 
-Alert.displayName = "Alert";
+const ExtendedAlert = Object.assign(Alert, {
+    Title: AlertTitle,
+    Description: AlertDescription
+});
 
-Alert.Title = AlertTitle;
-Alert.Description = AlertDescription;
+ExtendedAlert.displayName = "@luminx/core/Alert";
 
-export { Alert, AlertTitle, AlertDescription };
+export { ExtendedAlert as Alert };

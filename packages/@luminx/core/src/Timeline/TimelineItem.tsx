@@ -1,9 +1,8 @@
-import React, { forwardRef, useContext, createContext } from "react";
-import { cn } from "../_utils";
+import React, { forwardRef } from "react";
 import { TimelineItemProps } from "./types";
-import { TimelineProvider, useTimelineContext } from "./context";
-import { Text } from "../Text";
-import { getRadius } from "../_theme";
+import { useTimelineContext } from "./context";
+import { cx, getRadius } from "../_theme";
+import "../style.css";
 
 export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
     (
@@ -36,7 +35,7 @@ export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
         return (
             <div
                 ref={ref}
-                className={cn(
+                className={cx(
                     "relative pb-6 last:pb-0",
                     align === "left" ? "pl-8" : "pr-8",
                     className,
@@ -45,7 +44,7 @@ export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
                 {...props}
             >
                 <div
-                    className={cn(
+                    className={cx(
                         "absolute top-0 flex items-center justify-center z-10 rounded-full overflow-hidden",
                         align === "left" ? "left-0" : "right-0",
                         classNames?.bullet
@@ -67,7 +66,7 @@ export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
                 </div>
 
                 <div
-                    className={cn(
+                    className={cx(
                         "absolute top-0 bottom-0",
                         align === "left"
                             ? "border-l left-0"
@@ -92,7 +91,7 @@ export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
                 />
 
                 <div
-                    className={cn(
+                    className={cx(
                         "flex flex-col",
                         align === "right" && "items-end",
                         classNames?.itemBody
@@ -100,7 +99,7 @@ export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
                 >
                     {title && (
                         <p
-                            className={cn(
+                            className={cx(
                                 "text-sm font-medium",
                                 classNames?.title
                             )}
@@ -109,11 +108,11 @@ export const TimelineItem = forwardRef<HTMLDivElement, TimelineItemProps>(
                         </p>
                     )}
 
-                    <div className={cn(classNames?.content)}>{children}</div>
+                    <div className={cx(classNames?.content)}>{children}</div>
                 </div>
             </div>
         );
     }
 );
 
-TimelineItem.displayName = "TimelineItem";
+TimelineItem.displayName = "@luminx/core/Timeline.Item";

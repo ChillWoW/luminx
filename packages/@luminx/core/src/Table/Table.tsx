@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import {
     TableProps,
     TableTheadProps,
@@ -17,7 +17,7 @@ import { TableContext, useTableContext } from "./context";
 function TableThead({ className, children, ...others }: TableTheadProps) {
     const { stickyHeader, stickyHeaderOffset } = useTableContext();
 
-    const classes = cn(
+    const classes = cx(
         className,
         stickyHeader && "sticky top-0 z-10 bg-dark-800"
     );
@@ -42,7 +42,7 @@ function TableTfoot({ className, ...others }: TableTfootProps) {
 function TableCaption({ className, ...others }: TableCaptionProps) {
     return (
         <caption
-            className={cn("mt-2 text-sm text-gray-400", className)}
+            className={cx("mt-2 text-sm text-gray-400", className)}
             {...others}
         />
     );
@@ -77,7 +77,7 @@ function TableTh({ className, ...others }: TableThProps) {
     const hSpacing = getSpacing(horizontalSpacing);
     const vSpacing = getSpacing(verticalSpacing);
 
-    const classes = cn("text-left font-semibold text-gray-200", className);
+    const classes = cx("text-left font-semibold text-gray-200", className);
 
     return (
         <th
@@ -114,7 +114,7 @@ function TableTd({ className, ...others }: TableTdProps) {
     const hSpacing = getSpacing(horizontalSpacing);
     const vSpacing = getSpacing(verticalSpacing);
 
-    const classes = cn(tabularNums && "font-tabular", className);
+    const classes = cx(tabularNums && "font-tabular", className);
 
     return (
         <td
@@ -134,7 +134,7 @@ function TableScrollContainer({
 }: TableScrollContainerProps) {
     return (
         <div
-            className={cn("overflow-auto", className)}
+            className={cx("overflow-auto", className)}
             style={{
                 minWidth:
                     typeof minWidth === "number" ? `${minWidth}px` : minWidth,
@@ -175,7 +175,7 @@ export function Table({
         layout
     };
 
-    const classes = cn(
+    const classes = cx(
         "w-full border-collapse text-gray-300",
         variant === "striped" && "border-separate border-spacing-0",
         layout === "fixed" && "table-fixed",
@@ -254,4 +254,4 @@ Table.Tr = TableTr;
 Table.Th = TableTh;
 Table.Td = TableTd;
 Table.ScrollContainer = TableScrollContainer;
-Table.displayName = "Table";
+Table.displayName = "@luminx/core/Table";

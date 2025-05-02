@@ -1,9 +1,8 @@
-import React, { ElementType } from "react";
+import React, { ElementType, ReactNode } from "react";
+import { Radius, Shadow } from "../_theme";
 
 export type BadgeVariant = "filled" | "outline";
 export type BadgeSize = "xs" | "sm" | "md" | "lg" | "xl";
-export type BadgeRadius = "xs" | "sm" | "md" | "lg" | "xl" | "full";
-export type BadgeShadow = "none" | "sm" | "md" | "lg" | "xl";
 
 export interface BadgeGradient {
     from: string;
@@ -12,13 +11,13 @@ export interface BadgeGradient {
 }
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
-    children?: React.ReactNode;
+    children?: ReactNode;
     variant?: BadgeVariant;
     size?: BadgeSize;
-    radius?: BadgeRadius;
-    shadow?: BadgeShadow;
-    leftSection?: React.ReactNode;
-    rightSection?: React.ReactNode;
+    radius?: Radius;
+    shadow?: Shadow;
+    leftSection?: ReactNode;
+    rightSection?: ReactNode;
     fullWidth?: boolean;
     classNames?: BadgeClassNames;
     component?: ElementType;

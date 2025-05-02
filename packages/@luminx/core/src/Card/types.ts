@@ -1,14 +1,11 @@
 import { ReactNode } from "react";
-
-export type CardPadding = "none" | "xs" | "sm" | "md" | "lg" | "xl";
-export type CardRadius = "none" | "xs" | "sm" | "md" | "lg" | "xl";
-export type CardShadow = "none" | "sm" | "md" | "lg" | "xl";
+import { Padding, Radius, Shadow } from "../_theme";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
     children: ReactNode;
-    padding?: CardPadding;
-    radius?: CardRadius;
-    shadow?: CardShadow;
+    padding?: Padding;
+    radius?: Radius;
+    shadow?: Shadow;
     withBorder?: boolean;
     className?: string;
 }

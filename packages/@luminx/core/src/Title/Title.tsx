@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { TitleProps, TitleSize } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 
 export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
     (
@@ -63,7 +63,7 @@ export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
         return (
             <Component
                 ref={ref}
-                className={cn(className)}
+                className={cx(className)}
                 style={combinedStyle}
                 {...props}
             >

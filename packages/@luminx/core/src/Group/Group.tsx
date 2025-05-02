@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { GroupProps } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 
 export const Group = forwardRef<HTMLDivElement, GroupProps>(
     (
@@ -55,7 +55,7 @@ export const Group = forwardRef<HTMLDivElement, GroupProps>(
         return (
             <div
                 ref={ref}
-                className={cn(
+                className={cx(
                     "flex",
                     alignMap[align],
                     getGapClass(),

@@ -1,25 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
     /* Dark */
     --lumin-background: #242424;
     --lumin-background-hover: #2f2f2f;
     --lumin-border: #3a3a3a;
+    --lumin-border-hover: #4a4a4a;
     --lumin-text: #fff;
     --lumin-hint: #969494;
     --lumin-placeholder: #808080;
     --lumin-section: #d8d0d0;
+
+    /* Primary */
     --lumin-primary: #4187f6;
+    --lumin-primary-hover: #3170d6;
+
+    /* Secondary */
     --lumin-secondary: #51546d;
+    --lumin-secondary-hover: #41445d;
 
     /* Other */
     --lumin-error: #e23b3b;
     --lumin-success: #63da63;
-    --lumin-blue: #458efc;
     --lumin-black: #000;
+
+    --lumin-scrollbar-color: var(--lumin-border);
+    --lumin-scrollbar-background: var(--lumin-background);
 }
 
 .lumin-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: var(--lumin-border) var(--lumin-background);
+    scrollbar-color: var(--lumin-scrollbar-color)
+        var(--lumin-scrollbar-background);
 }
 
 .lumin-scrollbar::-webkit-scrollbar {
@@ -28,15 +42,15 @@
 }
 
 .lumin-scrollbar::-webkit-scrollbar-track {
-    background: var(--lumin-background);
+    background: var(--lumin-scrollbar-background);
     border-radius: 4px;
 }
 
 .lumin-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--lumin-border);
+    background: var(--lumin-scrollbar-color);
     border-radius: 4px;
 }
 
 .lumin-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--lumin-border);
+    background: var(--lumin-scrollbar-color);
 }

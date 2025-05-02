@@ -1,16 +1,17 @@
 import React, { InputHTMLAttributes } from "react";
+import { Radius, Shadow } from "../_theme";
 
 export type CheckboxSize = "xs" | "sm" | "md" | "lg" | "xl";
-export type CheckboxRadius = "none" | "sm" | "md" | "lg" | "xl" | "full";
 
 export interface CheckboxProps
     extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "size"> {
-    radius?: CheckboxRadius;
     fullWidth?: boolean;
     unstyled?: boolean;
     color?: string;
     iconColor?: string;
     size?: CheckboxSize;
+    radius?: Radius;
+    shadow?: Shadow;
 
     label?: string;
     hint?: string;

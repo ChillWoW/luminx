@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { useTabs } from "./context";
 import { TabsListProps } from "./types";
 import "../style.css";
@@ -77,7 +77,7 @@ export const TabsList = ({ className, children }: TabsListProps) => {
 
     return (
         <div
-            className={cn(
+            className={cx(
                 "relative border-[var(--lumin-border)]",
                 isVertical
                     ? ["flex flex-col", variant !== "pills" && "border-r"]
@@ -110,7 +110,7 @@ export const TabsList = ({ className, children }: TabsListProps) => {
 
             {variant !== "pills" && (
                 <div
-                    className={cn(
+                    className={cx(
                         "bg-[var(--lumin-primary)] transition-all duration-200 absolute",
                         isVertical
                             ? "right-0 w-[2px] -mr-[1px]"
@@ -126,4 +126,4 @@ export const TabsList = ({ className, children }: TabsListProps) => {
     );
 };
 
-TabsList.displayName = "TabsList";
+TabsList.displayName = "@luminx/core/Tabs.List";

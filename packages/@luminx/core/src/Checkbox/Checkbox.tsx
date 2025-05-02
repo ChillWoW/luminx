@@ -1,17 +1,16 @@
 import React, { forwardRef, useRef, useEffect } from "react";
-import { cn } from "../_utils";
 import { CheckboxProps } from "./types";
 import "../style.css";
-import { getRadius } from "../_theme";
+import { cx, getRadius, getShadow } from "../_theme";
+import { IconCheck } from "@tabler/icons-react";
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     (
         {
-            radius = "md",
+            radius,
+            shadow,
             fullWidth,
             unstyled = false,
-            color,
-            iconColor,
             size = "md",
 
             label,
@@ -85,33 +84,16 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             if (!Icon) {
                 return (
                     <div
-                        className={cn(
+                        className={cx(
                             "transition-opacity opacity-0 flex items-center justify-center",
                             (checked || indeterminate) && "opacity-100",
                             classNames?.icon
                         )}
                     >
                         {indeterminate ? (
-                            <div
-                                className={cn(
-                                    "w-2/3 h-0.5 bg-[var(--lumin-text)]",
-                                    iconColor && `bg-${iconColor}`
-                                )}
-                            />
+                            <div className="w-2/3 h-0.5 bg-[var(--lumin-text)]" />
                         ) : (
-                            <svg
-                                viewBox="0 0 15 15"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="w-3/4 h-3/4"
-                            >
-                                <path
-                                    d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z"
-                                    fill="currentColor"
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
+                            <IconCheck size={16} />
                         )}
                     </div>
                 );
@@ -120,7 +102,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             return (
                 <Icon
                     indeterminate={indeterminate}
-                    className={cn(
+                    className={cx(
                         "transition-opacity opacity-0",
                         (checked || indeterminate) && "opacity-100",
                         classNames?.icon
@@ -131,7 +113,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
         return (
             <div
-                className={cn(
+                className={cx(
                     "flex items-center",
                     fullWidth && "w-full",
                     disabled && "opacity-60",
@@ -142,7 +124,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 {...wrapperProps}
             >
                 <div
-                    className={cn(
+                    className={cx(
                         "relative flex items-center justify-center mr-2",
                         sizeClass(),
                         disabled && "cursor-not-allowed",
@@ -150,7 +132,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                     )}
                 >
                     <div
-                        className={cn(
+                        className={cx(
                             "flex items-center justify-center absolute top-0 left-0 w-full h-full",
                             !unstyled && [
                                 "border border-[var(--lumin-border)] bg-[var(--lumin-background)]",
@@ -161,9 +143,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                             classNames?.inner
                         )}
                         style={{
-                            backgroundColor: color,
-                            borderColor: color,
-                            ...getRadius(radius)
+                            ...getRadius(radius),
+                            ...getShadow(shadow)
                         }}
                     >
                         {renderIcon()}
@@ -171,7 +152,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                     <input
                         ref={resolvedRef}
                         type="checkbox"
-                        className={cn(
+                        className={cx(
                             "absolute inset-0 w-full h-full opacity-0 cursor-pointer",
                             disabled && "cursor-not-allowed",
                             readOnly && "cursor-default",
@@ -190,14 +171,14 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
                 {(label || hint || error) && (
                     <div
-                        className={cn(
+                        className={cx(
                             "flex flex-col",
                             classNames?.labelWrapper
                         )}
                     >
                         {label && (
                             <label
-                                className={cn(
+                                className={cx(
                                     textSizeClass(),
                                     "text-[var(--lumin-text)]",
                                     disabled && "cursor-not-allowed",
@@ -215,7 +196,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
                         {hint && !error && (
                             <div
-                                className={cn(
+                                className={cx(
                                     "text-[var(--lumin-hint)] text-sm",
                                     disabled && "cursor-not-allowed",
                                     classNames?.hint
@@ -227,7 +208,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
                         {error && (
                             <div
-                                className={cn(
+                                className={cx(
                                     "text-[var(--lumin-error)] text-sm",
                                     classNames?.error
                                 )}
@@ -242,4 +223,4 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     }
 );
 
-Checkbox.displayName = "Checkbox";
+Checkbox.displayName = "@luminx/core/Checkbox";

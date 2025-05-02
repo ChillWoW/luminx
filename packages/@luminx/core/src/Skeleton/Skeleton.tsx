@@ -1,13 +1,13 @@
 import React from "react";
-import { cn } from "../_utils";
-import { getRadius } from "../_theme";
 import { SkeletonProps } from "./types";
+import { cx, getRadius } from "../_theme";
+import "../style.css";
 import "./Skeleton.css";
 
 export const Skeleton = ({
     height,
     width,
-    radius = "md",
+    radius,
     circle,
     animate = true,
     visible = true,
@@ -29,7 +29,7 @@ export const Skeleton = ({
 
     return (
         <div
-            className={cn(
+            className={cx(
                 visible
                     ? "relative overflow-hidden bg-[var(--lumin-background)]"
                     : "hidden",
@@ -52,3 +52,5 @@ export const Skeleton = ({
         </div>
     );
 };
+
+Skeleton.displayName = "@luminx/core/Skeleton";

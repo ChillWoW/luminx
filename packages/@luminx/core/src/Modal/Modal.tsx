@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useState } from "react";
-import { ModalProps } from "./types";
+import { AnimationState, ModalProps } from "./types";
 import { ModalContext } from "./context";
 import { ModalRoot } from "./ModalRoot";
 import { Portal } from "../Portal";
@@ -30,10 +30,16 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
         fullScreen = false,
         withOverlay = true,
         style,
-        className
+        className,
+        transitionDuration = 200,
+        transitionTimingFunction = "ease"
     } = props;
 
     const [mounted, setMounted] = useState(false);
+    const [animationState, setAnimationState] = useState<AnimationState>(
+        opened ? "entered" : "exited"
+    );
+    const [visible, setVisible] = useState(opened);
 
     useEffect(() => {
         setMounted(true);
@@ -45,6 +51,24 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
             return () => document.removeEventListener("keydown", handleEscape);
         }
     }, [canClose, onClose, closeOnEscape]);
+
+    useEffect(() => {
+        if (opened) {
+            setVisible(true);
+            setAnimationState("entering");
+            const timer = setTimeout(() => {
+                setAnimationState("entered");
+            }, 10);
+            return () => clearTimeout(timer);
+        } else if (mounted) {
+            setAnimationState("exiting");
+            const timer = setTimeout(() => {
+                setAnimationState("exited");
+                setVisible(false);
+            }, transitionDuration);
+            return () => clearTimeout(timer);
+        }
+    }, [opened, mounted, transitionDuration]);
 
     useEffect(() => {
         if (!lockScroll) return;
@@ -61,7 +85,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
         }
     }, [opened, lockScroll]);
 
-    if (!mounted || !opened) return null;
+    if (!mounted || !visible) return null;
 
     const Component = (
         <ModalContext.Provider
@@ -81,7 +105,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
                 fullScreen,
                 withOverlay,
                 style,
-                className
+                className,
+                animationState,
+                transitionDuration,
+                transitionTimingFunction
             }}
         >
             <ModalRoot>
@@ -105,6 +132,6 @@ const ModalExtended = Object.assign(Modal, {
     Body: ModalBody
 });
 
-ModalExtended.displayName = "Modal";
+ModalExtended.displayName = "@luminx/core/Modal";
 
 export { ModalExtended as Modal };

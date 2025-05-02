@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from "react";
 import { Input } from "../Input/Input";
 import { NumberInputProps } from "./types";
-import { cn } from "../_utils";
-import "../style.css";
+import { cx } from "../_theme";
 import { ChevronIcon } from "../_icons";
+import "../style.css";
 
 export const NumberInput = ({
     min,
@@ -165,7 +165,7 @@ export const NumberInput = ({
         <div className="inline-flex flex-col h-full border-l border-[var(--lumin-border)]">
             <button
                 type="button"
-                className={cn(
+                className={cx(
                     "w-7 h-[20px] flex items-center justify-center hover:bg-[var(--lumin-secondary)] border-b border-[var(--lumin-border)]",
                     isIncrementDisabled && "opacity-60 cursor-not-allowed",
                     classNames?.incrementButton
@@ -180,7 +180,7 @@ export const NumberInput = ({
                 type="button"
                 onClick={decrement}
                 disabled={isDecrementDisabled}
-                className={cn(
+                className={cx(
                     "w-7 h-[20px] flex items-center justify-center hover:bg-[var(--lumin-secondary)]",
                     isDecrementDisabled && "opacity-60 cursor-not-allowed",
                     classNames?.decrementButton
@@ -209,4 +209,4 @@ export const NumberInput = ({
     );
 };
 
-NumberInput.displayName = "NumberInput";
+NumberInput.displayName = "@luminx/core/NumberInput";

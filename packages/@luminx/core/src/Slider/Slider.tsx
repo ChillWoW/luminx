@@ -6,7 +6,7 @@ import React, {
     useCallback
 } from "react";
 import { SliderProps } from "./types";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import "../style.css";
 
 export const Slider = forwardRef<HTMLDivElement, SliderProps>(
@@ -199,7 +199,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
 
         return (
             <div
-                className={cn(
+                className={cx(
                     "relative w-full py-4",
                     disabled && "opacity-60 cursor-not-allowed",
                     className,
@@ -212,7 +212,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
             >
                 <div
                     ref={trackRef}
-                    className={cn(
+                    className={cx(
                         "relative w-full",
                         currentSize.track,
                         currentRadius,
@@ -223,7 +223,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                     onClick={disabled ? undefined : handleTrackClick}
                 >
                     <div
-                        className={cn(
+                        className={cx(
                             "absolute inset-0",
                             currentRadius,
                             "bg-[var(--lumin-background)]",
@@ -233,7 +233,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                     />
 
                     <div
-                        className={cn(
+                        className={cx(
                             "absolute top-0 bottom-0",
                             currentRadius,
                             "bg-[var(--lumin-primary)]",
@@ -251,14 +251,14 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                         return (
                             <div
                                 key={mark.value}
-                                className={cn(
+                                className={cx(
                                     "absolute top-1/2 -translate-x-1/2 -translate-y-1/2",
                                     classNames?.markWrapper
                                 )}
                                 style={{ left: `${markPosition}%` }}
                             >
                                 <div
-                                    className={cn(
+                                    className={cx(
                                         "w-1 h-1 rounded-full bg-white",
                                         markPosition <= position
                                             ? "bg-[var(--lumin-primary)]"
@@ -268,7 +268,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                                 />
                                 {mark.label && (
                                     <div
-                                        className={cn(
+                                        className={cx(
                                             "absolute top-4 -translate-x-1/2 text-xs text-[var(--lumin-text)]",
                                             classNames?.markLabel
                                         )}
@@ -282,7 +282,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
 
                     <div
                         ref={thumbRef}
-                        className={cn(
+                        className={cx(
                             "absolute top-1/2 -translate-x-1/2 -translate-y-1/2",
                             "bg-[var(--lumin-text)] rounded-full",
                             "cursor-grab active:cursor-grabbing",
@@ -313,7 +313,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
 
                     {label && showLabel && (
                         <div
-                            className={cn(
+                            className={cx(
                                 "absolute -top-8 transform -translate-x-1/2 bg-[var(--lumin-background)] text-[var(--lumin-text)] px-2 py-1 rounded text-xs whitespace-nowrap",
                                 "transition-opacity duration-200",
                                 showLabel ? "opacity-100" : "opacity-0",
@@ -332,4 +332,4 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
     }
 );
 
-Slider.displayName = "Slider";
+Slider.displayName = "@luminx/core/Slider";

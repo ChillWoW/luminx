@@ -1,4 +1,3 @@
-import { SpringConfig } from "@react-spring/web";
 import { CSSProperties } from "react";
 
 export type TransitionName =
@@ -42,7 +41,6 @@ export interface TransitionProps {
     enterDelay?: number;
     exitDelay?: number;
     keepMounted?: boolean;
-    springConfig?: SpringConfig;
     onExited?: () => void;
     onEntered?: () => void;
 }

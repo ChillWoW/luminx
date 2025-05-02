@@ -95,4 +95,4 @@ export const MenuTarget = ({ children }: MenuTargetProps) => {
     return cloneElement(children, targetProps);
 };
 
-MenuTarget.displayName = "Menu.Target";
+MenuTarget.displayName = "@luminx/core/Menu.Target";

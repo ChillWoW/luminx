@@ -1,14 +1,16 @@
 import React from "react";
 import { PillProps } from "./types";
-import { cn } from "../_utils";
-import "../style.css";
 import { PillGroup } from "./PillGroup";
 import { XIcon } from "../_icons";
+import { cx, getRadius, getShadow } from "../_theme";
+import "../style.css";
 
 export const Pill = ({
     size = "md",
     withRemoveButton = false,
     disabled = false,
+    radius = "full",
+    shadow,
     onRemove,
     classNames,
     className,
@@ -30,16 +32,20 @@ export const Pill = ({
 
     return (
         <div
-            className={cn(
-                "flex items-center bg-[var(--lumin-background)] border border-[var(--lumin-border)] rounded-full w-fit",
+            className={cx(
+                "flex items-center bg-[var(--lumin-background)] border border-[var(--lumin-border)] w-fit",
                 sizeStyles[size],
                 disabled && "opacity-60 cursor-not-allowed",
                 classNames?.root,
                 className
             )}
+            style={{
+                ...getRadius(radius),
+                ...getShadow(shadow)
+            }}
             {...props}
         >
-            <span className={cn("text-[var(--lumin-text)]", classNames?.label)}>
+            <span className={cx("text-[var(--lumin-text)]", classNames?.label)}>
                 {children}
             </span>
 
@@ -48,7 +54,7 @@ export const Pill = ({
                     type="button"
                     onClick={handleRemove}
                     disabled={disabled}
-                    className={cn(
+                    className={cx(
                         "ml-1 flex items-center justify-center text-[var(--lumin-hint)] hover:text-[var(--lumin-text)] transition-colors",
                         "h-4 w-4",
                         classNames?.remove
@@ -63,3 +69,4 @@ export const Pill = ({
 };
 
 Pill.Group = PillGroup;
+Pill.displayName = "@luminx/core/Pill";

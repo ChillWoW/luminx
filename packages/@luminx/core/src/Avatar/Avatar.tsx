@@ -1,28 +1,11 @@
-import React, { forwardRef, ReactNode } from "react";
-import { cn } from "../_utils";
-import { AvatarProps, AvatarSize } from "./types";
-import { getRadius, getShadow } from "../_theme";
+import React, { forwardRef } from "react";
+import { AvatarProps } from "./types";
+import { cx, getRadius, getShadow } from "../_theme";
 import { AvatarGroup } from "./AvatarGroup";
+import { IconUserCircle } from "@tabler/icons-react";
 
-const defaultFallback = (children: ReactNode) => {
-    return (
-        <svg
-            width="50%"
-            height="50%"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <path
-                d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
-                fill="currentColor"
-            />
-            <path
-                d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z"
-                fill="currentColor"
-            />
-        </svg>
-    );
+const defaultFallback = () => {
+    return <IconUserCircle />;
 };
 
 const renderContent = ({ children, src, alt }: AvatarProps) => {
@@ -31,20 +14,8 @@ const renderContent = ({ children, src, alt }: AvatarProps) => {
     } else if (children) {
         return children;
     } else {
-        return defaultFallback(children);
+        return defaultFallback();
     }
-};
-
-const getSize = (size: AvatarSize) => {
-    const sizes = {
-        xs: "w-6 h-6 text-xs",
-        sm: "w-8 h-8 text-sm",
-        md: "w-10 h-10 text-base",
-        lg: "w-12 h-12 text-lg",
-        xl: "w-16 h-16 text-xl"
-    };
-
-    return sizes[size ?? "md"];
 };
 
 const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
@@ -54,22 +25,34 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             src,
             alt = "avatar",
             size = "md",
-            shadow = "sm",
+            shadow,
             radius = "full",
             component: Component = "div",
-            withBorder,
             className,
             ...props
         },
         ref
     ) => {
+        const getSize = () => {
+            switch (size) {
+                case "xs":
+                    return "text-xs w-6 h-6";
+                case "sm":
+                    return "text-sm w-8 h-8";
+                case "lg":
+                    return "text-lg w-12 h-12";
+                case "xl":
+                    return "text-xl w-14 h-14";
+                default:
+                    return "text-base w-10 h-10";
+            }
+        };
+
         return (
             <Component
-                className={cn(
-                    "inline-flex items-center justify-center relative overflow-hidden",
-                    "text-[var(--lumin-text)] bg-[var(--lumin-background)]",
-                    withBorder && "border border-[var(--lumin-border)]",
-                    getSize(size),
+                className={cx(
+                    "inline-flex items-center justify-center overflow-hidden bg-[var(--lumin-background)]",
+                    getSize(),
                     className
                 )}
                 style={{
@@ -89,6 +72,6 @@ const ExtendedAvatar = Object.assign(Avatar, {
     Group: AvatarGroup
 });
 
-ExtendedAvatar.displayName = "Avatar";
+ExtendedAvatar.displayName = "@luminx/core/Avatar";
 
 export { ExtendedAvatar as Avatar };

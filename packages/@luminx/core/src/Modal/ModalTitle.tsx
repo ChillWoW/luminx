@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { cn } from "../_utils";
+import { cx } from "../_theme";
 import { XIcon } from "../_icons";
 import { useModalContext } from "./context";
 
@@ -9,13 +9,13 @@ export const ModalTitle = ({ children }: { children: ReactNode }) => {
 
     return (
         <div className="flex items-center justify-between mb-2">
-            <p className={cn("text-base font-medium", classNames?.title)}>
+            <p className={cx("text-base font-medium", classNames?.title)}>
                 {children}
             </p>
             {withCloseButton && (
                 <button
                     type="button"
-                    className={cn(
+                    className={cx(
                         "flex items-center justify-center hover:bg-[var(--lumin-secondary)] text-[var(--lumin-text)] p-4 rounded-full transition-colors",
                         "h-6 w-6",
                         classNames?.closeButton
@@ -33,4 +33,4 @@ export const ModalTitle = ({ children }: { children: ReactNode }) => {
     );
 };
 
-ModalTitle.displayName = "ModalTitle";
+ModalTitle.displayName = "@luminx/core/Modal.Title";
