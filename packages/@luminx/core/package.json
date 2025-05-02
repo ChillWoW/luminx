@@ -1,6 +1,6 @@
 {
     "name": "@luminx/core",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "React components library focused on simplicity and ease of use",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
