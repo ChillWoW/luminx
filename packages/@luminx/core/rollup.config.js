@@ -1,17 +1,17 @@
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
-import dts from "rollup-plugin-dts";
-import postcss from "rollup-plugin-postcss";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
-import tailwindcss from "tailwindcss";
-import autoprefixer from "autoprefixer";
+const resolve = require("@rollup/plugin-node-resolve");
+const commonjs = require("@rollup/plugin-commonjs");
+const typescript = require("@rollup/plugin-typescript");
+const dts = require("rollup-plugin-dts");
+const postcss = require("rollup-plugin-postcss");
+const peerDepsExternal = require("rollup-plugin-peer-deps-external");
+const tailwindcss = require("tailwindcss");
+const autoprefixer = require("autoprefixer");
 
-const packageJson = require("./package-build.json");
+const packageJson = require("./package.json");
 
-export default [
+module.exports = [
     {
-        input: "src/ui/index.ts",
+        input: "src/index.ts",
         output: [
             {
                 file: packageJson.main,
@@ -25,15 +25,16 @@ export default [
             commonjs(),
             typescript({ tsconfig: "./tsconfig.json" }),
             postcss({
-                extract: "style.css",
+                extract: true,
                 modules: false,
-                use: ["sass"],
+                inject: false,
+                minimize: true,
                 plugins: [tailwindcss(), autoprefixer()]
             })
         ]
     },
     {
-        input: "dist/types/index.d.ts",
+        input: "dist/index.d.ts",
         output: [{ file: "dist/index.d.ts", format: "es" }],
         plugins: [dts()],
         external: [/\.css$/]
