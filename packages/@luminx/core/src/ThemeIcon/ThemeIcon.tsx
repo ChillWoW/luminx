@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { cx } from "../_theme";
 import { ThemeIconProps } from "./types";
 import { getRadius, getShadow } from "../_theme";
@@ -14,6 +14,7 @@ export const ThemeIcon = forwardRef<HTMLDivElement, ThemeIconProps>(
             className,
             classNames,
             component: Component = "div",
+            color,
             ...props
         },
         ref
@@ -38,7 +39,8 @@ export const ThemeIcon = forwardRef<HTMLDivElement, ThemeIconProps>(
                 )}
                 style={{
                     ...getRadius(radius),
-                    ...getShadow(shadow)
+                    ...getShadow(shadow),
+                    ...(color && { backgroundColor: color })
                 }}
                 {...props}
             >

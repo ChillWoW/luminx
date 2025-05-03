@@ -16,6 +16,7 @@ export interface ThemeIconProps extends HTMLAttributes<HTMLDivElement> {
     radius?: ThemeIconRadius;
     shadow?: ThemeIconShadow;
     classNames?: ThemeIconClassNames;
+    color?: string;
     component?: ElementType;
 }
 
