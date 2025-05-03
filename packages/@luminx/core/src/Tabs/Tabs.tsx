@@ -56,8 +56,8 @@ export const Tabs = ({
         <TabsContext.Provider value={contextValue}>
             <div
                 className={cx(
-                    "tabs-root",
                     isVertical ? "flex flex-row" : "flex flex-col",
+                    fullWidth && "w-full",
                     className,
                     classNames?.root
                 )}
