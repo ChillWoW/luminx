@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    /* Dark */
+    --lumin-dates-background: #242424;
+    --lumin-dates-background-hover: #2f2f2f;
+    --lumin-dates-border: #3a3a3a;
+    --lumin-dates-border-hover: #4a4a4a;
+    --lumin-dates-text: #fff;
+    --lumin-dates-hint: #969494;
+    --lumin-dates-placeholder: #808080;
+    --lumin-dates-section: #d8d0d0;
+
+    /* Primary */
+    --lumin-dates-primary: #4187f6;
+    --lumin-dates-primary-hover: #3170d6;
+
+    /* Secondary */
+    --lumin-dates-secondary: #51546d;
+    --lumin-dates-secondary-hover: #41445d;
+
+    /* Other */
+    --lumin-dates-error: #cc6e6e;
+    --lumin-dates-success: #63da63;
+    --lumin-dates-black: #000;
+}

@@ -1,15 +1,15 @@
 {
-    "name": "@luminx/core",
-    "version": "1.0.5",
-    "description": "React components library focused on simplicity and ease of use",
-    "repository": {
-        "type": "github",
-        "url": "https://github.com/ChillWoW/luminx",
-        "directory": "packages/@luminx/core"
-    },
+    "name": "@luminx/dates",
+    "version": "1.0.0",
+    "description": "React date components library focused on simplicity and ease of use",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "style": "dist/style.css",
+    "repository": {
+        "type": "github",
+        "url": "https://github.com/ChillWoW/luminx",
+        "directory": "packages/@luminx/dates"
+    },
     "files": [
         "dist"
     ],
@@ -18,23 +18,21 @@
     },
     "scripts": {
         "build:tailwind": "tailwindcss -i ./src/style.css -o ./dist/style.css",
-        "copy:css": "xcopy /S /I /Y \"src\\Loader\\Loader.css\" \"dist\\Loader\\\" && xcopy /S /I /Y \"src\\Skeleton\\Skeleton.css\" \"dist\\Skeleton\\\"",
-        "build": "tsc && npm run build:tailwind && npm run copy:css",
+        "build": "tsc && npm run build:tailwind",
         "pack": "npm run build && npm pack",
         "pack:clean": "cls && npm run build && npm pack && rmdir /s /q dist",
         "pack:post": "npm run pack && npm publish"
     },
     "peerDependencies": {
         "react": ">=16.8.0",
-        "react-dom": ">=16.8.0"
+        "react-dom": ">=16.8.0",
+        "@luminx/core": ">=1.0.5",
+        "dayjs": ">=1.0.0"
     },
     "dependencies": {
         "@tabler/icons-react": "^3.31.0",
         "clsx": "^2.1.1",
-        "framer-motion": "^12.4.4",
-        "react-syntax-highlighter": "^15.6.1",
-        "tailwind-merge": "^3.0.2",
-        "tailwind-scrollbar": "^3.1.0"
+        "tailwind-merge": "^3.0.2"
     },
     "devDependencies": {
         "@rollup/plugin-commonjs": "^25.0.8",
