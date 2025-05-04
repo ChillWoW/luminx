@@ -1,4 +1,3 @@
-import React from "react";
 import { cx } from "../_theme";
 import {
     TableProps,
@@ -13,13 +12,14 @@ import {
     TableContextValue
 } from "./types";
 import { TableContext, useTableContext } from "./context";
+import "../style.css";
 
 function TableThead({ className, children, ...others }: TableTheadProps) {
     const { stickyHeader, stickyHeaderOffset } = useTableContext();
 
     const classes = cx(
         className,
-        stickyHeader && "sticky top-0 z-10 bg-dark-800"
+        stickyHeader && "sticky top-0 z-10 bg-[var(--lumin-background)]"
     );
 
     const style = stickyHeader ? { top: `${stickyHeaderOffset}px` } : undefined;
@@ -42,7 +42,7 @@ function TableTfoot({ className, ...others }: TableTfootProps) {
 function TableCaption({ className, ...others }: TableCaptionProps) {
     return (
         <caption
-            className={cx("mt-2 text-sm text-gray-400", className)}
+            className={cx("mt-2 text-sm text-[var(--lumin-text)]", className)}
             {...others}
         />
     );
@@ -77,7 +77,10 @@ function TableTh({ className, ...others }: TableThProps) {
     const hSpacing = getSpacing(horizontalSpacing);
     const vSpacing = getSpacing(verticalSpacing);
 
-    const classes = cx("text-left font-semibold text-gray-200", className);
+    const classes = cx(
+        "text-left font-semibold text-[var(--lumin-text)]",
+        className
+    );
 
     return (
         <th
@@ -176,16 +179,18 @@ export function Table({
     };
 
     const classes = cx(
-        "w-full border-collapse text-gray-300",
+        "w-full border-collapse text-[var(--lumin-text)]",
         variant === "striped" && "border-separate border-spacing-0",
         layout === "fixed" && "table-fixed",
-        withTableBorder && "border border-dark-600 rounded-md overflow-hidden",
+        withTableBorder &&
+            "border border-[var(--lumin-border)] rounded-md overflow-hidden",
         withColumnBorders &&
-            "[&_th]:border-x [&_th]:border-dark-600 [&_td]:border-x [&_td]:border-dark-600",
-        withRowBorders && "[&_tr]:border-b [&_tr]:border-dark-600",
-        variant === "striped" && "[&_tr:nth-child(even)]:bg-dark-700",
+            "[&_th]:border-x [&_th]:border-[var(--lumin-border)] [&_td]:border-x [&_td]:border-[var(--lumin-border)]",
+        withRowBorders && "[&_tr]:border-b [&_tr]:border-[var(--lumin-border)]",
+        variant === "striped" &&
+            "[&_tr:nth-child(even)]:bg-[var(--lumin-background)]",
         variant === "vertical" &&
-            "[&_th]:border-r [&_th]:border-dark-600 [&_th]:border-r-2 [&_th]:bg-dark-700",
+            "[&_th]:border-r [&_th]:border-[var(--lumin-border)] [&_th]:border-r-2 [&_th]:bg-[var(--lumin-background)]",
         className
     );
 
