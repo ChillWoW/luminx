@@ -39,6 +39,7 @@ export * from "./SegmentedControl";
 export * from "./Select";
 export * from "./Skeleton";
 export * from "./Slider";
+export * from "./Snippet";
 export * from "./Space";
 export * from "./Spoiler";
 export * from "./Stack";
