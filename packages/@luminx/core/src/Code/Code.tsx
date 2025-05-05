@@ -13,9 +13,10 @@ import {
     a11yDark,
     dracula
 } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { IconCopy, IconCopyCheck } from "@tabler/icons-react";
 import { CodeProps } from "./types";
-import "../style.css";
 import { cx, getRadius, getShadow } from "../_theme";
+import "../style.css";
 
 const themeStyles = {
     light: github,
@@ -43,17 +44,12 @@ export const Code = ({
     wrapLongLines = false,
     copyable = true,
     onCopy,
-    copyText = "Copy",
-    copiedText = "Copied!",
-    showFileName = false,
-    fileName,
     radius,
     shadow,
     maxHeight,
     lineNumbersBackgroundColor,
     lineNumbersStyle,
     startingLineNumber = 1,
-    title,
     color
 }: CodeProps) => {
     const [copied, setCopied] = useState(false);
@@ -95,38 +91,23 @@ export const Code = ({
             className={cx("relative group", classNames?.container, className)}
             style={{
                 maxHeight: maxHeight,
-                overflow: maxHeight ? "auto" : undefined,
-                ...getRadius(radius),
-                ...getShadow(shadow)
+                overflow: maxHeight ? "auto" : undefined
             }}
         >
-            {(title || showFileName) && (
-                <div
-                    className={cx(
-                        "text-sm font-medium px-4 py-2 border-b",
-                        theme === "light"
-                            ? "bg-[var(--lumin-background)] border-[var(--lumin-border)] text-[var(--lumin-text)]"
-                            : "bg-[var(--lumin-secondary)] border-[var(--lumin-border)] text-[var(--lumin-text)]",
-                        classNames?.title
-                    )}
-                >
-                    {title || (showFileName && fileName) || language}
-                </div>
-            )}
-
             {copyable && (
                 <button
                     onClick={handleCopy}
                     className={cx(
                         "absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity rounded-md px-2 py-1",
-                        theme === "light"
-                            ? "text-[var(--lumin-text)] bg-[var(--lumin-background)] hover:text-[var(--lumin-text)] hover:bg-[var(--lumin-background-hover)]"
-                            : "text-[var(--lumin-text)] bg-[var(--lumin-secondary)] hover:text-[var(--lumin-text)] hover:bg-[var(--lumin-secondary-hover)]",
                         classNames?.copyButton
                     )}
                     aria-label="Copy code"
                 >
-                    {copied ? copiedText : copyText}
+                    {copied ? (
+                        <IconCopyCheck size={18} />
+                    ) : (
+                        <IconCopy size={18} />
+                    )}
                 </button>
             )}
 
@@ -140,15 +121,13 @@ export const Code = ({
                 lineNumberStyle={customLineNumberStyle}
                 startingLineNumber={startingLineNumber}
                 className={cx(
-                    "rounded-md overflow-auto lumin-scrollbar",
+                    "overflow-auto lumin-scrollbar",
                     classNames?.scrollbar
                 )}
                 customStyle={{
                     margin: 0,
-                    borderRadius:
-                        title || showFileName
-                            ? "0 0 0.375rem 0.375rem"
-                            : undefined
+                    ...getRadius(radius),
+                    ...getShadow(shadow)
                 }}
                 codeTagProps={{ className: classNames?.code }}
             >

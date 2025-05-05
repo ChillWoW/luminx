@@ -35,7 +35,6 @@ export interface CodeProps {
     onCopy?: (code?: string) => void;
     copyText?: string;
     copiedText?: string;
-
     showFileName?: boolean;
     fileName?: string;
     radius?: Radius;
@@ -44,6 +43,5 @@ export interface CodeProps {
     lineNumbersBackgroundColor?: string;
     lineNumbersStyle?: React.CSSProperties;
     startingLineNumber?: number;
-    title?: string;
     color?: string;
 }
