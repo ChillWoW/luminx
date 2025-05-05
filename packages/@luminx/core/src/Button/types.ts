@@ -1,6 +1,5 @@
 import { ButtonHTMLAttributes, ElementType } from "react";
 import { Radius, Shadow } from "../_theme";
-import { TooltipProps } from "../Tooltip";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type ButtonVariant = "filled" | "outline" | "unstyled";
@@ -25,8 +24,6 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     href?: string;
     target?: string;
     preventDefault?: boolean;
-    tooltip?: boolean;
-    tooltipProps?: Omit<TooltipProps, "children">;
     style?: React.CSSProperties;
     className?: string;
     classNames?: ButtonClassNames;

@@ -1,7 +1,6 @@
 import React, { forwardRef } from "react";
 import { cn, ComponentLoader } from "../_utils";
 import { ButtonProps } from "./types";
-import { Tooltip } from "../Tooltip/Tooltip";
 import { getRadius } from "../_theme";
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -25,8 +24,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             fullWidth,
             href,
             target,
-            tooltip = false,
-            tooltipProps = {},
             style,
             className,
             classNames,
@@ -94,10 +91,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
         const Element = as as React.ElementType;
 
-        const buttonElement = (
+        return (
             <Element
                 className={cn(
-                    "text-[var(--lumin-text)] inline-flex items-center justify-center gap-2 font-medium cursor-pointer relative whitespace-nowrap select-none transition-colors duration-200",
+                    "text-[var(--lumin-text)] inline-flex items-center gap-2 font-medium cursor-pointer relative whitespace-nowrap select-none transition-colors duration-200",
                     sizeClasses(),
                     variantClasses(),
                     fullWidth && "w-full",
@@ -123,7 +120,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         : leftSection,
                     "left"
                 )}
-                {children}
+                <div className="flex-1 flex items-center justify-center">
+                    {children}
+                </div>
                 {renderSection(
                     loading && loadingPosition === "right"
                         ? renderLoader()
@@ -132,22 +131,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 )}
             </Element>
         );
-
-        if (tooltip) {
-            if (!tooltipProps.label) {
-                throw new Error(
-                    "Tooltip label is required when tooltip prop is true"
-                );
-            }
-
-            return (
-                <Tooltip {...tooltipProps} label={tooltipProps.label}>
-                    {buttonElement}
-                </Tooltip>
-            );
-        }
-
-        return buttonElement;
     }
 );
 
