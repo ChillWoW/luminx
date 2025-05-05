@@ -155,15 +155,12 @@ export const SegmentedControl = forwardRef<
                         <div
                             key={item.value}
                             className={cx(
-                                "flex-1 rounded-md",
-                                activeValue === item.value
-                                    ? "bg-[var(--lumin-primary-light)] text-[var(--lumin-text)]"
-                                    : "hover:bg-[var(--lumin-secondary)] text-[var(--lumin-hint)]",
+                                "flex-1 rounded-md text-[var(--lumin-text)] font-medium",
+                                activeValue !== item.value &&
+                                    "hover:text-[var(--lumin-text)] text-[var(--lumin-hint)]",
                                 item.disabled &&
                                     "opacity-60 cursor-not-allowed",
-                                classNames?.item,
-                                activeValue === item.value &&
-                                    classNames?.activeItem
+                                classNames?.item
                             )}
                         >
                             <input
@@ -191,9 +188,9 @@ export const SegmentedControl = forwardRef<
                                     (disabled || item.disabled || readOnly) &&
                                         "cursor-not-allowed",
                                     activeValue === item.value &&
-                                        classNames?.activeItem,
-                                    activeValue === item.value &&
                                         "bg-[var(--lumin-secondary)]",
+                                    activeValue === item.value &&
+                                        classNames?.activeItem,
                                     classNames?.label,
                                     "relative z-[2]"
                                 )}
