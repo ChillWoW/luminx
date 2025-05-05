@@ -4,6 +4,7 @@ import { AnchorProps } from "./types";
 export const Anchor = ({
     children,
     underline = "hover",
+    className,
     ...props
 }: AnchorProps) => {
     return (
@@ -12,7 +13,8 @@ export const Anchor = ({
                 "text-[var(--lumin-primary)]",
                 underline === "always" && "underline",
                 underline === "hover" && "hover:underline",
-                underline === "never" && "no-underline"
+                underline === "never" && "no-underline",
+                className
             )}
             {...props}
         >
