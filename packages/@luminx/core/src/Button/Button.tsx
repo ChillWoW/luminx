@@ -74,9 +74,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 <div
                     className={cn(
                         baseClasses,
-                        sectionClasses,
                         "text-[var(--lumin-section)]",
-                        disabled && "opacity-60 cursor-not-allowed"
+                        disabled && "opacity-60 cursor-not-allowed",
+                        disabled && classNames?.sectionDisabled,
+                        sectionClasses
                     )}
                 >
                     {content}

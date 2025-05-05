@@ -36,5 +36,6 @@ export interface ButtonClassNames {
     leftSection?: string;
     rightSection?: string;
     disabled?: string;
+    sectionDisabled?: string;
     loader?: string;
 }
