@@ -22,7 +22,7 @@
         "build": "tsc && npm run build:tailwind && npm run copy:css",
         "pack": "npm run build && npm pack",
         "pack:clean": "cls && npm run build && npm pack && rmdir /s /q dist",
-        "pack:post": "npm run pack && npm publish"
+        "pack:post": "npm run build && npm publish"
     },
     "peerDependencies": {
         "react": ">=16.8.0",
