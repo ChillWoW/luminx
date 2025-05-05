@@ -24,6 +24,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             fullWidth,
             href,
             target,
+            align = "center",
             style,
             className,
             classNames,
@@ -89,6 +90,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             return loader || <ComponentLoader />;
         };
 
+        const getAlign = () => {
+            if (align === "left") return "justify-start";
+            if (align === "right") return "justify-end";
+            return "justify-center";
+        };
+
         const Element = as as React.ElementType;
 
         return (
@@ -120,7 +127,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         : leftSection,
                     "left"
                 )}
-                <div className="flex-1 flex items-center justify-center">
+                <div className={cn("flex-1 flex items-center", getAlign())}>
                     {children}
                 </div>
                 {renderSection(

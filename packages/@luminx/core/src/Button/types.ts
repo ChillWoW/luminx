@@ -4,6 +4,7 @@ import { Radius, Shadow } from "../_theme";
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type ButtonVariant = "filled" | "outline" | "unstyled";
 export type ButtonLoaderPosition = "left" | "right";
+export type ButtonAlign = "left" | "center" | "right";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     type?: "button" | "submit" | "reset";
@@ -24,6 +25,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     href?: string;
     target?: string;
     preventDefault?: boolean;
+    align?: ButtonAlign;
     style?: React.CSSProperties;
     className?: string;
     classNames?: ButtonClassNames;
