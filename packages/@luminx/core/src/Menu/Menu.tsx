@@ -8,6 +8,20 @@ import { MenuItem } from "./MenuItem";
 import { MenuDivider } from "./MenuDivider";
 import { cx } from "../_theme";
 import "../style.css";
+import {
+    useFloating,
+    autoUpdate,
+    offset,
+    flip,
+    shift,
+    useInteractions,
+    useHover,
+    useFocus,
+    useClick,
+    useDismiss,
+    safePolygon,
+    inline
+} from "@floating-ui/react";
 
 const defaultProps = (props: MenuProps) => {
     return {
@@ -37,9 +51,6 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
     props = defaultProps(props);
 
     const [isOpened, setIsOpened] = useState(props.defaultOpened);
-    const [targetElement, setTargetElement] = useState<HTMLElement | null>(
-        null
-    );
     const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -47,6 +58,39 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
     const dropdownId = useId();
 
     const currentOpened = props.opened !== undefined ? props.opened : isOpened;
+
+    const { refs, floatingStyles, context } = useFloating({
+        open: currentOpened,
+        onOpenChange: (open) => {
+            if (props.opened === undefined) {
+                setIsOpened(open);
+            }
+            props.onChange?.(open);
+        },
+        placement: props.position,
+        middleware: [offset(props.offset || 8), flip(), shift(), inline()],
+        whileElementsMounted: autoUpdate
+    });
+
+    const hover = useHover(context, {
+        enabled: props.trigger === "hover" || props.trigger === "click-hover",
+        delay: { open: props.openDelay, close: props.closeDelay },
+        handleClose: safePolygon()
+    });
+
+    const click = useClick(context, {
+        enabled: props.trigger === "click" || props.trigger === "click-hover"
+    });
+
+    const focus = useFocus(context);
+    const dismiss = useDismiss(context);
+
+    const { getReferenceProps, getFloatingProps } = useInteractions([
+        hover,
+        click,
+        focus,
+        dismiss
+    ]);
 
     useEffect(() => {
         return () => {
@@ -109,8 +153,11 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
             ? (o: boolean) => props.onChange && props.onChange(o)
             : setIsOpened,
         toggle,
-        targetElement,
-        setTargetElement,
+        refs,
+        floatingStyles,
+        getReferenceProps,
+        getFloatingProps,
+        context,
         targetId,
         dropdownId,
         trigger: props.trigger,
@@ -133,6 +180,7 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
                 className={cx("relative inline-block", props.classNames?.root)}
                 data-menu-opened={currentOpened || undefined}
                 data-position={props.position}
+                data-trigger={props.trigger}
                 style={{
                     ["--menu-width" as any]:
                         typeof props.width === "number"
