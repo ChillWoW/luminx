@@ -6,21 +6,18 @@ import { ColorPicker } from "../ColorPicker/ColorPicker";
 import { parseColor } from "../ColorPicker/utils";
 import { cx } from "../_theme";
 import { IconPencil } from "@tabler/icons-react";
-
-const EyedropperIcon = () => (
-    <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            d="M20.71 5.63L18.37 3.29C18.17 3.09 17.92 3 17.66 3C17.4 3 17.15 3.1 16.96 3.29L13.84 6.41L3 17.25V21H6.75L17.59 10.16L20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63ZM6.23 19H5V17.77L15.11 7.66L16.34 8.89L6.23 19ZM17.59 7.64L16.36 6.41L17.66 5.11L18.89 6.34L17.59 7.64Z"
-            fill="currentColor"
-        />
-    </svg>
-);
+import {
+    useFloating,
+    autoUpdate,
+    offset,
+    flip,
+    shift,
+    useClick,
+    useDismiss,
+    useRole,
+    useInteractions
+} from "@floating-ui/react";
+import { Transition } from "../Transition";
 
 export const ColorInput = ({
     value = "#ffffff",
@@ -34,34 +31,33 @@ export const ColorInput = ({
     classNames = {},
     ...props
 }: ColorInputProps) => {
-    const [isPickerOpen, setIsPickerOpen] = useState(false);
     const [currentColor, setCurrentColor] = useState(value || defaultValue);
-    const pickerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const { x, y, strategy, refs, context } = useFloating({
+        open: isOpen,
+        onOpenChange: setIsOpen,
+        middleware: [offset(5), flip(), shift()],
+        whileElementsMounted: autoUpdate
+    });
+
+    const click = useClick(context);
+    const dismiss = useDismiss(context);
+    const role = useRole(context, { role: "dialog" });
+
+    const { getReferenceProps, getFloatingProps } = useInteractions([
+        click,
+        dismiss,
+        role
+    ]);
 
     useEffect(() => {
         if (value) {
             setCurrentColor(value);
         }
     }, [value]);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (
-                pickerRef.current &&
-                !pickerRef.current.contains(event.target as Node) &&
-                inputRef.current &&
-                !inputRef.current.contains(event.target as Node)
-            ) {
-                setIsPickerOpen(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
 
     const handleColorChange = (newColor: string) => {
         setCurrentColor(newColor);
@@ -76,10 +72,6 @@ export const ColorInput = ({
             setCurrentColor(inputValue);
             onChange?.(inputValue);
         }
-    };
-
-    const togglePicker = () => {
-        setIsPickerOpen(!isPickerOpen);
     };
 
     const activateEyedropper = async () => {
@@ -123,28 +115,42 @@ export const ColorInput = ({
                 type="text"
                 value={currentColor}
                 onChange={handleInputChange}
-                onClick={togglePicker}
                 leftSection={hidePreview ? null : colorSwatch}
                 rightSection={showEyeDropper ? eyedropperButton : null}
-                inputRef={inputRef}
+                inputRef={(node) => {
+                    inputRef.current = node;
+                    refs.setReference(node);
+                }}
+                {...getReferenceProps()}
                 {...props}
             />
 
-            {withPicker && isPickerOpen && (
-                <div
-                    ref={pickerRef}
-                    className={cx(
-                        "absolute z-50 mt-1 shadow-lg rounded-md overflow-hidden bg-[var(--lumin-background)] p-2 flex"
+            {withPicker && (
+                <Transition mounted={isOpen} transition="fade">
+                    {(styles) => (
+                        <div
+                            ref={refs.setFloating}
+                            className={cx(
+                                "z-50 shadow-lg rounded-md overflow-hidden bg-[var(--lumin-background)] p-2 flex"
+                            )}
+                            style={{
+                                position: strategy,
+                                top: y ?? 0,
+                                left: x ?? 0,
+                                minWidth: inputRef.current?.offsetWidth || 200,
+                                ...styles
+                            }}
+                            {...getFloatingProps()}
+                        >
+                            <ColorPicker
+                                value={currentColor}
+                                onChange={handleColorChange}
+                                format={format}
+                                fullWidth
+                            />
+                        </div>
                     )}
-                    style={{ minWidth: inputRef.current?.offsetWidth || 200 }}
-                >
-                    <ColorPicker
-                        value={currentColor}
-                        onChange={handleColorChange}
-                        format={format}
-                        fullWidth
-                    />
-                </div>
+                </Transition>
             )}
         </div>
     );
