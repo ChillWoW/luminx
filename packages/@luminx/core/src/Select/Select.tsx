@@ -1,23 +1,20 @@
-import React, { useEffect, useRef, useState, forwardRef } from "react";
+import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { Input } from "../Input";
-import { cn } from "../_utils";
-import { Option, OptionGroup, SelectProps } from "./types";
-import { ClearIcon, ChevronIcon } from "./Icons";
-import { CheckIcon } from "../_icons";
+import { SelectOption, SelectOptionGroup, SelectProps } from "./types";
 import { cx, getRadius, getShadow } from "../_theme";
-import "../style.css";
+import { IconCheck, IconChevronDown, IconX } from "@tabler/icons-react";
 
 export const Select = forwardRef<HTMLInputElement, SelectProps>(
     (
         {
-            data = [],
+            data,
 
-            searchable = false,
-            clearable = false,
+            searchable,
+            clearable,
             allowDeselect = true,
-            nothingFound = "No results found",
+            noResults = "No results found",
 
-            searchValue: controlledSearchValue,
+            searchValue,
             onSearchChange,
 
             filter,
@@ -28,8 +25,13 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
 
             onChange,
 
-            comboboxProps,
+            dropdownIcon,
+            closeIcon,
+
+            dropdownProps,
             classNames,
+
+            inputProps,
 
             ...props
         },
@@ -39,14 +41,13 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         const [selectedValue, setSelectedValue] = useState<string | null>(
             (props.value as string) || null
         );
-        const [search, setSearch] = useState(controlledSearchValue || "");
-        const [highlightedIndex, setHighlightedIndex] = useState(-1);
+        const [search, setSearch] = useState(searchValue || "");
 
         const dropdownRef = useRef<HTMLDivElement>(null);
-        const innerInputRef = useRef<HTMLInputElement>(null);
+        const _inputRef = useRef<HTMLInputElement>(null);
 
         const inputRefCallback = (element: HTMLInputElement) => {
-            innerInputRef.current = element;
+            _inputRef.current = element;
 
             if (typeof ref === "function") {
                 ref(element);
@@ -55,16 +56,18 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             }
         };
 
-        const processedData = React.useMemo(() => {
-            const processed: Option[] = [];
+        const dataProcessed = useMemo(() => {
+            if (!data) return [];
 
-            data.forEach((item) => {
+            const processed: SelectOption[] = [];
+
+            for (const item of data) {
                 if (typeof item === "string") {
                     processed.push({ value: item, label: item });
                 } else if ("value" in item) {
-                    processed.push(item as Option);
+                    processed.push(item as SelectOption);
                 } else if ("group" in item) {
-                    const group = item as OptionGroup;
+                    const group = item as SelectOptionGroup;
                     group.items.forEach((groupItem) => {
                         if (typeof groupItem === "string") {
                             processed.push({
@@ -80,28 +83,28 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                         }
                     });
                 }
-            });
+            }
 
             return processed;
         }, [data]);
 
-        const filteredOptions = React.useMemo(() => {
-            if (!search) return processedData;
+        const optionsFiltered = useMemo(() => {
+            if (!search) return dataProcessed;
 
             if (filter) {
-                return filter({ options: processedData, search });
+                return filter({ options: dataProcessed, search });
             }
 
-            return processedData.filter((option) =>
+            return dataProcessed.filter((option) =>
                 option.label.toLowerCase().includes(search.toLowerCase())
             );
-        }, [processedData, search, filter]);
+        }, [dataProcessed, search, filter]);
 
-        const groupedOptions = React.useMemo(() => {
-            const groups: Record<string, Option[]> = {};
-            const noGroup: Option[] = [];
+        const optionsGrouped = useMemo(() => {
+            const groups: Record<string, SelectOption[]> = {};
+            const noGroup: SelectOption[] = [];
 
-            filteredOptions.forEach((option) => {
+            optionsFiltered.forEach((option) => {
                 if (option.group) {
                     if (!groups[option.group]) {
                         groups[option.group] = [];
@@ -113,7 +116,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             });
 
             return { groups, noGroup };
-        }, [filteredOptions]);
+        }, [optionsFiltered]);
 
         useEffect(() => {
             if (!isOpen) return;
@@ -122,8 +125,8 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 if (
                     dropdownRef.current &&
                     !dropdownRef.current.contains(event.target as Node) &&
-                    innerInputRef.current &&
-                    !innerInputRef.current.contains(event.target as Node)
+                    _inputRef.current &&
+                    !_inputRef.current.contains(event.target as Node)
                 ) {
                     closeDropdown();
                 }
@@ -140,10 +143,10 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         }, [dropdownOpened]);
 
         useEffect(() => {
-            if (controlledSearchValue !== undefined) {
-                setSearch(controlledSearchValue);
+            if (searchValue !== undefined) {
+                setSearch(searchValue);
             }
-        }, [controlledSearchValue]);
+        }, [searchValue]);
 
         useEffect(() => {
             if (props.value !== undefined) {
@@ -156,7 +159,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 setIsOpen(true);
                 onDropdownOpen?.();
                 if (searchable) {
-                    setTimeout(() => innerInputRef.current?.focus(), 0);
+                    setTimeout(() => _inputRef.current?.focus(), 0);
                 }
             }
         };
@@ -166,7 +169,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             onDropdownClose?.();
             if (searchable) {
                 setSearch("");
-                if (controlledSearchValue === undefined) {
+                if (searchValue === undefined) {
                     onSearchChange?.("");
                 }
             }
@@ -180,8 +183,8 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             }
         };
 
-        const handleOptionClick = (option: Option) => {
-            const { dropdownStayOpen = true } = comboboxProps || {};
+        const handleOptionClick = (option: SelectOption) => {
+            const { stayOpenOnSelect } = dropdownProps || {};
 
             const newValue = option.value;
 
@@ -193,50 +196,19 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 onChange?.(newValue, option);
             }
 
-            if (!dropdownStayOpen) {
+            if (!stayOpenOnSelect) {
                 closeDropdown();
             }
         };
 
         const handleInputChange = (value: string) => {
             setSearch(value);
-            if (controlledSearchValue === undefined) {
+            if (searchValue === undefined) {
                 onSearchChange?.(value);
             }
 
             if (!isOpen) {
                 openDropdown();
-            }
-
-            setHighlightedIndex(-1);
-        };
-
-        const handleKeyDown = (e: React.KeyboardEvent) => {
-            if (e.key === "Escape") {
-                closeDropdown();
-            } else if (e.key === "ArrowDown") {
-                e.preventDefault();
-                if (!isOpen) {
-                    openDropdown();
-                } else {
-                    setHighlightedIndex((prev) =>
-                        prev < filteredOptions.length - 1 ? prev + 1 : 0
-                    );
-                }
-            } else if (e.key === "ArrowUp") {
-                e.preventDefault();
-                if (isOpen) {
-                    setHighlightedIndex((prev) =>
-                        prev > 0 ? prev - 1 : filteredOptions.length - 1
-                    );
-                }
-            } else if (e.key === "Enter") {
-                e.preventDefault();
-                if (isOpen && highlightedIndex >= 0) {
-                    handleOptionClick(filteredOptions[highlightedIndex]);
-                } else if (!isOpen) {
-                    openDropdown();
-                }
             }
         };
 
@@ -246,46 +218,39 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             onChange?.("", undefined);
         };
 
-        const displayValue = React.useMemo(() => {
+        const displayValue = useMemo(() => {
             if (searchable && isOpen) {
                 return search;
             }
 
             if (!selectedValue) return "";
 
-            const selectedOption = processedData.find(
+            const selectedOption = dataProcessed.find(
                 (option) => option.value === selectedValue
             );
             return selectedOption ? selectedOption.label : "";
-        }, [selectedValue, processedData, searchable, isOpen, search]);
+        }, [selectedValue, dataProcessed, searchable, isOpen, search]);
 
-        // Render dropdown
         const renderDropdown = () => {
             if (!isOpen) return null;
 
             const {
-                position = "bottom",
-                middlewares,
-                offset = 4,
-                transitionProps,
                 dropdownPadding = 4,
                 shadow,
-                radius = props.radius || "md"
-            } = comboboxProps || {};
+                radius,
+                maxHeight = 60,
+                zIndex = 50
+            } = dropdownProps || {};
 
             return (
                 <div
                     ref={dropdownRef}
-                    className={cn(
-                        "absolute z-50 w-full bg-[var(--lumin-background)] border border-[var(--lumin-border)]",
-                        "max-h-60 overflow-auto",
-                        "lumin-scrollbar",
-                        position === "top"
-                            ? "bottom-full mb-1"
-                            : "top-full mt-1",
-                        "transition-opacity duration-200",
-                        transitionProps?.transition === "pop" &&
-                            "transform origin-top transition-transform",
+                    className={cx(
+                        "absolute w-full bg-[var(--lumin-background)] border border-[var(--lumin-border)] overflow-y-auto",
+                        `z-[${zIndex}]`,
+                        `max-h-[${maxHeight}px]`,
+                        "top-full mt-3",
+                        "transition-opacity duration-100",
                         classNames?.dropdown,
                         classNames?.scrollbar
                     )}
@@ -295,31 +260,31 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                         ...getShadow(shadow)
                     }}
                 >
-                    {filteredOptions.length === 0 ? (
-                        nothingFound && (
+                    {optionsFiltered.length === 0 ? (
+                        noResults && (
                             <div
-                                className={cn(
+                                className={cx(
                                     "p-2 text-sm text-center text-[var(--lumin-hint)]",
-                                    classNames?.nothingFound
+                                    classNames?.noResults
                                 )}
                             >
-                                {nothingFound}
+                                {noResults}
                             </div>
                         )
                     ) : (
                         <div className="flex flex-col gap-1">
-                            {groupedOptions.noGroup.map((option, index) =>
-                                renderOption(option, index, comboboxProps)
+                            {optionsGrouped.noGroup.map((option, index) =>
+                                renderOption(option, index, dropdownProps)
                             )}
 
-                            {Object.entries(groupedOptions.groups).map(
+                            {Object.entries(optionsGrouped.groups).map(
                                 ([groupName, options]) => (
                                     <div
                                         key={groupName}
                                         className="flex flex-col"
                                     >
                                         <div
-                                            className={cn(
+                                            className={cx(
                                                 "px-2 py-1 text-xs font-semibold text-[var(--lumin-hint)]",
                                                 classNames?.dropdownGroup
                                             )}
@@ -329,15 +294,15 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                                         {options.map((option, index) =>
                                             renderOption(
                                                 option,
-                                                groupedOptions.noGroup.length +
+                                                optionsGrouped.noGroup.length +
                                                     Object.entries(
-                                                        groupedOptions.groups
+                                                        optionsGrouped.groups
                                                     ).findIndex(
                                                         ([name]) =>
                                                             name === groupName
                                                     ) +
                                                     index,
-                                                comboboxProps
+                                                dropdownProps
                                             )
                                         )}
                                     </div>
@@ -350,39 +315,33 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         };
 
         const renderOption = (
-            option: Option,
+            option: SelectOption,
             index: number,
-            comboboxProps: any
+            dropdownProps: any
         ) => {
             const isSelected = option.value === selectedValue;
-            const isHighlighted = index === highlightedIndex;
 
             const {
                 checkIcon,
                 checkIconPosition = "start",
                 withCheckIcon = true
-            } = comboboxProps || {};
+            } = dropdownProps || {};
 
             const checkMark = () => (
-                <div className="text-[--lumin-text]">
-                    {checkIcon ? checkIcon : <CheckIcon size={14} />}
+                <div className="text-[var(--lumin-text)]">
+                    {checkIcon ? checkIcon : <IconCheck size={18} />}
                 </div>
             );
 
             return (
                 <div
                     key={option.value}
-                    className={cn(
-                        "px-3 py-2 text-sm cursor-pointer flex items-center text-[var(--lumin-text)] rounded-md",
+                    className={cx(
+                        "flex gap-2",
+                        "px-3 py-2 text-sm cursor-pointer flex items-center text-[var(--lumin-text)] rounded-md hover:bg-[var(--lumin-background-hover)]",
                         "transition-colors duration-150 ease-in-out",
                         isSelected &&
                             "bg-[var(--lumin-background-hover)] font-medium",
-                        !isSelected &&
-                            isHighlighted &&
-                            "bg-[var(--lumin-background-hover)]",
-                        !isSelected &&
-                            !isHighlighted &&
-                            "hover:bg-[var(--lumin-background-hover)]",
                         option.disabled && "opacity-60 cursor-not-allowed",
                         classNames?.dropdownOption,
                         isSelected && classNames?.dropdownOptionSelected
@@ -407,44 +366,47 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         return (
             <div className="relative">
                 <Input
-                    {...props}
                     inputRef={inputRefCallback}
                     value={displayValue}
                     readOnly={!searchable || props.readOnly}
                     onClick={toggleDropdown}
                     onChange={searchable ? handleInputChange : undefined}
-                    onKeyDown={handleKeyDown}
                     rightSection={
-                        props.rightSection || (
-                            <div className="flex items-center">
-                                {clearable && selectedValue && (
-                                    <button
-                                        type="button"
-                                        className="p-1 text-[var(--lumin-hint)] hover:text-[var(--lumin-text)]"
-                                        onClick={handleClear}
-                                        aria-label="Clear"
-                                    >
-                                        <ClearIcon
-                                            className={classNames?.clearIcon}
-                                        />
-                                    </button>
-                                )}
-                                <ChevronIcon
-                                    className={cn(
+                        <div className="flex items-center">
+                            {clearable && selectedValue && (
+                                <button
+                                    type="button"
+                                    className="p-1 text-[var(--lumin-hint)] hover:text-[var(--lumin-text)]"
+                                    onClick={handleClear}
+                                    aria-label="Clear"
+                                >
+                                    {closeIcon ? (
+                                        closeIcon
+                                    ) : (
+                                        <IconX size={18} />
+                                    )}
+                                </button>
+                            )}
+                            {dropdownIcon ? (
+                                dropdownIcon
+                            ) : (
+                                <IconChevronDown
+                                    size={18}
+                                    className={cx(
+                                        "transform duration-150 ease-in-out",
                                         isOpen && "rotate-180",
                                         classNames?.chevronIcon
                                     )}
                                     onClick={toggleDropdown}
                                 />
-                            </div>
-                        )
+                            )}
+                        </div>
                     }
                     classNames={classNames}
+                    {...props}
                 />
                 {renderDropdown()}
             </div>
         );
     }
 );
-
-Select.displayName = "@luminx/core/Select";
