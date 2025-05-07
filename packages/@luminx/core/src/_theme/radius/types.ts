@@ -8,14 +8,16 @@ export type Radius =
     | "2xl"
     | "3xl"
     | "4xl"
-    | "full";
+    | "full"
+    | string
+    | number;
 
 export interface GetRadiusProps {
     radius?: Radius;
     defaultRadius?: Radius;
 }
 
-export type CornerRadius =
+export type RadiusCorner =
     | "all"
     | "top"
     | "bottom"
@@ -29,5 +31,5 @@ export type CornerRadius =
 export interface GetCornerRadiusProps {
     radius?: Radius;
     defaultRadius?: Radius;
-    corner: CornerRadius;
+    corner: RadiusCorner;
 }
