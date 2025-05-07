@@ -1,10 +1,10 @@
 import { forwardRef } from "react";
 import { cx } from "../_theme";
-import { ThemeIconProps } from "./types";
+import { IconProps } from "./types";
 import { getRadius, getShadow } from "../_theme";
 import "../style.css";
 
-export const ThemeIcon = forwardRef<HTMLDivElement, ThemeIconProps>(
+export const Icon = forwardRef<HTMLDivElement, IconProps>(
     (
         {
             children,
@@ -50,4 +50,4 @@ export const ThemeIcon = forwardRef<HTMLDivElement, ThemeIconProps>(
     }
 );
 
-ThemeIcon.displayName = "@luminx/core/ThemeIcon";
+Icon.displayName = "@luminx/core/Icon";
