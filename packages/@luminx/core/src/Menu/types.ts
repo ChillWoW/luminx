@@ -1,5 +1,10 @@
 import { ElementType, MouseEvent, ReactElement, ReactNode } from "react";
 import { TransitionProps } from "../Transition";
+import {
+    UseFloatingReturn,
+    FloatingContext,
+    ReferenceType
+} from "@floating-ui/react";
 
 export type MenuTrigger = "hover" | "click" | "click-hover";
 export type MenuRadius = "none" | "xs" | "sm" | "md" | "lg" | "xl";
@@ -56,8 +61,11 @@ export interface MenuClassNames {
 export interface MenuContextType extends MenuProps {
     toggle: () => void;
     setOpened: (opened: boolean) => void;
-    setTargetElement: (element: HTMLElement | null) => void;
-    targetElement: HTMLElement | null;
+    refs: UseFloatingReturn<ReferenceType>["refs"];
+    context: FloatingContext<ReferenceType>;
+    floatingStyles: UseFloatingReturn<ReferenceType>["floatingStyles"];
+    getReferenceProps: (props?: any) => any;
+    getFloatingProps: (props?: any) => any;
     targetId: string;
     dropdownId: string;
     classNames?: MenuClassNames;
