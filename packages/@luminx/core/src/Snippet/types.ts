@@ -6,6 +6,7 @@ export interface SnippetClassNames {
     content?: string;
     leftSection?: string;
     rightSection?: string;
+    copyButton?: string;
 }
 
 export interface SnippetProps {

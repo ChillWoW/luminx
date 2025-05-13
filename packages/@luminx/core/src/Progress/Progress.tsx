@@ -13,7 +13,7 @@ const ProgressRoot = forwardRef<HTMLDivElement, ProgressRootProps>(
     (props, ref) => {
         const {
             size = "sm",
-            color = "var(--lumin-background)",
+            color = "var(--luminx-primary)",
             radius = "md",
             className,
             children,

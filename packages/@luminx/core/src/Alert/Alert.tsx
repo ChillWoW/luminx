@@ -1,6 +1,6 @@
 import React, { forwardRef, useState } from "react";
 import { AlertProps } from "./types";
-import { getRadius, getShadow, cx, getPadding } from "../_theme";
+import { getRadius, getShadow, useTheme } from "../_theme";
 import { IconX } from "@tabler/icons-react";
 import { AlertTitle } from "./AlertTitle";
 import { AlertDescription } from "./AlertDescription";
@@ -13,7 +13,6 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
             iconPosition = "center",
             radius,
             shadow,
-            padding,
             withCloseButton = false,
             closeButtonLabel = "Close",
             onClose,
@@ -25,6 +24,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
         },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
         const [hidden, setHidden] = useState(false);
 
         const handleClose = () => {
@@ -46,26 +47,35 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
         const getVariant = () => {
             switch (variant) {
                 case "outline":
-                    return "border border-[var(--lumin-border)]";
+                    return theme === "light"
+                        ? "border border-[var(--luminx-light-border)]"
+                        : "border border-[var(--luminx-dark-border)]";
                 default:
-                    return "bg-[var(--lumin-background)]";
+                    return theme === "light"
+                        ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]"
+                        : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]";
             }
         };
         if (hidden) return null;
+
+        const getBorder =
+            theme === "light"
+                ? "border border-[var(--luminx-light-border)]"
+                : "border border-[var(--luminx-dark-border)]";
 
         return (
             <div
                 ref={ref}
                 role="alert"
                 className={cx(
+                    "p-3",
                     getVariant(),
-                    withBorder && "border border-[var(--lumin-border)]",
+                    withBorder && getBorder,
                     classNames?.root,
                     className
                 )}
                 style={{
                     ...getRadius(radius),
-                    ...getPadding(padding),
                     ...getShadow(shadow)
                 }}
                 {...props}

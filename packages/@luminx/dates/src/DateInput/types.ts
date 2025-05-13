@@ -1,6 +1,5 @@
-import { InputClassNames, InputProps } from "@luminx/core";
+import { InputClassNames, InputProps, Radius, Shadow } from "@luminx/core";
 import { DateValue, DateRangeValue, PickerType } from "../_shared/types";
-import { Radius, Shadow } from "../_theme";
 
 export interface DateInputProps<T = DateValue | DateRangeValue>
     extends Omit<InputProps, "onChange" | "value" | "defaultValue"> {

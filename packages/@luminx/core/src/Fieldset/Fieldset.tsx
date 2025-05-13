@@ -1,7 +1,6 @@
 import { forwardRef } from "react";
 import { FieldsetProps } from "./types";
-import { cx, getRadius } from "../_theme";
-import "../style.css";
+import { getRadius, useTheme } from "../_theme";
 
 export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
     (
@@ -16,11 +15,16 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
         },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
         return (
             <fieldset
                 ref={ref}
                 className={cx(
-                    "border border-[var(--lumin-border)] p-4",
+                    "border p-4",
+                    theme === "light"
+                        ? "border-[var(--luminx-light-border)]"
+                        : "border-[var(--luminx-dark-border)]",
                     disabled && "opacity-60 cursor-not-allowed",
                     classNames?.root
                 )}
@@ -34,7 +38,10 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
                 {legend && (
                     <legend
                         className={cx(
-                            "px-2 text-sm font-medium text-[var(--lumin-hint)]",
+                            "px-2 text-sm font-medium",
+                            theme === "light"
+                                ? "text-[var(--luminx-light-hint)]"
+                                : "text-[var(--luminx-dark-hint)]",
                             disabled && "opacity-60",
                             classNames?.legend
                         )}

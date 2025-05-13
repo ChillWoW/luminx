@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { TextProps } from "./types";
-import { cx } from "../_theme";
+import { cx, useTheme } from "../_theme";
 
 export const Text = forwardRef<HTMLParagraphElement, TextProps>(
     (
@@ -13,7 +13,6 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(
             inline,
             inherit,
             span,
-            color,
             dimmed,
             className,
             style,
@@ -22,6 +21,8 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(
         },
         ref
     ) => {
+        const { theme } = useTheme();
+
         const Component = span ? "span" : "p";
 
         const sizeMap = {
@@ -54,7 +55,6 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(
             textAlign: align,
             fontWeight: weight,
             fontSize: getSize(),
-            ...(dimmed ? { color: "var(--lumin-hint)" } : { color }),
             ...style
         };
 
@@ -89,7 +89,16 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(
         return (
             <Component
                 ref={ref}
-                className={cx(className)}
+                className={cx(
+                    theme === "light"
+                        ? "text-[var(--luminx-light-text)]"
+                        : "text-[var(--luminx-dark-text)]",
+                    dimmed &&
+                        (theme === "light"
+                            ? "text-[var(--luminx-light-hint)]"
+                            : "text-[var(--luminx-dark-hint)]"),
+                    className
+                )}
                 style={combinedStyle}
                 {...props}
             >

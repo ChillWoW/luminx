@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, forwardRef } from "react";
 import { SpoilerProps } from "./types";
 import { cx } from "../_theme";
-import "../style.css";
 
 export const Spoiler = forwardRef<HTMLDivElement, SpoilerProps>(
     (
@@ -67,7 +66,7 @@ export const Spoiler = forwardRef<HTMLDivElement, SpoilerProps>(
                         <button
                             ref={controlRef}
                             onClick={handleToggle}
-                            className="text-[var(--lumin-primary)] font-medium hover:underline focus:outline-none"
+                            className="text-[var(--luminx-primary)] font-medium hover:underline focus:outline-none"
                             type="button"
                         >
                             {expanded ? hideLabel : showLabel}

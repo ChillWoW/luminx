@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { InputProps } from "./types";
-import { getShadow, getRadius, cx } from "../_theme";
-import "../style.css";
+import { getShadow, getRadius, useTheme } from "../_theme";
 
 export const Input = ({
     // Component type
@@ -9,7 +8,7 @@ export const Input = ({
 
     // Appearance
     radius = "md",
-    shadow = "sm",
+    shadow,
     fullWidth,
     unstyled = false,
 
@@ -63,6 +62,8 @@ export const Input = ({
     classNames,
     ...props
 }: InputProps) => {
+    const { theme, cx } = useTheme();
+
     const [localValue, setLocalValue] = useState(controlledValue ?? "");
     const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -92,8 +93,11 @@ export const Input = ({
     ) => {
         if (!content) return null;
 
-        const baseClasses =
-            "flex items-center justify-center h-full text-[var(--lumin-section)]";
+        const baseClasses = "flex items-center justify-center h-full";
+        const colorClasses =
+            theme === "light"
+                ? "text-[var(--luminx-light-section)]"
+                : "text-[var(--luminx-dark-section)]";
         const sideClasses =
             side === "left"
                 ? leftSectionPadding
@@ -111,6 +115,7 @@ export const Input = ({
             <div
                 className={cx(
                     baseClasses,
+                    colorClasses,
                     sideClasses,
                     sectionClasses,
                     disabled && "opacity-60 cursor-not-allowed"
@@ -126,6 +131,9 @@ export const Input = ({
             <label
                 className={cx(
                     "ml-1 flex items-center gap-1",
+                    theme === "light"
+                        ? "text-[var(--luminx-light-text)]"
+                        : "text-[var(--luminx-dark-text)]",
                     disabled && "opacity-60 cursor-not-allowed",
                     classNames?.label
                 )}
@@ -134,7 +142,7 @@ export const Input = ({
                 {required && (
                     <span
                         className={cx(
-                            "text-[var(--lumin-error)]",
+                            "text-[var(--luminx-error)]",
                             classNames?.required
                         )}
                     >
@@ -150,7 +158,10 @@ export const Input = ({
         !success && (
             <p
                 className={cx(
-                    "ml-1 text-sm text-[var(--lumin-hint)]",
+                    "ml-1 text-sm",
+                    theme === "light"
+                        ? "text-[var(--luminx-light-hint)]"
+                        : "text-[var(--luminx-dark-hint)]",
                     classNames?.hint
                 )}
             >
@@ -162,7 +173,7 @@ export const Input = ({
         error && (
             <p
                 className={cx(
-                    "ml-1 text-sm text-[var(--lumin-error)]",
+                    "ml-1 text-sm text-[var(--luminx-error)]",
                     classNames?.error
                 )}
             >
@@ -175,7 +186,7 @@ export const Input = ({
         !error && (
             <p
                 className={cx(
-                    "ml-1 text-sm text-[var(--lumin-success)]",
+                    "ml-1 text-sm text-[var(--luminx-success)]",
                     classNames?.success
                 )}
             >
@@ -188,10 +199,12 @@ export const Input = ({
             className={cx(
                 "flex items-center overflow-hidden transition-colors",
                 !unstyled && [
-                    "bg-[var(--lumin-background)] border border-[var(--lumin-border)]",
-                    error && "border-[var(--lumin-error)]",
-                    "focus-within:border-[var(--lumin-primary)]",
-                    !error && success && "border-[var(--lumin-success)]",
+                    theme === "light"
+                        ? "bg-[var(--luminx-light-background)] border border-[var(--luminx-light-border)]"
+                        : "bg-[var(--luminx-dark-background)] border border-[var(--luminx-dark-border)]",
+                    error && "border-[var(--luminx-error)]",
+                    "focus-within:border-[var(--luminx-primary)]",
+                    !error && success && "border-[var(--luminx-success)]",
                     disabled && "opacity-60 cursor-not-allowed"
                 ],
                 fullWidth && "w-full",
@@ -229,7 +242,10 @@ export const Input = ({
 
         const baseStyles = cx(
             !unstyled &&
-                "w-full border-none bg-transparent outline-none text-white px-3 py-2 flex items-center justify-center h-full leading-normal placeholder:[color:var(--lumin-placeholder)]",
+                "w-full border-none bg-transparent outline-none text-white px-3 py-2 flex items-center justify-center h-full leading-normal",
+            !unstyled && theme === "light"
+                ? "placeholder:[color:var(--luminx-light-placeholder)]"
+                : "placeholder:[color:var(--luminx-dark-placeholder)]",
             disabled && "opacity-60 cursor-not-allowed"
         );
 
@@ -261,7 +277,10 @@ export const Input = ({
                         }}
                         className={cx(
                             baseStyles,
-                            "appearance-none bg-[var(--lumin-background)]",
+                            "appearance-none",
+                            theme === "light"
+                                ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]"
+                                : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]",
                             classNames?.input
                         )}
                         style={style}
@@ -311,6 +330,9 @@ export const Input = ({
                         className={cx(
                             baseStyles,
                             "resize-" + resize,
+                            theme === "light"
+                                ? "text-[var(--luminx-light-text)]"
+                                : "text-[var(--luminx-dark-text)]",
                             classNames?.input
                         )}
                         style={style}
@@ -353,6 +375,9 @@ export const Input = ({
                         className={cx(
                             baseStyles,
                             "[-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+                            theme === "light"
+                                ? "text-[var(--luminx-light-text)]"
+                                : "text-[var(--luminx-dark-text)]",
                             classNames?.input
                         )}
                         style={style}
@@ -373,8 +398,10 @@ export const Input = ({
     return (
         <div
             className={cx(
-                !unstyled &&
-                    "flex flex-col items-start text-[var(--lumin-text)] space-y-1",
+                !unstyled && "flex flex-col items-start space-y-1",
+                !unstyled && theme === "light"
+                    ? "text-[var(--luminx-light-text)]"
+                    : "text-[var(--luminx-dark-text)]",
                 fullWidth && "w-full",
                 classNames?.wrapper,
                 className

@@ -1,10 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { Input, InputProps } from "@luminx/core";
+import {
+    Input,
+    InputProps,
+    useTheme,
+    getRadius,
+    getShadow
+} from "@luminx/core";
 import { DatePicker } from "../DatePicker";
 import { useDatesContext } from "../DatesProvider";
 import type { DateValue, DateRangeValue } from "../_shared/types";
 import type { DateInputProps } from "./types";
-import { cx, getRadius, getShadow } from "../_theme";
 
 export const DateInput = <T extends DateValue | DateRangeValue>({
     format,
@@ -26,6 +31,8 @@ export const DateInput = <T extends DateValue | DateRangeValue>({
     classNames,
     ...others
 }: DateInputProps<T>) => {
+    const { theme, cx } = useTheme();
+
     const [opened, setOpened] = useState(false);
     const [localValue, setLocalValue] = useState<DateValue | DateRangeValue>(
         value ?? defaultValue
@@ -136,7 +143,10 @@ export const DateInput = <T extends DateValue | DateRangeValue>({
                 <div
                     ref={dropdownRef}
                     className={cx(
-                        "absolute z-10 mt-1 p-2 bg-[var(--lumin-dates-background)]",
+                        "absolute z-10 mt-1 p-2",
+                        theme === "light"
+                            ? "bg-[var(--luminx-light-background)]"
+                            : "bg-[var(--luminx-dark-background)]",
                         classNames?.dropdown
                     )}
                     style={{

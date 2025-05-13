@@ -1,8 +1,9 @@
 import { forwardRef, ReactNode } from "react";
 import { NotificationProps } from "./types";
-import { cx, getRadius } from "../_theme";
+import { useTheme, getRadius, cx } from "../_theme";
 import { XIcon } from "../_icons";
 import { Loader } from "../Loader";
+import { IconX } from "@tabler/icons-react";
 
 const renderTitle = (title: ReactNode, className?: string) => {
     if (!title) return null;
@@ -27,8 +28,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
             icon,
             loading,
             loaderProps = {
-                size: 32,
-                color: "var(--lumin-text)"
+                size: 32
             },
             onClose,
             withBorder,
@@ -40,6 +40,8 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
         },
         ref
     ) => {
+        const { theme } = useTheme();
+
         const handleClose = () => {
             if (!onClose) return;
             onClose();
@@ -50,14 +52,18 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
                 ref={ref}
                 role="alert"
                 className={cx(
-                    "p-3 bg-[var(--lumin-background)] text-[--lumin-text]",
-                    withBorder && "border border-[var(--lumin-border)]",
+                    "p-3",
+                    theme === "light"
+                        ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)] border-[var(--luminx-light-border)]"
+                        : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)] border-[var(--luminx-dark-border)]",
+                    withBorder && "border",
                     className
                 )}
                 style={{
                     ...getRadius(radius),
                     ...style
                 }}
+                {...props}
             >
                 <div className="flex gap-3">
                     <div className={cx("flex items-center", classNames?.icon)}>
@@ -76,12 +82,12 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
                         <div className="flex items-center">
                             <button
                                 onClick={handleClose}
-                                className="p-2 hover:bg-[var(--lumin-secondary)] rounded-full"
+                                className={cx(
+                                    "p-2 hover:bg-[var(--luminx-primary-light)] rounded-full",
+                                    classNames?.closeButton
+                                )}
                             >
-                                <XIcon
-                                    size={12}
-                                    className={classNames?.closeIcon}
-                                />
+                                <IconX size={20} />
                             </button>
                         </div>
                     )}

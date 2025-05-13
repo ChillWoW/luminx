@@ -1,19 +1,23 @@
+import { CSSProperties, ReactNode } from "react";
+import { Radius, Shadow } from "../_theme";
+
 export type IndicatorPosition =
     | "top-right"
     | "top-left"
     | "bottom-right"
     | "bottom-left";
-export type IndicatorSize = "xs" | "sm" | "md" | "lg";
-export type IndicatorRadius = "none" | "sm" | "md" | "lg" | "full";
+export type IndicatorSize = "xs" | "sm" | "md" | "lg" | "xl";
 
 export interface IndicatorProps {
-    children?: React.ReactNode;
+    children?: ReactNode;
     show?: boolean;
     position?: IndicatorPosition;
     size?: IndicatorSize;
-    radius?: IndicatorRadius;
+    radius?: Radius;
+    shadow?: Shadow;
     withBorder?: boolean;
-    content?: React.ReactNode;
+    label?: string | ReactNode;
+    style?: CSSProperties;
     className?: string;
     classNames?: IndicatorClassNames;
 }

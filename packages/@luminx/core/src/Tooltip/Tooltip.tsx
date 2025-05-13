@@ -1,7 +1,6 @@
 import React, { cloneElement, useRef, useState } from "react";
 import { TooltipProps } from "./types";
-import "../style.css";
-import { getRadius, cx } from "../_theme";
+import { getRadius, useTheme } from "../_theme";
 import { Transition } from "../Transition";
 import {
     useFloating,
@@ -47,6 +46,8 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
         const [open, setOpen] = useState(opened || false);
         const arrowRef = useRef<SVGSVGElement>(null);
 
@@ -77,7 +78,6 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
             whileElementsMounted: autoUpdate
         });
 
-        // Handle interactions based on provided events
         const hover = useHover(context, {
             enabled: events.hover && !disabled,
             delay: { open: openDelay, close: closeDelay }
@@ -98,7 +98,6 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
             role
         ]);
 
-        // Effect to sync with opened prop
         React.useEffect(() => {
             if (opened !== undefined) {
                 setOpen(opened);
@@ -109,7 +108,6 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
             return <>{children}</>;
         }
 
-        // Clone the child and attach reference
         const clonedChild = cloneElement(
             React.Children.only(children) as React.ReactElement,
             {
@@ -120,7 +118,6 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
             } as any
         );
 
-        // Render tooltip
         const tooltipElement = open && (
             <Transition mounted={open} transition="fade">
                 {(transitionStyles) => (
@@ -136,9 +133,12 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                         role="tooltip"
                         id="tooltip"
                         className={cx(
-                            "fixed z-50 pointer-events-none bg-[var(--lumin-background)]",
+                            "fixed z-50 pointer-events-none",
                             "transition-opacity duration-200",
                             open ? "opacity-100" : "opacity-0",
+                            theme === "light"
+                                ? "bg-[var(--luminx-light-background)]"
+                                : "bg-[var(--luminx-dark-background)]",
                             classNames?.root
                         )}
                         style={{
@@ -154,7 +154,10 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                     >
                         <div
                             className={cx(
-                                "py-1 px-2 text-sm text-[var(--lumin-text)]",
+                                "py-1 px-2 text-sm",
+                                theme === "light"
+                                    ? "text-[var(--luminx-light-text)]"
+                                    : "text-[var(--luminx-dark-text)]",
                                 multiline
                                     ? "text-left max-w-xs"
                                     : "text-center whitespace-nowrap",
@@ -169,20 +172,17 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                                     ref={arrowRef}
                                     context={context}
                                     className={classNames?.arrow}
-                                    fill={color || "var(--lumin-background)"}
+                                    fill={
+                                        color || theme === "light"
+                                            ? "var(--luminx-light-background)"
+                                            : "var(--luminx-dark-background)"
+                                    }
                                     width={arrowSize * 2}
                                     height={arrowSize}
                                     tipRadius={arrowRadius}
                                 />
                             )}
-                            <div
-                                className={cx(
-                                    "tooltip-content",
-                                    classNames?.content
-                                )}
-                            >
-                                {label}
-                            </div>
+                            <div className={classNames?.content}>{label}</div>
                         </div>
                     </div>
                 )}
@@ -192,7 +192,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         return (
             <div
                 className={cx(
-                    "tooltip-wrapper relative",
+                    "relative",
                     inline ? "inline" : "inline-block",
                     className
                 )}

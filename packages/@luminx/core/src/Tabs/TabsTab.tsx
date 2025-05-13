@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { cx } from "../_theme";
+import { cx, useTheme } from "../_theme";
 import { useTabs } from "./context";
 import { TabsTabProps } from "./types";
 import "../style.css";
@@ -24,6 +24,8 @@ export const TabsTab = ({
         orientation
     } = useTabs();
 
+    const { theme, cx } = useTheme();
+
     const isActive = activeValue === value;
     const tabRef = useRef<HTMLDivElement>(null);
 
@@ -41,16 +43,28 @@ export const TabsTab = ({
 
     const sizeClasses = {
         xs: "px-2 py-1 text-xs",
-        sm: "px-3 py-2 text-sm",
-        md: "px-4 py-3 text-sm",
-        lg: "px-5 py-3 text-base",
-        xl: "px-6 py-4 text-lg"
+        sm: "px-3 py-1.5 text-sm",
+        md: "px-4 py-2 text-sm",
+        lg: "px-5 py-2.5 text-base",
+        xl: "px-6 py-3 text-lg"
     };
 
-    const variantClasses = {
-        default: "hover:bg-[var(--lumin-secondary)]",
-        outline: "border border-transparent hover:border-[var(--lumin-border)]",
-        pills: "rounded-md hover:bg-[var(--lumin-secondary)]"
+    const variantClasses = () => {
+        switch (variant) {
+            case "pills":
+                return [
+                    "rounded-md",
+                    theme === "light"
+                        ? "hover:bg-[var(--luminx-light-background-hover)]"
+                        : "hover:bg-[var(--luminx-dark-background-hover)]"
+                ];
+            default:
+                return [
+                    theme === "light"
+                        ? "hover:bg-[var(--luminx-light-background-hover)]"
+                        : "hover:bg-[var(--luminx-dark-background-hover)]"
+                ];
+        }
     };
 
     return (
@@ -64,10 +78,8 @@ export const TabsTab = ({
                 "flex items-center gap-2 cursor-pointer transition-all duration-200",
                 orientation === "horizontal" ? "rounded-t-md" : "rounded-l-md",
                 sizeClasses[size],
-                variantClasses[variant],
-                isActive &&
-                    variant === "pills" &&
-                    "bg-[var(--lumin-secondary)]",
+                variantClasses(),
+                isActive && variant === "pills" && "bg-[var(--lumin-primary)]",
                 isActive && classNames?.tabActive,
                 disabled && "opacity-60 cursor-not-allowed pointer-events-none",
                 grow && "flex-grow justify-center",
@@ -85,8 +97,12 @@ export const TabsTab = ({
             {leftSection && (
                 <span
                     className={cx(
-                        "text-[var(--lumin-hint)]",
-                        isActive && "text-[var(--lumin-text)]",
+                        theme === "light"
+                            ? "text-[var(--luminx-light-section)]"
+                            : "text-[var(--luminx-dark-section)]",
+                        isActive && theme === "light"
+                            ? "text-[var(--luminx-light-text)]"
+                            : "text-[var(--luminx-dark-text)]",
                         classNames?.tabIcon
                     )}
                 >
@@ -99,8 +115,12 @@ export const TabsTab = ({
                     className={cx(
                         "font-medium",
                         isActive
-                            ? "text-[var(--lumin-text)]"
-                            : "text-[var(--lumin-hint)]",
+                            ? theme === "light"
+                                ? "text-[var(--luminx-light-text)]"
+                                : "text-[var(--luminx-dark-text)]"
+                            : theme === "light"
+                            ? "text-[var(--luminx-light-hint)]"
+                            : "text-[var(--luminx-dark-hint)]",
                         classNames?.tabLabel
                     )}
                 >
@@ -110,7 +130,10 @@ export const TabsTab = ({
                 {description && (
                     <span
                         className={cx(
-                            "text-xs text-[var(--lumin-hint)]",
+                            "text-xs",
+                            theme === "light"
+                                ? "text-[var(--luminx-light-hint)]"
+                                : "text-[var(--luminx-dark-hint)]",
                             classNames?.tabDescription
                         )}
                     >
@@ -120,7 +143,17 @@ export const TabsTab = ({
             </div>
 
             {rightSection && (
-                <span className={classNames?.tabRightSection}>
+                <span
+                    className={cx(
+                        theme === "light"
+                            ? "text-[var(--luminx-light-section)]"
+                            : "text-[var(--luminx-dark-section)]",
+                        isActive && theme === "light"
+                            ? "text-[var(--luminx-light-text)]"
+                            : "text-[var(--luminx-dark-text)]",
+                        classNames?.tabRightSection
+                    )}
+                >
                     {rightSection}
                 </span>
             )}

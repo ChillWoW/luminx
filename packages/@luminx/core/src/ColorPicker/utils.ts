@@ -1,7 +1,7 @@
 import { RGBColor, HSVColor } from "./types";
 
 // Converts hex to RGB
-export function hexToRgb(hex: string): RGBColor {
+export function hexToRgbColorPicker(hex: string): RGBColor {
     hex = hex.replace(/^#/, "");
 
     let r,
@@ -152,7 +152,7 @@ export function parseColor(color: string): HSVColor {
 
     // Check for hex format
     if (color.startsWith("#")) {
-        return rgbToHsv(hexToRgb(color));
+        return rgbToHsv(hexToRgbColorPicker(color));
     }
 
     // Check for rgb/rgba format

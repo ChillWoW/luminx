@@ -170,4 +170,4 @@ export const Flex = forwardRef<HTMLDivElement, FlexProps>(
     }
 );
 
-Flex.displayName = "Flex";
+Flex.displayName = "@luminx/core/Flex";

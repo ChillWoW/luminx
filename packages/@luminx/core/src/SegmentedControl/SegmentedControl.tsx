@@ -1,7 +1,7 @@
 import React, { forwardRef, useState, useRef, useEffect } from "react";
 import { SegmentedControlProps, SegmentedControlItem } from "./types";
 import "../style.css";
-import { cx, getRadius } from "../_theme";
+import { getRadius, useTheme } from "../_theme";
 
 export const SegmentedControl = forwardRef<
     HTMLDivElement,
@@ -29,6 +29,8 @@ export const SegmentedControl = forwardRef<
         },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
         const [activeValue, setActiveValue] = useState(
             value ||
                 defaultValue ||
@@ -127,11 +129,20 @@ export const SegmentedControl = forwardRef<
 
         const items = data.map(formatItem);
 
+        const getUnactiveColor = () => {
+            return theme === "light"
+                ? "text-[var(--luminx-light-hint)] hover:text-[var(--luminx-light-text)]"
+                : "text-[var(--luminx-dark-hint)] hover:text-[var(--luminx-dark-text)]";
+        };
+
         return (
             <div
                 ref={ref || rootRef}
                 className={cx(
-                    "inline-flex relative bg-[var(--lumin-background)] p-1 rounded-md",
+                    "inline-flex relative p-1 rounded-md",
+                    theme === "light"
+                        ? "bg-[var(--luminx-light-background)]"
+                        : "bg-[var(--luminx-dark-background)]",
                     orientation === "vertical" ? "flex-col" : "flex-row",
                     fullWidth && "w-full",
                     disabled && "opacity-60 cursor-not-allowed",
@@ -155,9 +166,12 @@ export const SegmentedControl = forwardRef<
                         <div
                             key={item.value}
                             className={cx(
-                                "flex-1 rounded-md text-[var(--lumin-text)] font-medium",
+                                "flex-1 rounded-md font-medium",
+                                theme === "light"
+                                    ? "text-[var(--luminx-light-text)]"
+                                    : "text-[var(--luminx-dark-text)]",
                                 activeValue !== item.value &&
-                                    "hover:text-[var(--lumin-text)] text-[var(--lumin-hint)]",
+                                    getUnactiveColor(),
                                 item.disabled &&
                                     "opacity-60 cursor-not-allowed",
                                 classNames?.item
@@ -188,7 +202,7 @@ export const SegmentedControl = forwardRef<
                                     (disabled || item.disabled || readOnly) &&
                                         "cursor-not-allowed",
                                     activeValue === item.value &&
-                                        "bg-[var(--lumin-secondary)]",
+                                        "bg-[var(--luminx-primary-light)]",
                                     activeValue === item.value &&
                                         classNames?.activeItem,
                                     classNames?.label,

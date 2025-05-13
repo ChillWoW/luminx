@@ -1,6 +1,6 @@
-import React, { forwardRef } from "react";
+import React, { ElementType, forwardRef } from "react";
 import { AvatarProps } from "./types";
-import { cx, getRadius, getShadow } from "../_theme";
+import { getRadius, getShadow, useTheme } from "../_theme";
 import { AvatarGroup } from "./AvatarGroup";
 import { IconUserCircle } from "@tabler/icons-react";
 
@@ -27,12 +27,15 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             size = "md",
             shadow,
             radius = "full",
+            withBorder,
             component: Component = "div",
             className,
             ...props
         },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
         const getSize = () => {
             switch (size) {
                 case "xs":
@@ -48,10 +51,34 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             }
         };
 
+        const getBackground = () => {
+            switch (theme) {
+                case "light":
+                    return "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]";
+                default:
+                    return "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]";
+            }
+        };
+
+        const getBorder = () => {
+            if (!withBorder) return "";
+
+            switch (theme) {
+                case "light":
+                    return "border border-[var(--luminx-light-border)]";
+                default:
+                    return "border border-[var(--luminx-dark-border)]";
+            }
+        };
+
+        const Element = Component as ElementType;
+
         return (
-            <Component
+            <Element
                 className={cx(
-                    "inline-flex items-center justify-center overflow-hidden bg-[var(--lumin-background)]",
+                    "inline-flex items-center justify-center overflow-hidden",
+                    getBackground(),
+                    getBorder(),
                     getSize(),
                     className
                 )}
@@ -63,7 +90,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                 {...props}
             >
                 {renderContent({ children, src, alt })}
-            </Component>
+            </Element>
         );
     }
 );

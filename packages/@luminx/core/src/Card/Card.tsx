@@ -1,18 +1,33 @@
 import { forwardRef } from "react";
 import { CardProps } from "./types";
-import { cx, getPadding, getRadius, getShadow } from "../_theme";
+import { getPadding, getRadius, getShadow, useTheme } from "../_theme";
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
     (
         { children, padding, radius, shadow, withBorder, className, ...props },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
+        const getBorder = () => {
+            if (!withBorder) return "";
+
+            switch (theme) {
+                case "light":
+                    return "border border-[var(--luminx-light-border)]";
+                default:
+                    return "border border-[var(--luminx-dark-border)]";
+            }
+        };
+
         return (
             <div
                 ref={ref}
                 className={cx(
-                    "bg-[var(--lumin-background)]",
-                    withBorder && "border border-[var(--lumin-border)]",
+                    theme === "light"
+                        ? "bg-[var(--luminx-light-background)]"
+                        : "bg-[var(--luminx-dark-background)]",
+                    getBorder(),
                     className
                 )}
                 style={{

@@ -1,5 +1,5 @@
+import { useTheme } from "@luminx/core";
 import React from "react";
-import { cx } from "../_theme";
 
 export interface PickerGridProps {
     children: React.ReactNode;
@@ -12,6 +12,8 @@ export function PickerGrid({
     columns = 3,
     className
 }: PickerGridProps) {
+    const { cx } = useTheme();
+
     const getColumnClass = () => {
         switch (columns) {
             case 1:

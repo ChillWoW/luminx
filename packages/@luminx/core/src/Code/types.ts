@@ -1,4 +1,5 @@
 import { Radius, Shadow } from "../_theme";
+import { ReactNode } from "react";
 
 export interface CodeClassNames {
     container?: string;
@@ -10,16 +11,14 @@ export interface CodeClassNames {
 
 export type CodeTheme =
     | "dark"
-    | "dark-reasonable"
-    | "light"
-    | "arta"
-    | "paraisoDark"
-    | "paraisoLight"
-    | "vs"
-    | "vs2015"
-    | "xcode"
-    | "a11yDark"
-    | "dracula";
+    | "dracula"
+    | "atomDark"
+    | "vsDark"
+    | "materialDark"
+    | "okaidia"
+    | "github"
+    | "prism"
+    | "solarizedlight";
 
 export interface CodeProps {
     children: string;
@@ -37,11 +36,13 @@ export interface CodeProps {
     copiedText?: string;
     showFileName?: boolean;
     fileName?: string;
+    showFileIcon?: boolean;
+    fileIcon?: ReactNode;
     radius?: Radius;
     shadow?: Shadow;
     maxHeight?: string | number;
     lineNumbersBackgroundColor?: string;
     lineNumbersStyle?: React.CSSProperties;
     startingLineNumber?: number;
-    color?: string;
+    highlightColor?: string;
 }

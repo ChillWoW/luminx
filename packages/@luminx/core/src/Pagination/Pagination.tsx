@@ -1,7 +1,13 @@
 import React, { useState } from "react";
-import { cx } from "../_theme";
+import { useTheme } from "../_theme";
 import { PaginationProps } from "./types";
 import { FirstIcon, LastIcon, NextIcon, PreviousIcon } from "../_icons";
+import {
+    IconChevronLeft,
+    IconChevronRight,
+    IconChevronsRight
+} from "@tabler/icons-react";
+import { IconChevronsLeft } from "@tabler/icons-react";
 
 export const Pagination = ({
     total,
@@ -19,6 +25,8 @@ export const Pagination = ({
     label,
     ...props
 }: PaginationProps) => {
+    const { theme, cx } = useTheme();
+
     const [internalPage, setInternalPage] = useState(page || 1);
 
     const currentPage = page ?? internalPage;
@@ -128,9 +136,11 @@ export const Pagination = ({
 
     const paginationClass = "flex items-center gap-2";
     const paginationButtonClass = cx(
-        "flex items-center justify-center cursor-pointer user-select-none px-[8px] rounded-md",
-        "border border-[var(--lumin-border)] bg-[var(--lumin-background)] text-[var(--lumin-text)]",
-        "hover:bg-[var(--lumin-background-hover)] transition-colors duration-200",
+        "flex items-center justify-center cursor-pointer user-select-none px-[8px] rounded-md border",
+        theme === "light"
+            ? "border-[var(--luminx-light-border)] bg-[var(--luminx-light-background)] hover:bg-[var(--luminx-light-background-hover)] text-[var(--luminx-light-text)]"
+            : "border-[var(--luminx-dark-border)] bg-[var(--luminx-dark-background)] hover:bg-[var(--luminx-dark-background-hover)] text-[var(--luminx-dark-text)]",
+        "transition-colors duration-200",
         "disabled:opacity-60 disabled:cursor-not-allowed",
         currentSize.minWidth,
         currentSize.height,
@@ -138,7 +148,7 @@ export const Pagination = ({
         classNames?.control
     );
     const paginationButtonActiveClass = cx(
-        "bg-[var(--lumin-primary)] text-white border-[var(--lumin-primary)] hover:bg-[var(--lumin-primary-hover)]",
+        "bg-[var(--luminx-primary-light)] text-white border-[var(--luminx-primary-light)] hover:bg-[var(--luminx-primary-light)]",
         classNames?.active
     );
     const paginationButtonDisabledClass = "cursor-not-allowed";
@@ -160,10 +170,8 @@ export const Pagination = ({
                     className={prevNextButtonClass}
                     onClick={() => handlePageChange(1)}
                     disabled={disabled || currentPage === 1}
-                    aria-label="Go to first page"
-                    title="First page"
                 >
-                    <FirstIcon size={18} />
+                    <IconChevronsLeft size={18} />
                 </button>
             )}
 
@@ -172,10 +180,8 @@ export const Pagination = ({
                     className={prevNextButtonClass}
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={disabled || currentPage === 1}
-                    aria-label="Go to previous page"
-                    title="Previous page"
                 >
-                    <PreviousIcon size={18} />
+                    <IconChevronLeft size={18} />
                 </button>
             )}
 
@@ -197,16 +203,6 @@ export const Pagination = ({
                         disabled={disabled || pageNumber === "..."}
                         aria-current={
                             pageNumber === currentPage ? "page" : undefined
-                        }
-                        aria-label={
-                            pageNumber === "..."
-                                ? "More pages"
-                                : `Page ${pageNumber}`
-                        }
-                        title={
-                            pageNumber === "..."
-                                ? "More pages"
-                                : `Page ${pageNumber}`
                         }
                     >
                         {pageNumber}
@@ -230,10 +226,8 @@ export const Pagination = ({
                     className={prevNextButtonClass}
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={disabled || currentPage === total}
-                    aria-label="Go to next page"
-                    title="Next page"
                 >
-                    <NextIcon size={18} />
+                    <IconChevronRight size={18} />
                 </button>
             )}
 
@@ -242,10 +236,8 @@ export const Pagination = ({
                     className={prevNextButtonClass}
                     onClick={() => handlePageChange(total)}
                     disabled={disabled || currentPage === total}
-                    aria-label="Go to last page"
-                    title="Last page"
                 >
-                    <LastIcon size={18} />
+                    <IconChevronsRight size={18} />
                 </button>
             )}
         </div>

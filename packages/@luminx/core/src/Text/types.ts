@@ -17,7 +17,6 @@ export interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
     inherit?: boolean;
     italic?: boolean;
     span?: boolean;
-    color?: string;
     underline?: boolean;
     dimmed?: boolean;
     style?: CSSProperties;

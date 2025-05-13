@@ -7,7 +7,7 @@ export const ColorSwatch = forwardRef<HTMLDivElement, ColorSwatchProps>(
         {
             children,
             color,
-            as = "div",
+            component: Component = "div",
             shadow,
             size = 25,
             radius,
@@ -18,7 +18,7 @@ export const ColorSwatch = forwardRef<HTMLDivElement, ColorSwatchProps>(
         },
         ref
     ) => {
-        const Element = as as React.ElementType;
+        const Element = Component as React.ElementType;
 
         return (
             <Element

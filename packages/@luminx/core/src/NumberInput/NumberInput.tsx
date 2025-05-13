@@ -1,9 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { Input } from "../Input/Input";
 import { NumberInputProps } from "./types";
-import { cx } from "../_theme";
-import { ChevronIcon } from "../_icons";
-import "../style.css";
+import { useTheme } from "../_theme";
+import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 
 export const NumberInput = ({
     min,
@@ -24,6 +23,8 @@ export const NumberInput = ({
     suffix,
     ...props
 }: NumberInputProps) => {
+    const { theme, cx } = useTheme();
+
     const [value, setValue] = useState<number>(
         props.value !== undefined ? Number(props.value) : defaultValue
     );
@@ -162,32 +163,48 @@ export const NumberInput = ({
         (!allowNegative && value - step < 0);
 
     const controlButtons = (
-        <div className="inline-flex flex-col h-full border-l border-[var(--lumin-border)]">
+        <div
+            className={cx(
+                "inline-flex flex-col h-full border-l",
+                theme === "light"
+                    ? "border-[var(--luminx-light-border)]"
+                    : "border-[var(--luminx-dark-border)]",
+                classNames?.controlButtons
+            )}
+        >
             <button
                 type="button"
                 className={cx(
-                    "w-7 h-[20px] flex items-center justify-center hover:bg-[var(--lumin-secondary)] border-b border-[var(--lumin-border)]",
+                    "w-7 h-[20px] flex items-center justify-center border-b",
+                    theme === "light"
+                        ? "border-[var(--luminx-light-border)] text-[var(--luminx-light-text)]"
+                        : "border-[var(--luminx-dark-border)] text-[var(--luminx-dark-text)]",
                     isIncrementDisabled && "opacity-60 cursor-not-allowed",
+                    !isIncrementDisabled &&
+                        "hover:bg-[var(--luminx-primary-light)]",
                     classNames?.incrementButton
                 )}
                 onClick={increment}
                 disabled={isIncrementDisabled}
-                title="Increase"
             >
-                <ChevronIcon size={8} />
+                <IconChevronUp size={16} />
             </button>
             <button
                 type="button"
                 onClick={decrement}
                 disabled={isDecrementDisabled}
                 className={cx(
-                    "w-7 h-[20px] flex items-center justify-center hover:bg-[var(--lumin-secondary)]",
+                    "w-7 h-[20px] flex items-center justify-center",
+                    theme === "light"
+                        ? "border-[var(--luminx-light-border)] text-[var(--luminx-light-text)]"
+                        : "border-[var(--luminx-dark-border)] text-[var(--luminx-dark-text)]",
                     isDecrementDisabled && "opacity-60 cursor-not-allowed",
+                    !isDecrementDisabled &&
+                        "hover:bg-[var(--luminx-primary-light)]",
                     classNames?.decrementButton
                 )}
-                title="Decrease"
             >
-                <ChevronIcon size={8} className="rotate-180" />
+                <IconChevronDown size={16} />
             </button>
         </div>
     );

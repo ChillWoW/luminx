@@ -1,4 +1,4 @@
-import { cn } from "../_utils";
+import { useTheme } from "../_theme";
 import { useListContext } from "./context";
 import { ListItemProps } from "./types";
 
@@ -9,11 +9,16 @@ export function ListItem({
     style,
     ...others
 }: ListItemProps) {
+    const { theme, cx } = useTheme();
+
     const ctx = useListContext();
     const itemIcon = icon || ctx.icon;
 
-    const classes = cn(
+    const classes = cx(
         "relative",
+        theme === "light"
+            ? "text-[var(--luminx-light-text)]"
+            : "text-[var(--luminx-dark-text)]",
         ctx.center && itemIcon && "flex items-start",
         className
     );
@@ -48,14 +53,14 @@ export function ListItem({
             {itemIcon ? (
                 <>
                     <span
-                        className={cn(
+                        className={cx(
                             "inline-block mr-2",
                             ctx.center ? "mt-0.5" : ""
                         )}
                     >
                         {itemIcon}
                     </span>
-                    <span className={cn(sizeClass, "flex-grow")}>
+                    <span className={cx(sizeClass, "flex-grow")}>
                         {children}
                     </span>
                 </>

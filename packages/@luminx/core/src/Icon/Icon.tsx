@@ -9,12 +9,11 @@ export const Icon = forwardRef<HTMLDivElement, IconProps>(
         {
             children,
             size = "md",
-            radius = "sm",
-            shadow = "none",
+            radius,
+            shadow,
             className,
             classNames,
             component: Component = "div",
-            color,
             ...props
         },
         ref
@@ -32,15 +31,14 @@ export const Icon = forwardRef<HTMLDivElement, IconProps>(
                 ref={ref}
                 className={cx(
                     "flex items-center justify-center",
-                    "bg-[var(--lumin-primary)]",
+                    "bg-[var(--luminx-primary-light)]",
                     sizeClasses[size],
                     classNames?.root,
                     className
                 )}
                 style={{
                     ...getRadius(radius),
-                    ...getShadow(shadow),
-                    ...(color && { backgroundColor: color })
+                    ...getShadow(shadow)
                 }}
                 {...props}
             >

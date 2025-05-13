@@ -33,4 +33,4 @@ export const DrawerTitle = ({ children }: { children: ReactNode }) => {
     );
 };
 
-DrawerTitle.displayName = "DrawerTitle";
+DrawerTitle.displayName = "@luminx/core/Drawer.Title";

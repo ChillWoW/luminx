@@ -4,7 +4,7 @@ import { ColorInputProps } from "./types";
 import { ColorSwatch } from "../ColorSwatch/ColorSwatch";
 import { ColorPicker } from "../ColorPicker/ColorPicker";
 import { parseColor } from "../ColorPicker/utils";
-import { cx } from "../_theme";
+import { useTheme } from "../_theme";
 import { IconPencil } from "@tabler/icons-react";
 import {
     useFloating,
@@ -27,10 +27,13 @@ export const ColorInput = ({
     hidePreview,
     showEyeDropper,
     colorSwatchProps,
+    colorPickerProps,
     withPicker = true,
     classNames = {},
     ...props
 }: ColorInputProps) => {
+    const { theme, cx } = useTheme();
+
     const [currentColor, setCurrentColor] = useState(value || defaultValue);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -131,7 +134,12 @@ export const ColorInput = ({
                         <div
                             ref={refs.setFloating}
                             className={cx(
-                                "z-50 shadow-lg rounded-md overflow-hidden bg-[var(--lumin-background)] p-2 flex"
+                                "z-50 shadow-lg rounded-md overflow-hidden p-2 flex",
+                                theme === "light"
+                                    ? "bg-[var(--luminx-light-background)]"
+                                    : "bg-[var(--luminx-dark-background)]",
+
+                                classNames.colorPicker
                             )}
                             style={{
                                 position: strategy,
@@ -147,6 +155,7 @@ export const ColorInput = ({
                                 onChange={handleColorChange}
                                 format={format}
                                 fullWidth
+                                {...colorPickerProps}
                             />
                         </div>
                     )}

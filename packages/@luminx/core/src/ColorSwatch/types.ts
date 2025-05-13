@@ -5,7 +5,7 @@ export type ColorSwatchRadius = "none" | "sm" | "md" | "lg" | "xl" | "full";
 
 export interface ColorSwatchProps extends HTMLAttributes<HTMLDivElement> {
     color: string;
-    as?: ElementType;
+    component?: ElementType;
     shadow?: ColorSwatchShadow;
     size?: number;
     children?: ReactNode;

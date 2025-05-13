@@ -1,6 +1,5 @@
 import React from "react";
-import { cx } from "../_theme";
-import "../style.css";
+import { useTheme } from "@luminx/core";
 
 export interface PickerControlProps
     extends React.HTMLAttributes<HTMLButtonElement> {
@@ -27,6 +26,8 @@ export function PickerControl({
     className,
     ...others
 }: PickerControlProps) {
+    const { theme, cx } = useTheme();
+
     const sizeClasses = {
         xs: "px-1 py-0.5 text-xs",
         sm: "px-2 py-1 text-sm",
@@ -43,19 +44,22 @@ export function PickerControl({
                 "rounded-md transition-colors",
                 sizeClasses[size],
                 "text-center font-medium",
-                !disabled &&
-                    !selected &&
-                    !inRange &&
-                    "hover:bg-[var(--lumin-dates-background-hover)]",
-                weekend && "text-[var(--lumin-dates-error)]",
+                !disabled && !selected && !inRange && theme === "light"
+                    ? "hover:bg-[var(--luminx-light-background-hover)]"
+                    : "hover:bg-[var(--luminx-dark-background-hover)]",
+                weekend && "text-[var(--luminx-error)]",
                 selected &&
-                    "bg-[var(--lumin-dates-primary)] hover:bg-[var(--lumin-dates-primary-hover)] text-[var(--lumin-dates-text)]",
+                    "bg-[var(--luminx-primary)] hover:bg-[var(--luminx-primary-hover)] text-[var(--luminx-text)]",
                 inRange &&
                     !selected &&
-                    "bg-[var(--lumin-dates-secondary)] text-[var(--lumin-dates-text)]",
+                    "bg-[var(--luminx-primary-light)] text-[var(--luminx-text)]",
                 outside
-                    ? "text-[var(--lumin-dates-hint)]"
-                    : "text-[var(--lumin-dates-text)]",
+                    ? theme === "light"
+                        ? "text-[var(--luminx-light-hint)]"
+                        : "text-[var(--luminx-dark-hint)]"
+                    : theme === "light"
+                    ? "text-[var(--luminx-light-text)]"
+                    : "text-[var(--luminx-dark-text)]",
                 disabled && "opacity-60 cursor-not-allowed",
                 className
             )}

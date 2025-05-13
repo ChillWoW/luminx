@@ -6,7 +6,8 @@ export type ButtonVariant = "filled" | "outline" | "unstyled";
 export type ButtonLoaderPosition = "left" | "right";
 export type ButtonAlign = "left" | "center" | "right";
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+    extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color"> {
     type?: "button" | "submit" | "reset";
     as?: ElementType;
     leftSection?: React.ReactNode;

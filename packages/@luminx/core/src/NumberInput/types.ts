@@ -3,6 +3,7 @@ import { InputProps, InputClassNames } from "../Input";
 export interface NumberInputClassNames extends InputClassNames {
     incrementButton?: string;
     decrementButton?: string;
+    controlButtons?: string;
 }
 
 export interface NumberInputProps

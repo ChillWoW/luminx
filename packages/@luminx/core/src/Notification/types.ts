@@ -23,5 +23,5 @@ export interface NotificationClassNames {
     icon?: string;
     title?: string;
     content?: string;
-    closeIcon?: string;
+    closeButton?: string;
 }

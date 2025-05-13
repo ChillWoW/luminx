@@ -10,7 +10,7 @@ export const RingProgress = forwardRef<HTMLDivElement, RingProgressProps>(
             sections,
             label,
             roundCaps = false,
-            rootColor = "var(--lumin-background)",
+            rootColor = "var(--luminx-primary)",
             transitionDuration = 0,
             className,
             style,

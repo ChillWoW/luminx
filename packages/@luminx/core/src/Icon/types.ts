@@ -1,8 +1,7 @@
 import { ElementType, HTMLAttributes, ReactNode } from "react";
+import { Radius, Shadow } from "../_theme";
 
 export type IconSize = "xs" | "sm" | "md" | "lg" | "xl";
-export type IconRadius = "xs" | "sm" | "md" | "lg" | "xl" | "full";
-export type IconShadow = "none" | "sm" | "md" | "lg" | "xl";
 
 export interface IconGradient {
     from: string;
@@ -13,10 +12,9 @@ export interface IconGradient {
 export interface IconProps extends HTMLAttributes<HTMLDivElement> {
     children?: ReactNode;
     size?: IconSize;
-    radius?: IconRadius;
-    shadow?: IconShadow;
+    radius?: Radius;
+    shadow?: Shadow;
     classNames?: IconClassNames;
-    color?: string;
     component?: ElementType;
 }
 

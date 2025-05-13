@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { Input } from "../Input";
 import { SelectOption, SelectOptionGroup, SelectProps } from "./types";
-import { cx, getRadius, getShadow } from "../_theme";
+import { getRadius, getShadow, useTheme } from "../_theme";
 import { IconCheck, IconChevronDown, IconX } from "@tabler/icons-react";
 
 export const Select = forwardRef<HTMLInputElement, SelectProps>(
@@ -37,6 +37,8 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
         const [isOpen, setIsOpen] = useState(dropdownOpened);
         const [selectedValue, setSelectedValue] = useState<string | null>(
             (props.value as string) || null
@@ -246,7 +248,10 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 <div
                     ref={dropdownRef}
                     className={cx(
-                        "absolute w-full bg-[var(--lumin-background)] border border-[var(--lumin-border)] overflow-y-auto",
+                        "absolute w-full border overflow-y-auto",
+                        theme === "light"
+                            ? "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)]"
+                            : "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)]",
                         `z-[${zIndex}]`,
                         `max-h-[${maxHeight}px]`,
                         "top-full mt-3",
@@ -264,7 +269,10 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                         noResults && (
                             <div
                                 className={cx(
-                                    "p-2 text-sm text-center text-[var(--lumin-hint)]",
+                                    "p-2 text-sm text-center",
+                                    theme === "light"
+                                        ? "text-[var(--luminx-light-hint)]"
+                                        : "text-[var(--luminx-dark-hint)]",
                                     classNames?.noResults
                                 )}
                             >
@@ -285,7 +293,10 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                                     >
                                         <div
                                             className={cx(
-                                                "px-2 py-1 text-xs font-semibold text-[var(--lumin-hint)]",
+                                                "px-2 py-1 text-xs font-semibold",
+                                                theme === "light"
+                                                    ? "text-[var(--luminx-light-hint)]"
+                                                    : "text-[var(--luminx-dark-hint)]",
                                                 classNames?.dropdownGroup
                                             )}
                                         >
@@ -328,20 +339,35 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             } = dropdownProps || {};
 
             const checkMark = () => (
-                <div className="text-[var(--lumin-text)]">
+                <div
+                    className={
+                        theme === "light"
+                            ? "text-[var(--luminx-light-text)]"
+                            : "text-[var(--luminx-dark-text)]"
+                    }
+                >
                     {checkIcon ? checkIcon : <IconCheck size={18} />}
                 </div>
             );
+
+            const getSelectedStyle = () => {
+                return theme === "light"
+                    ? "bg-[var(--luminx-light-background-hover)]"
+                    : "bg-[var(--luminx-dark-background-hover)]";
+            };
 
             return (
                 <div
                     key={option.value}
                     className={cx(
                         "flex gap-2",
-                        "px-3 py-2 text-sm cursor-pointer flex items-center text-[var(--lumin-text)] rounded-md hover:bg-[var(--lumin-background-hover)]",
+                        "px-3 py-2 text-sm cursor-pointer flex items-center rounded-md",
+                        theme === "light"
+                            ? "text-[var(--luminx-light-text)] hover:bg-[var(--luminx-light-background-hover)]"
+                            : "text-[var(--luminx-dark-text)] hover:bg-[var(--luminx-dark-background-hover)]",
                         "transition-colors duration-150 ease-in-out",
-                        isSelected &&
-                            "bg-[var(--lumin-background-hover)] font-medium",
+                        isSelected && "font-medium",
+                        isSelected && getSelectedStyle(),
                         option.disabled && "opacity-60 cursor-not-allowed",
                         classNames?.dropdownOption,
                         isSelected && classNames?.dropdownOptionSelected
@@ -376,7 +402,13 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                             {clearable && selectedValue && (
                                 <button
                                     type="button"
-                                    className="p-1 text-[var(--lumin-hint)] hover:text-[var(--lumin-text)]"
+                                    className={cx(
+                                        "p-1",
+                                        theme === "light"
+                                            ? "text-[var(--luminx-light-hint)] hover:text-[var(--luminx-light-text)]"
+                                            : "text-[var(--luminx-dark-hint)] hover:text-[var(--luminx-dark-text)]",
+                                        classNames?.clearIcon
+                                    )}
                                     onClick={handleClear}
                                     aria-label="Clear"
                                 >

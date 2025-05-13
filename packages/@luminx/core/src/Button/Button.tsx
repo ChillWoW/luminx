@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
-import { cn, ComponentLoader } from "../_utils";
+import { ComponentLoader } from "../_utils";
 import { ButtonProps } from "./types";
-import { getRadius } from "../_theme";
+import { getRadius, useTheme } from "../_theme";
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
@@ -14,7 +14,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             variant = "filled",
             radius = "md",
             size = "sm",
-            color,
             disabled,
             active,
             hover = true,
@@ -32,6 +31,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
         const sizeClasses = () => {
             const styles = {
                 xs: "text-xs px-3 py-1.5",
@@ -43,19 +44,39 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             return styles[size] || styles.sm;
         };
 
-        const variantClasses = () => {
-            if (variant === "unstyled") return "";
+        const getVariant = () => {
+            const isLight = theme === "light";
+            const isOutline = variant === "outline";
 
-            const styles = {
-                filled: `bg-[var(--lumin-background)] border border-[var(--lumin-border)] hover:bg-[var(--lumin-background-hover)] ${
-                    active && "bg-[var(--lumin-background-hover)]"
-                }`,
-                outline: `bg-transparent border border-[var(--lumin-border)] hover:border-[var(--lumin-border-hover)] ${
-                    active && "border-[var(--lumin-border-hover)]"
-                }`
+            const light = {
+                outline:
+                    "border border-[var(--luminx-light-border)] text-[var(--luminx-light-text)] hover:border-[var(--luminx-light-border-hover)]",
+                solid: "bg-[var(--luminx-light-background)] hover:bg-[var(--luminx-light-background-hover)] text-[var(--luminx-light-text)]",
+                active: {
+                    outline: "border-[var(--luminx-light-border-hover)]",
+                    solid: "bg-[var(--luminx-light-background-hover)]"
+                }
             };
 
-            return styles[variant] || styles.filled;
+            const dark = {
+                outline:
+                    "border border-[var(--luminx-dark-border)] text-[var(--luminx-dark-text)] hover:border-[var(--luminx-dark-border-hover)]",
+                solid: "bg-[var(--luminx-dark-background)] hover:bg-[var(--luminx-dark-background-hover)] text-[var(--luminx-dark-text)]",
+                active: {
+                    outline: "border-[var(--luminx-dark-border-hover)]",
+                    solid: "bg-[var(--luminx-dark-background-hover)]"
+                }
+            };
+
+            const palette = isLight ? light : dark;
+            const base = isOutline ? palette.outline : palette.solid;
+            const activeClass = active
+                ? isOutline
+                    ? palette.active.outline
+                    : palette.active.solid
+                : "";
+
+            return `${base} ${activeClass}`.trim();
         };
 
         const renderSection = (
@@ -72,7 +93,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
             return (
                 <div
-                    className={cn(
+                    className={cx(
                         baseClasses,
                         "text-[var(--lumin-section)]",
                         disabled && "opacity-60 cursor-not-allowed",
@@ -101,10 +122,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
         return (
             <Element
-                className={cn(
-                    "text-[var(--lumin-text)] inline-flex items-center gap-2 font-medium cursor-pointer relative whitespace-nowrap select-none transition-colors duration-200",
+                className={cx(
+                    "inline-flex items-center gap-2 font-medium cursor-pointer relative whitespace-nowrap select-none transition-colors duration-200",
                     sizeClasses(),
-                    variantClasses(),
+                    getVariant(),
                     fullWidth && "w-full",
                     (disabled || loading) && "opacity-60 cursor-not-allowed",
                     (disabled || loading) && classNames?.disabled,
@@ -112,7 +133,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                     className
                 )}
                 style={{
-                    backgroundColor: color,
                     ...getRadius(radius),
                     ...style
                 }}
@@ -128,7 +148,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         : leftSection,
                     "left"
                 )}
-                <div className={cn("flex-1 flex items-center", getAlign())}>
+                <div className={cx("flex-1 flex items-center", getAlign())}>
                     {children}
                 </div>
                 {renderSection(

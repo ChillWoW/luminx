@@ -1,10 +1,8 @@
 import { useMenu } from "./context";
 import { MenuDropdownProps } from "./types";
-import { getPadding, getRadius, getShadow } from "../_theme";
-import { cx } from "../_theme";
+import { getPadding, getRadius, getShadow, useTheme } from "../_theme";
 import { Portal } from "../Portal";
 import { Transition } from "../Transition";
-import "../style.css";
 import { FloatingFocusManager } from "@floating-ui/react";
 
 export const MenuDropdown = ({
@@ -12,6 +10,8 @@ export const MenuDropdown = ({
     className,
     padding = "sm"
 }: MenuDropdownProps) => {
+    const { theme, cx } = useTheme();
+
     const {
         opened,
         refs,
@@ -48,7 +48,10 @@ export const MenuDropdown = ({
                             role="menu"
                             aria-labelledby={targetId}
                             className={cx(
-                                "menu-dropdown bg-[var(--lumin-background)] overflow-hidden",
+                                "menu-dropdown overflow-hidden",
+                                theme === "light"
+                                    ? "bg-[var(--luminx-light-background)]"
+                                    : "bg-[var(--luminx-dark-background)]",
                                 className,
                                 classNames?.dropdown
                             )}

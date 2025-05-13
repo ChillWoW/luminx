@@ -10,7 +10,7 @@ export const Anchor = ({
     return (
         <a
             className={cx(
-                "text-[var(--lumin-primary)]",
+                "text-[var(--luminx-primary)]",
                 underline === "always" && "underline",
                 underline === "hover" && "hover:underline",
                 underline === "never" && "no-underline",

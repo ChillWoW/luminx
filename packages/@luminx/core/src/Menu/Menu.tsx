@@ -7,7 +7,6 @@ import { MenuLabel } from "./MenuLabel";
 import { MenuItem } from "./MenuItem";
 import { MenuDivider } from "./MenuDivider";
 import { cx } from "../_theme";
-import "../style.css";
 import {
     useFloating,
     autoUpdate,

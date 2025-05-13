@@ -1,9 +1,8 @@
 import React from "react";
 import { PillProps } from "./types";
 import { PillGroup } from "./PillGroup";
-import { XIcon } from "../_icons";
-import { cx, getRadius, getShadow } from "../_theme";
-import "../style.css";
+import { getRadius, getShadow, useTheme } from "../_theme";
+import { IconX } from "@tabler/icons-react";
 
 export const Pill = ({
     size = "md",
@@ -17,6 +16,8 @@ export const Pill = ({
     children,
     ...props
 }: PillProps) => {
+    const { theme, cx } = useTheme();
+
     const sizeStyles = {
         xs: "text-xs px-1.5 py-0.5",
         sm: "text-sm px-2 py-0.5",
@@ -33,7 +34,10 @@ export const Pill = ({
     return (
         <div
             className={cx(
-                "flex items-center bg-[var(--lumin-background)] border border-[var(--lumin-border)] w-fit",
+                "flex items-center border w-fit",
+                theme === "light"
+                    ? "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)] text-[var(--luminx-light-text)]"
+                    : "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)] text-[var(--luminx-dark-text)]",
                 sizeStyles[size],
                 disabled && "opacity-60 cursor-not-allowed",
                 classNames?.root,
@@ -45,9 +49,7 @@ export const Pill = ({
             }}
             {...props}
         >
-            <span className={cx("text-[var(--lumin-text)]", classNames?.label)}>
-                {children}
-            </span>
+            <span className={classNames?.label}>{children}</span>
 
             {withRemoveButton && (
                 <button
@@ -55,13 +57,12 @@ export const Pill = ({
                     onClick={handleRemove}
                     disabled={disabled}
                     className={cx(
-                        "ml-1 flex items-center justify-center text-[var(--lumin-hint)] hover:text-[var(--lumin-text)] transition-colors",
-                        "h-4 w-4",
+                        "ml-1 flex items-center justify-center",
                         classNames?.remove
                     )}
                     aria-label="Remove"
                 >
-                    <XIcon size={10} />
+                    <IconX size={16} />
                 </button>
             )}
         </div>
