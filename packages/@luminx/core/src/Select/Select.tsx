@@ -297,7 +297,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 <div
                     ref={dropdownRef}
                     className={cx(
-                        "absolute w-full border overflow-y-auto",
+                        "absolute w-full border overflow-y-auto luminx-scrollbar",
                         theme === "light"
                             ? "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)]"
                             : "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)]",
