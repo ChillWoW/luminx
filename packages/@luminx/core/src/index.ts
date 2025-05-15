@@ -19,6 +19,7 @@ export * from "./Fieldset";
 export * from "./FileInput";
 export * from "./Flex";
 export * from "./Group";
+export * from "./Highlight";
 export * from "./Icon";
 export * from "./Indicator";
 export * from "./Input";
