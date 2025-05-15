@@ -1,6 +1,6 @@
 import { useTheme } from "../LuminXProvider";
 import { colors } from "./colors";
-import { hexToRgb, rgba } from "./utils";
+import { rgba } from "./utils";
 
 const DEFAULT_TEMPLATE = "--luminx";
 
