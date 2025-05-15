@@ -15,18 +15,6 @@ export interface SelectOptionGroup {
 
 export type SelectData = (string | SelectOption | SelectOptionGroup)[];
 
-export interface SelectDropdownProps {
-    maxHeight?: number;
-    zIndex?: number;
-    dropdownPadding?: number;
-    stayOpenOnSelect?: boolean;
-    shadow?: Shadow;
-    radius?: Radius;
-    checkIcon?: React.ReactNode;
-    checkIconPosition?: "start" | "end";
-    withCheckIcon?: boolean;
-}
-
 export interface SelectClassNames extends InputClassNames {
     dropdown?: string;
     dropdownGroup?: string;
@@ -39,8 +27,10 @@ export interface SelectClassNames extends InputClassNames {
 }
 
 export interface SelectProps
-    extends Omit<InputProps, "component" | "type" | "options"> {
+    extends Omit<InputProps, "component" | "type" | "options" | "onChange"> {
     data: SelectData;
+    value?: string;
+    onChange?: (value: string, option?: SelectOption) => void;
     searchable?: boolean;
     clearable?: boolean;
     allowDeselect?: boolean;
@@ -52,12 +42,16 @@ export interface SelectProps
         search: string;
     }) => SelectOption[];
     dropdownIcon?: React.ReactNode;
-    closeIcon?: React.ReactNode;
-    dropdownOpened?: boolean;
+    clearIcon?: React.ReactNode;
+    checkIcon?: React.ReactNode;
+    checkIconPosition?: "start" | "end";
+    withCheckIcon?: boolean;
+    initialOpened?: boolean;
     onDropdownOpen?: () => void;
     onDropdownClose?: () => void;
-    onChange?: (value: string, option?: SelectOption) => void;
-    dropdownProps?: SelectDropdownProps;
-    inputProps?: InputProps;
+    placement?: "bottom" | "top";
+    maxHeight?: number;
+    zIndex?: number;
+    stayOpenOnSelect?: boolean;
     classNames?: SelectClassNames;
 }

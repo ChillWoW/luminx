@@ -7,31 +7,42 @@ import { IconCheck, IconChevronDown, IconX } from "@tabler/icons-react";
 export const Select = forwardRef<HTMLInputElement, SelectProps>(
     (
         {
-            data,
+            data = [],
+            value,
+            onChange,
 
-            searchable,
-            clearable,
+            placeholder,
+            radius,
+            shadow,
+            fullWidth,
+
+            placement = "bottom",
+            maxHeight = 250,
+            zIndex = 9999,
+            stayOpenOnSelect = false,
+
+            searchable = false,
+            clearable = false,
             allowDeselect = true,
-            noResults = "No results found",
+            disabled,
+            readOnly,
 
             searchValue,
             onSearchChange,
-
             filter,
+            noResults = "No results found",
 
-            dropdownOpened = false,
+            dropdownIcon,
+            clearIcon,
+            checkIcon,
+            checkIconPosition = "start",
+            withCheckIcon = true,
+
+            initialOpened = false,
             onDropdownOpen,
             onDropdownClose,
 
-            onChange,
-
-            dropdownIcon,
-            closeIcon,
-
-            dropdownProps,
             classNames,
-
-            inputProps,
 
             ...props
         },
@@ -39,17 +50,18 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
     ) => {
         const { theme, cx } = useTheme();
 
-        const [isOpen, setIsOpen] = useState(dropdownOpened);
+        const [isOpen, setIsOpen] = useState(initialOpened);
         const [selectedValue, setSelectedValue] = useState<string | null>(
-            (props.value as string) || null
+            (value as string) || null
         );
         const [search, setSearch] = useState(searchValue || "");
 
+        const containerRef = useRef<HTMLDivElement>(null);
         const dropdownRef = useRef<HTMLDivElement>(null);
-        const _inputRef = useRef<HTMLInputElement>(null);
+        const inputRef = useRef<HTMLInputElement>(null);
 
-        const inputRefCallback = (element: HTMLInputElement) => {
-            _inputRef.current = element;
+        const handleInputRef = (element: HTMLInputElement) => {
+            inputRef.current = element;
 
             if (typeof ref === "function") {
                 ref(element);
@@ -58,8 +70,8 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             }
         };
 
-        const dataProcessed = useMemo(() => {
-            if (!data) return [];
+        const processedData = useMemo(() => {
+            if (!data.length) return [];
 
             const processed: SelectOption[] = [];
 
@@ -90,23 +102,23 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             return processed;
         }, [data]);
 
-        const optionsFiltered = useMemo(() => {
-            if (!search) return dataProcessed;
+        const filteredOptions = useMemo(() => {
+            if (!search) return processedData;
 
             if (filter) {
-                return filter({ options: dataProcessed, search });
+                return filter({ options: processedData, search });
             }
 
-            return dataProcessed.filter((option) =>
+            return processedData.filter((option) =>
                 option.label.toLowerCase().includes(search.toLowerCase())
             );
-        }, [dataProcessed, search, filter]);
+        }, [processedData, search, filter]);
 
-        const optionsGrouped = useMemo(() => {
+        const groupedOptions = useMemo(() => {
             const groups: Record<string, SelectOption[]> = {};
             const noGroup: SelectOption[] = [];
 
-            optionsFiltered.forEach((option) => {
+            filteredOptions.forEach((option) => {
                 if (option.group) {
                     if (!groups[option.group]) {
                         groups[option.group] = [];
@@ -118,7 +130,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             });
 
             return { groups, noGroup };
-        }, [optionsFiltered]);
+        }, [filteredOptions]);
 
         useEffect(() => {
             if (!isOpen) return;
@@ -127,22 +139,25 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 if (
                     dropdownRef.current &&
                     !dropdownRef.current.contains(event.target as Node) &&
-                    _inputRef.current &&
-                    !_inputRef.current.contains(event.target as Node)
+                    containerRef.current &&
+                    !containerRef.current.contains(event.target as Node)
                 ) {
                     closeDropdown();
                 }
             };
 
             document.addEventListener("mousedown", handleClickOutside);
+
             return () => {
                 document.removeEventListener("mousedown", handleClickOutside);
             };
         }, [isOpen]);
 
         useEffect(() => {
-            setIsOpen(dropdownOpened);
-        }, [dropdownOpened]);
+            if (value !== undefined) {
+                setSelectedValue(value as string);
+            }
+        }, [value]);
 
         useEffect(() => {
             if (searchValue !== undefined) {
@@ -150,25 +165,21 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             }
         }, [searchValue]);
 
-        useEffect(() => {
-            if (props.value !== undefined) {
-                setSelectedValue(props.value as string);
-            }
-        }, [props.value]);
-
         const openDropdown = () => {
-            if (!props.disabled && !props.readOnly) {
-                setIsOpen(true);
-                onDropdownOpen?.();
-                if (searchable) {
-                    setTimeout(() => _inputRef.current?.focus(), 0);
-                }
+            if (disabled || readOnly) return;
+
+            setIsOpen(true);
+            onDropdownOpen?.();
+
+            if (searchable) {
+                setTimeout(() => inputRef.current?.focus(), 0);
             }
         };
 
         const closeDropdown = () => {
             setIsOpen(false);
             onDropdownClose?.();
+
             if (searchable) {
                 setSearch("");
                 if (searchValue === undefined) {
@@ -178,16 +189,10 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         };
 
         const toggleDropdown = () => {
-            if (isOpen) {
-                closeDropdown();
-            } else {
-                openDropdown();
-            }
+            isOpen ? closeDropdown() : openDropdown();
         };
 
         const handleOptionClick = (option: SelectOption) => {
-            const { stayOpenOnSelect } = dropdownProps || {};
-
             const newValue = option.value;
 
             if (allowDeselect && selectedValue === newValue) {
@@ -205,6 +210,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
 
         const handleInputChange = (value: string) => {
             setSearch(value);
+
             if (searchValue === undefined) {
                 onSearchChange?.(value);
             }
@@ -227,134 +233,26 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
 
             if (!selectedValue) return "";
 
-            const selectedOption = dataProcessed.find(
+            const selectedOption = processedData.find(
                 (option) => option.value === selectedValue
             );
             return selectedOption ? selectedOption.label : "";
-        }, [selectedValue, dataProcessed, searchable, isOpen, search]);
+        }, [selectedValue, processedData, searchable, isOpen, search]);
 
-        const renderDropdown = () => {
-            if (!isOpen) return null;
-
-            const {
-                dropdownPadding = 4,
-                shadow,
-                radius,
-                maxHeight = 60,
-                zIndex = 50
-            } = dropdownProps || {};
-
-            return (
-                <div
-                    ref={dropdownRef}
-                    className={cx(
-                        "absolute w-full border overflow-y-auto",
-                        theme === "light"
-                            ? "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)]"
-                            : "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)]",
-                        `z-[${zIndex}]`,
-                        `max-h-[${maxHeight}px]`,
-                        "top-full mt-3",
-                        "transition-opacity duration-100",
-                        classNames?.dropdown,
-                        classNames?.scrollbar
-                    )}
-                    style={{
-                        padding: dropdownPadding,
-                        ...getRadius(radius),
-                        ...getShadow(shadow)
-                    }}
-                >
-                    {optionsFiltered.length === 0 ? (
-                        noResults && (
-                            <div
-                                className={cx(
-                                    "p-2 text-sm text-center",
-                                    theme === "light"
-                                        ? "text-[var(--luminx-light-hint)]"
-                                        : "text-[var(--luminx-dark-hint)]",
-                                    classNames?.noResults
-                                )}
-                            >
-                                {noResults}
-                            </div>
-                        )
-                    ) : (
-                        <div className="flex flex-col gap-1">
-                            {optionsGrouped.noGroup.map((option, index) =>
-                                renderOption(option, index, dropdownProps)
-                            )}
-
-                            {Object.entries(optionsGrouped.groups).map(
-                                ([groupName, options]) => (
-                                    <div
-                                        key={groupName}
-                                        className="flex flex-col"
-                                    >
-                                        <div
-                                            className={cx(
-                                                "px-2 py-1 text-xs font-semibold",
-                                                theme === "light"
-                                                    ? "text-[var(--luminx-light-hint)]"
-                                                    : "text-[var(--luminx-dark-hint)]",
-                                                classNames?.dropdownGroup
-                                            )}
-                                        >
-                                            {groupName}
-                                        </div>
-                                        {options.map((option, index) =>
-                                            renderOption(
-                                                option,
-                                                optionsGrouped.noGroup.length +
-                                                    Object.entries(
-                                                        optionsGrouped.groups
-                                                    ).findIndex(
-                                                        ([name]) =>
-                                                            name === groupName
-                                                    ) +
-                                                    index,
-                                                dropdownProps
-                                            )
-                                        )}
-                                    </div>
-                                )
-                            )}
-                        </div>
-                    )}
-                </div>
-            );
-        };
-
-        const renderOption = (
-            option: SelectOption,
-            index: number,
-            dropdownProps: any
-        ) => {
+        const renderOption = (option: SelectOption, index: number) => {
             const isSelected = option.value === selectedValue;
-
-            const {
-                checkIcon,
-                checkIconPosition = "start",
-                withCheckIcon = true
-            } = dropdownProps || {};
 
             const checkMark = () => (
                 <div
-                    className={
+                    className={cx(
                         theme === "light"
                             ? "text-[var(--luminx-light-text)]"
                             : "text-[var(--luminx-dark-text)]"
-                    }
+                    )}
                 >
-                    {checkIcon ? checkIcon : <IconCheck size={18} />}
+                    {checkIcon || <IconCheck size={18} />}
                 </div>
             );
-
-            const getSelectedStyle = () => {
-                return theme === "light"
-                    ? "bg-[var(--luminx-light-background-hover)]"
-                    : "bg-[var(--luminx-dark-background-hover)]";
-            };
 
             return (
                 <div
@@ -367,7 +265,10 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                             : "text-[var(--luminx-dark-text)] hover:bg-[var(--luminx-dark-background-hover)]",
                         "transition-colors duration-150 ease-in-out",
                         isSelected && "font-medium",
-                        isSelected && getSelectedStyle(),
+                        isSelected &&
+                            (theme === "light"
+                                ? "bg-[var(--luminx-light-background-hover)]"
+                                : "bg-[var(--luminx-dark-background-hover)]"),
                         option.disabled && "opacity-60 cursor-not-allowed",
                         classNames?.dropdownOption,
                         isSelected && classNames?.dropdownOptionSelected
@@ -389,12 +290,95 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             );
         };
 
+        const renderDropdown = () => {
+            if (!isOpen) return null;
+
+            return (
+                <div
+                    ref={dropdownRef}
+                    className={cx(
+                        "absolute w-full border overflow-y-auto",
+                        theme === "light"
+                            ? "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)]"
+                            : "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)]",
+                        placement === "top"
+                            ? "bottom-full mb-1"
+                            : "top-full mt-1",
+                        "transition-opacity duration-100",
+                        classNames?.dropdown,
+                        classNames?.scrollbar
+                    )}
+                    style={{
+                        maxHeight,
+                        padding: 4,
+                        zIndex: zIndex || 9999,
+                        ...getRadius(radius),
+                        ...getShadow(shadow)
+                    }}
+                >
+                    {filteredOptions.length === 0 ? (
+                        noResults && (
+                            <div
+                                className={cx(
+                                    "p-2 text-sm text-center",
+                                    theme === "light"
+                                        ? "text-[var(--luminx-light-hint)]"
+                                        : "text-[var(--luminx-dark-hint)]",
+                                    classNames?.noResults
+                                )}
+                            >
+                                {noResults}
+                            </div>
+                        )
+                    ) : (
+                        <div className="flex flex-col gap-1">
+                            {groupedOptions.noGroup.map((option, index) =>
+                                renderOption(option, index)
+                            )}
+
+                            {Object.entries(groupedOptions.groups).map(
+                                ([groupName, options]) => (
+                                    <div
+                                        key={groupName}
+                                        className="flex flex-col"
+                                    >
+                                        <div
+                                            className={cx(
+                                                "px-2 py-1 text-xs font-semibold",
+                                                theme === "light"
+                                                    ? "text-[var(--luminx-light-hint)]"
+                                                    : "text-[var(--luminx-dark-hint)]",
+                                                classNames?.dropdownGroup
+                                            )}
+                                        >
+                                            {groupName}
+                                        </div>
+                                        {options.map((option, index) =>
+                                            renderOption(option, index)
+                                        )}
+                                    </div>
+                                )
+                            )}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
         return (
-            <div className="relative">
+            <div
+                className={cx("relative", fullWidth && "w-full")}
+                ref={containerRef}
+            >
                 <Input
-                    inputRef={inputRefCallback}
+                    inputRef={handleInputRef}
                     value={displayValue}
-                    readOnly={!searchable || props.readOnly}
+                    placeholder={placeholder}
+                    readOnly={!searchable || readOnly}
+                    disabled={disabled}
+                    radius={radius}
+                    shadow={shadow}
+                    fullWidth={fullWidth}
                     onClick={toggleDropdown}
                     onChange={searchable ? handleInputChange : undefined}
                     rightSection={
@@ -412,16 +396,10 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                                     onClick={handleClear}
                                     aria-label="Clear"
                                 >
-                                    {closeIcon ? (
-                                        closeIcon
-                                    ) : (
-                                        <IconX size={18} />
-                                    )}
+                                    {clearIcon || <IconX size={18} />}
                                 </button>
                             )}
-                            {dropdownIcon ? (
-                                dropdownIcon
-                            ) : (
+                            {dropdownIcon || (
                                 <IconChevronDown
                                     size={18}
                                     className={cx(
@@ -442,3 +420,5 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         );
     }
 );
+
+Select.displayName = "Select";
