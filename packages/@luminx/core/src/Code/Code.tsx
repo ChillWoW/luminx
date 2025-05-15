@@ -18,7 +18,7 @@ import {
     IconTerminal2
 } from "@tabler/icons-react";
 import { CodeProps } from "./types";
-import { cx, getRadius, getShadow } from "../_theme";
+import { cx, getRadius, getShadow, useTheme } from "../_theme";
 import "../style.css";
 import { Tooltip } from "../Tooltip";
 
@@ -59,6 +59,8 @@ export const Code = ({
     copyText = "Copy code",
     copiedText = "Copied!"
 }: CodeProps) => {
+    const { theme: libraryTheme } = useTheme();
+
     const [copied, setCopied] = useState(false);
     const codeStyle = themeStyles[theme] || themeStyles.dark;
 
@@ -113,6 +115,9 @@ export const Code = ({
         <div
             className={cx(
                 "relative group rounded-md overflow-hidden border-0",
+                libraryTheme === "light"
+                    ? "bg-[var(--luminx-light-background)]"
+                    : "bg-[var(--luminx-dark-background)]",
                 classNames?.container,
                 className
             )}
@@ -124,10 +129,10 @@ export const Code = ({
             {showFileName && (
                 <div
                     className={cx(
-                        "flex items-center gap-2 px-3 py-2 text-sm font-medium",
-                        isDarkTheme
-                            ? "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]"
-                            : "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]",
+                        "flex items-center gap-2 px-3 py-2 text-sm font-medium border-b",
+                        libraryTheme === "light"
+                            ? "text-[var(--luminx-light-text)] border-b-[var(--luminx-light-border)]"
+                            : "text-[var(--luminx-dark-text)] border-b-[var(--luminx-dark-border)]",
                         classNames?.title
                     )}
                 >
@@ -141,7 +146,7 @@ export const Code = ({
                     <button
                         onClick={handleCopy}
                         className={cx(
-                            "absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity",
+                            "absolute top-5 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity",
                             classNames?.copyButton
                         )}
                     >
@@ -168,14 +173,13 @@ export const Code = ({
                     lineNumberStyle={customLineNumberStyle}
                     startingLineNumber={startingLineNumber}
                     className={cx(
-                        "!m-0 !p-4 !bg-transparent",
+                        "!m-0 !p-4 !bg-transparent luminx-scrollbar overflow-auto",
                         classNames?.scrollbar
                     )}
                     customStyle={{
                         margin: 0,
                         borderRadius: 0,
-                        maxHeight: maxHeight,
-                        overflow: maxHeight ? "auto" : undefined
+                        maxHeight: maxHeight
                     }}
                     codeTagProps={{
                         className: cx("font-mono", classNames?.code)
