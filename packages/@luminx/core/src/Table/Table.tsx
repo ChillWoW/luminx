@@ -167,7 +167,7 @@ function TableScrollContainer({
 
     return (
         <div
-            className={cx("overflow-auto lumin-scrollbar", className)}
+            className={cx("overflow-auto luminx-scrollbar", className)}
             style={{
                 minWidth:
                     typeof minWidth === "number" ? `${minWidth}px` : minWidth,
