@@ -1,12 +1,9 @@
 import { forwardRef } from "react";
 import { CardProps } from "./types";
-import { getPadding, getRadius, getShadow, useTheme } from "../_theme";
+import { getRadius, getShadow, useTheme } from "../_theme";
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    (
-        { children, padding, radius, shadow, withBorder, className, ...props },
-        ref
-    ) => {
+    ({ children, radius, shadow, withBorder, className, ...props }, ref) => {
         const { theme, cx } = useTheme();
 
         const getBorder = () => {
@@ -27,12 +24,12 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
                     theme === "light"
                         ? "bg-[var(--luminx-light-background)]"
                         : "bg-[var(--luminx-dark-background)]",
+                    "p-2",
                     getBorder(),
                     className
                 )}
                 style={{
                     ...getRadius(radius),
-                    ...getPadding(padding),
                     ...getShadow(shadow)
                 }}
                 {...props}
