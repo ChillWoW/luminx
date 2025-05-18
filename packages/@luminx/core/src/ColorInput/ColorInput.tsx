@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Input } from "../Input/Input";
 import { ColorInputProps } from "./types";
 import { ColorSwatch } from "../ColorSwatch/ColorSwatch";
@@ -6,6 +6,17 @@ import { ColorPicker } from "../ColorPicker/ColorPicker";
 import { parseColor } from "../ColorPicker/utils";
 import { useTheme } from "../_theme";
 import { IconPencil } from "@tabler/icons-react";
+import {
+    useFloating,
+    autoUpdate,
+    offset,
+    flip,
+    shift,
+    useClick,
+    useDismiss,
+    useRole,
+    useInteractions
+} from "@floating-ui/react";
 
 export const ColorInput = ({
     value = "#ffffff",
@@ -24,6 +35,31 @@ export const ColorInput = ({
 
     const [currentColor, setCurrentColor] = useState(value || defaultValue);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const { x, y, strategy, refs, context } = useFloating({
+        open: isOpen,
+        onOpenChange: setIsOpen,
+        middleware: [offset(5), flip(), shift()],
+        whileElementsMounted: autoUpdate
+    });
+
+    const click = useClick(context);
+    const dismiss = useDismiss(context);
+    const role = useRole(context, { role: "dialog" });
+
+    const { getReferenceProps, getFloatingProps } = useInteractions([
+        click,
+        dismiss,
+        role
+    ]);
+
+    useEffect(() => {
+        if (value) {
+            setCurrentColor(value);
+        }
+    }, [value]);
 
     const handleColorChange = (newColor: string) => {
         setCurrentColor(newColor);
@@ -85,12 +121,15 @@ export const ColorInput = ({
                 rightSection={showEyeDropper ? eyedropperButton : null}
                 inputRef={(node) => {
                     inputRef.current = node;
+                    refs.setReference(node);
                 }}
+                {...getReferenceProps()}
                 {...props}
             />
 
-            {withPicker && (
+            {withPicker && isOpen && (
                 <div
+                    ref={refs.setFloating}
                     className={cx(
                         "z-50 shadow-lg rounded-md overflow-hidden p-2 flex",
                         theme === "light"
@@ -99,6 +138,13 @@ export const ColorInput = ({
 
                         classNames.colorPicker
                     )}
+                    style={{
+                        position: strategy,
+                        top: y ?? 0,
+                        left: x ?? 0,
+                        minWidth: inputRef.current?.offsetWidth || 200
+                    }}
+                    {...getFloatingProps()}
                 >
                     <ColorPicker
                         value={currentColor}
