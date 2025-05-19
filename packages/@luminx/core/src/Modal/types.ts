@@ -24,7 +24,6 @@ export interface ModalProps {
     withCloseButton?: boolean;
     withOverlay?: boolean;
     overlayOpacity?: number;
-    withinPortal?: boolean;
     zIndex?: number;
     style?: CSSProperties;
     className?: string;
