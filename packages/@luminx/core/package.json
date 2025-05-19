@@ -20,6 +20,7 @@
         "build:tailwind": "tailwindcss -i ./src/style.css -o ./dist/style.css",
         "copy:css": "xcopy /S /I /Y \"src\\Loader\\Loader.css\" \"dist\\Loader\\\" && xcopy /S /I /Y \"src\\Skeleton\\Skeleton.css\" \"dist\\Skeleton\\\"",
         "build": "tsc && npm run build:tailwind && npm run copy:css",
+        "build:clean": "cls && rmdir /s /q dist && npm run build",
         "pack": "npm run build && npm pack",
         "pack:clean": "cls && npm run build && npm pack && rmdir /s /q dist",
         "pack:post": "npm run build && npm publish"
