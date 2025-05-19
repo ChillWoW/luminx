@@ -1,5 +1,5 @@
 import { forwardRef, ReactNode } from "react";
-import { cx } from "../_theme";
+import { useTheme } from "../_theme";
 import { useDrawerContext } from "./context";
 import { getShadow, getCornerRadius } from "../_theme";
 import "../style.css";
@@ -21,6 +21,8 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
             opened,
             transitionDuration = 300
         } = useDrawerContext();
+
+        const { theme, cx } = useTheme();
 
         const positionStyles = {
             left: { left: offset, top: 0, bottom: 0 },
@@ -68,7 +70,10 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
             <div
                 ref={ref}
                 className={cx(
-                    "flex flex-col p-4 bg-[var(--lumin-background)]",
+                    "flex flex-col p-4",
+                    theme === "light"
+                        ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]"
+                        : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]",
                     "fixed z-[2]",
                     {
                         "h-full": isVertical,

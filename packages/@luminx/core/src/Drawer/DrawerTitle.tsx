@@ -1,14 +1,23 @@
 import { ReactNode } from "react";
-import { cx } from "../_theme";
 import { XIcon } from "../_icons";
 import { useDrawerContext } from "./context";
+import { useTheme } from "../_theme";
+import { IconX } from "@tabler/icons-react";
 
 export const DrawerTitle = ({ children }: { children: ReactNode }) => {
+    const { theme, cx } = useTheme();
     const { classNames, canClose, onClose, withCloseButton } =
         useDrawerContext();
 
     return (
-        <div className="flex items-center justify-between mb-2">
+        <div
+            className={cx(
+                "flex items-center justify-between mb-2",
+                theme === "light"
+                    ? "text-[var(--luminx-light-text)]"
+                    : "text-[var(--luminx-dark-text)]"
+            )}
+        >
             <p className={cx("text-base font-medium", classNames?.title)}>
                 {children}
             </p>
@@ -16,8 +25,7 @@ export const DrawerTitle = ({ children }: { children: ReactNode }) => {
                 <button
                     type="button"
                     className={cx(
-                        "flex items-center justify-center hover:bg-[var(--lumin-secondary)] text-[var(--lumin-text)] p-4 rounded-full transition-colors",
-                        "h-6 w-6",
+                        "flex items-center justify-center hover:bg-[var(--luminx-primary-light)] p-2 rounded-full transition-colors",
                         classNames?.closeButton
                     )}
                     aria-label="Close"
@@ -26,7 +34,7 @@ export const DrawerTitle = ({ children }: { children: ReactNode }) => {
                         onClose?.();
                     }}
                 >
-                    <XIcon size={12} />
+                    <IconX size={20} />
                 </button>
             )}
         </div>

@@ -20,7 +20,6 @@ export interface DrawerProps {
     withCloseButton?: boolean;
     withOverlay?: boolean;
     overlayOpacity?: number;
-    withinPortal?: boolean;
     zIndex?: number;
     position?: DrawerPosition;
     offset?: number;
