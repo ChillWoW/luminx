@@ -1,15 +1,14 @@
 import { HTMLAttributes } from "react";
-
-export type FieldsetRadius = "none" | "sm" | "md" | "lg" | "xl";
+import { Radius } from "../_theme";
 
 export interface FieldsetProps extends HTMLAttributes<HTMLFieldSetElement> {
-    legend?: string;
-    disabled?: boolean;
-    radius?: FieldsetRadius;
-    classNames?: FieldsetClassNames;
+  legend?: string;
+  disabled?: boolean;
+  radius?: Radius;
+  classNames?: FieldsetClassNames;
 }
 
 export interface FieldsetClassNames {
-    root?: string;
-    legend?: string;
+  root?: string;
+  legend?: string;
 }
