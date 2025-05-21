@@ -56,6 +56,7 @@ export const MenuDropdown = ({
                                 classNames?.dropdown
                             )}
                             style={{
+                                position: "absolute",
                                 ...floatingStyles,
                                 ...getRadius(radius || "md"),
                                 ...getShadow(shadow || "md"),

@@ -19,7 +19,8 @@ import {
     useClick,
     useDismiss,
     safePolygon,
-    inline
+    inline,
+    Placement
 } from "@floating-ui/react";
 
 const defaultProps = (props: MenuProps) => {
@@ -67,7 +68,16 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
             props.onChange?.(open);
         },
         placement: props.position,
-        middleware: [offset(props.offset || 8), flip(), shift(), inline()],
+        middleware: [
+            offset(props.offset || 8),
+            flip({
+                fallbackPlacements: ["top", "bottom", "right", "left"].filter(
+                    (p) => p !== props.position
+                ) as Placement[]
+            }),
+            shift({ padding: 8 }),
+            inline()
+        ],
         whileElementsMounted: autoUpdate
     });
 
