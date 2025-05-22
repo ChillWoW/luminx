@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { Input } from "../Input/Input";
 import { NumberInputProps } from "./types";
 import { useTheme } from "../_theme";
@@ -28,6 +28,9 @@ export const NumberInput = ({
     const [value, setValue] = useState<number>(
         props.value !== undefined ? Number(props.value) : defaultValue
     );
+
+    // Add a state to track if we're currently editing a decimal input
+    const [displayValue, setDisplayValue] = useState<string | null>(null);
 
     const formatValue = useCallback(
         (num: number): string => {
@@ -98,22 +101,83 @@ export const NumberInput = ({
             let newValueString = valueString;
 
             if (valueString === "") {
-                newValueString = "0";
+                setValue(0);
+                setDisplayValue(null);
+                onChange?.(0);
+                return;
             }
 
+            // Check if input is valid based on allowed characters
             const isValidChar = new RegExp(
-                `^[0-9${allowNegative ? "-" : ""}${
+                `^[0-9${allowNegative ? "\\-" : ""}${
                     allowDecimal ? "\\" + decimalSeparator : ""
                 }${thousandSeparator ? "\\" + thousandSeparator : ""}${
-                    prefix ? prefix : ""
-                }${suffix ? suffix : ""}]*$`
+                    prefix ? prefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") : ""
+                }${
+                    suffix ? suffix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") : ""
+                }]*$`
             );
 
             if (!isValidChar.test(newValueString)) {
                 return;
             }
 
+            // Special case for just a decimal point
+            if (allowDecimal && newValueString === decimalSeparator) {
+                setValue(0);
+                setDisplayValue(`0${decimalSeparator}`);
+                onChange?.(0);
+                return;
+            }
+
+            // Special case for negative sign only
+            if (allowNegative && newValueString === "-") {
+                setValue(0);
+                setDisplayValue("-");
+                onChange?.(0);
+                return;
+            }
+
+            // Handle decimal input
+            if (allowDecimal && newValueString.includes(decimalSeparator)) {
+                // Save the display value for rendering
+                setDisplayValue(newValueString);
+
+                // If the input ends with a decimal separator, parse the value without it
+                if (newValueString.endsWith(decimalSeparator)) {
+                    const baseValue = parseValue(newValueString.slice(0, -1));
+                    if (!isNaN(baseValue)) {
+                        setValue(baseValue);
+                        onChange?.(baseValue);
+                    }
+                    return;
+                }
+
+                // For complete decimal inputs like "2.22"
+                const parsedValue = parseValue(newValueString);
+                if (!isNaN(parsedValue)) {
+                    let finalValue = parsedValue;
+                    if (min !== undefined && finalValue < min) finalValue = min;
+                    if (max !== undefined && finalValue > max) finalValue = max;
+
+                    if (precision !== undefined) {
+                        const factor = Math.pow(10, precision);
+                        finalValue = Math.round(finalValue * factor) / factor;
+                    }
+
+                    setValue(finalValue);
+                    onChange?.(finalValue);
+                }
+                return;
+            }
+
+            // Handle regular number input
+            setDisplayValue(null); // Clear display value for non-decimal inputs
             let newValue = parseValue(newValueString);
+
+            if (isNaN(newValue)) {
+                return;
+            }
 
             if (min !== undefined && newValue < min) newValue = min;
             if (max !== undefined && newValue > max) newValue = max;
@@ -145,6 +209,7 @@ export const NumberInput = ({
         const newValue = value + step;
         if (max !== undefined && newValue > max) return;
         setValue(newValue);
+        setDisplayValue(null);
         onChange?.(newValue);
     }, [value, step, max, onChange]);
 
@@ -153,6 +218,7 @@ export const NumberInput = ({
         if (min !== undefined && newValue < min) return;
         if (!allowNegative && newValue < 0) return;
         setValue(newValue);
+        setDisplayValue(null);
         onChange?.(newValue);
     }, [value, step, min, onChange, allowNegative]);
 
@@ -212,7 +278,8 @@ export const NumberInput = ({
     return (
         <Input
             type="text"
-            value={formatValue(value)}
+            inputMode={allowDecimal ? "decimal" : "numeric"}
+            value={displayValue !== null ? displayValue : formatValue(value)}
             onChange={handleChange}
             rightSection={hideControls ? null : controlButtons}
             rightSectionPadding={0}
