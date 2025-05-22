@@ -58,7 +58,7 @@ export const ModalRoot = ({ children }: { children: ReactNode }) => {
             <div
                 className={cx(
                     `fixed inset-0 p-4 flex overflow-y-auto justify-center`,
-                    centered && "items-center justify-center",
+                    centered ? "items-center justify-center" : "h-fit",
                     fullScreen && "p-0",
                     classNames?.root
                 )}
