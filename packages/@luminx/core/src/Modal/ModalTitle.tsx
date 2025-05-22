@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { useTheme } from "../_theme";
-import { XIcon } from "../_icons";
+import { IconX } from "@tabler/icons-react";
 import { useModalContext } from "./context";
 
 export const ModalTitle = ({ children }: { children: ReactNode }) => {
@@ -21,7 +21,7 @@ export const ModalTitle = ({ children }: { children: ReactNode }) => {
             <p className={cx("text-base font-medium", classNames?.title)}>
                 {children}
             </p>
-            {withCloseButton && (
+            {withCloseButton && canClose && (
                 <button
                     type="button"
                     className={cx(
@@ -34,7 +34,7 @@ export const ModalTitle = ({ children }: { children: ReactNode }) => {
                         onClose?.();
                     }}
                 >
-                    <XIcon size={12} />
+                    <IconX size={20} />
                 </button>
             )}
         </div>
