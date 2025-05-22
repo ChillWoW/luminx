@@ -29,7 +29,6 @@ export const NumberInput = ({
         props.value !== undefined ? Number(props.value) : defaultValue
     );
 
-    // Add a state to track if we're currently editing a decimal input
     const [displayValue, setDisplayValue] = useState<string | null>(null);
 
     const formatValue = useCallback(
@@ -107,7 +106,6 @@ export const NumberInput = ({
                 return;
             }
 
-            // Check if input is valid based on allowed characters
             const isValidChar = new RegExp(
                 `^[0-9${allowNegative ? "\\-" : ""}${
                     allowDecimal ? "\\" + decimalSeparator : ""
@@ -122,7 +120,6 @@ export const NumberInput = ({
                 return;
             }
 
-            // Special case for just a decimal point
             if (allowDecimal && newValueString === decimalSeparator) {
                 setValue(0);
                 setDisplayValue(`0${decimalSeparator}`);
@@ -130,7 +127,6 @@ export const NumberInput = ({
                 return;
             }
 
-            // Special case for negative sign only
             if (allowNegative && newValueString === "-") {
                 setValue(0);
                 setDisplayValue("-");
@@ -138,12 +134,9 @@ export const NumberInput = ({
                 return;
             }
 
-            // Handle decimal input
             if (allowDecimal && newValueString.includes(decimalSeparator)) {
-                // Save the display value for rendering
                 setDisplayValue(newValueString);
 
-                // If the input ends with a decimal separator, parse the value without it
                 if (newValueString.endsWith(decimalSeparator)) {
                     const baseValue = parseValue(newValueString.slice(0, -1));
                     if (!isNaN(baseValue)) {
@@ -153,7 +146,6 @@ export const NumberInput = ({
                     return;
                 }
 
-                // For complete decimal inputs like "2.22"
                 const parsedValue = parseValue(newValueString);
                 if (!isNaN(parsedValue)) {
                     let finalValue = parsedValue;
@@ -171,8 +163,7 @@ export const NumberInput = ({
                 return;
             }
 
-            // Handle regular number input
-            setDisplayValue(null); // Clear display value for non-decimal inputs
+            setDisplayValue(null);
             let newValue = parseValue(newValueString);
 
             if (isNaN(newValue)) {
