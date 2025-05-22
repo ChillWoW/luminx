@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode } from "react";
 import { NotificationProps } from "./types";
-import { useTheme, getRadius, cx } from "../_theme";
+import { useTheme, getRadius, cx, getShadow } from "../_theme";
 import { Loader } from "../Loader";
 import { IconX } from "@tabler/icons-react";
 
@@ -23,6 +23,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
         {
             children,
             radius = "md",
+            shadow,
             title,
             icon,
             loading,
@@ -60,6 +61,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
                 )}
                 style={{
                     ...getRadius(radius),
+                    ...getShadow(shadow),
                     ...style
                 }}
                 {...props}
