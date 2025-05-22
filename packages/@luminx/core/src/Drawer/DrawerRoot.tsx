@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { useDrawerContext } from "./context";
-import "../style.css";
 import { cx } from "../_theme";
 
 export const DrawerRoot = ({ children }: { children: ReactNode }) => {

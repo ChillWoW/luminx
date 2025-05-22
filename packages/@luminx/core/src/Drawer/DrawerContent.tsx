@@ -19,8 +19,11 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
             position = "left",
             offset = 0,
             opened,
+            zIndex,
             transitionDuration = 300
         } = useDrawerContext();
+
+        const z = zIndex || 200;
 
         const { theme, cx } = useTheme();
 
@@ -74,7 +77,7 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
                     theme === "light"
                         ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]"
                         : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]",
-                    "fixed z-[2]",
+                    "fixed",
                     {
                         "h-full": isVertical,
                         "w-full": !isVertical
@@ -93,6 +96,7 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
                     ...getShadow(shadow || "sm"),
                     transform: getTransform(),
                     transition: `transform ${transitionDuration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
+                    zIndex: z + 8,
                     ...style
                 }}
             >

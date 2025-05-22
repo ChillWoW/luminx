@@ -21,7 +21,7 @@ export const DrawerTitle = ({ children }: { children: ReactNode }) => {
             <p className={cx("text-base font-medium", classNames?.title)}>
                 {children}
             </p>
-            {withCloseButton && (
+            {withCloseButton && canClose && (
                 <button
                     type="button"
                     className={cx(
