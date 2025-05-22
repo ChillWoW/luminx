@@ -33,6 +33,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
             onClose,
             withBorder,
             withCloseButton = true,
+            closeButtonSize = 18,
             style,
             className,
             classNames,
@@ -88,7 +89,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
                                     classNames?.closeButton
                                 )}
                             >
-                                <IconX size={20} />
+                                <IconX size={closeButtonSize} />
                             </button>
                         </div>
                     )}

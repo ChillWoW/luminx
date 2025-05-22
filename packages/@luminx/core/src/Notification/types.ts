@@ -13,6 +13,7 @@ export interface NotificationProps {
     title?: ReactNode;
     withBorder?: boolean;
     withCloseButton?: boolean;
+    closeButtonSize?: number;
     style?: CSSProperties;
     className?: string;
     classNames?: NotificationClassNames;
