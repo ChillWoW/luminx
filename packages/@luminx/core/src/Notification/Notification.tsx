@@ -1,7 +1,6 @@
 import { forwardRef, ReactNode } from "react";
 import { NotificationProps } from "./types";
 import { useTheme, getRadius, cx } from "../_theme";
-import { XIcon } from "../_icons";
 import { Loader } from "../Loader";
 import { IconX } from "@tabler/icons-react";
 
