@@ -1,6 +1,6 @@
 {
     "name": "@luminx/core",
-    "version": "2.0.0-pre.12",
+    "version": "2.0.0-pre.15",
     "description": "React components library focused on simplicity and ease of use",
     "repository": {
         "type": "github",
@@ -18,7 +18,7 @@
     },
     "scripts": {
         "build:tailwind": "tailwindcss -i ./src/style.css -o ./dist/style.css",
-        "copy:css": "xcopy /S /I /Y \"src\\Loader\\Loader.css\" \"dist\\Loader\\\" && xcopy /S /I /Y \"src\\Skeleton\\Skeleton.css\" \"dist\\Skeleton\\\"",
+        "copy:css": "node scripts/copy-css.js",
         "build": "tsc && npm run build:tailwind && npm run copy:css",
         "build:clean": "cls && rmdir /s /q dist && npm run build",
         "pack": "npm run build && npm pack",
