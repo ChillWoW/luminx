@@ -1,7 +1,6 @@
 import React, { forwardRef, useState, useRef, useEffect } from "react";
 import { SegmentedControlProps, SegmentedControlItem } from "./types";
-import "../style.css";
-import { getRadius, useTheme } from "../_theme";
+import { getRadius, getShadow, useTheme } from "../_theme";
 
 export const SegmentedControl = forwardRef<
     HTMLDivElement,
@@ -14,7 +13,8 @@ export const SegmentedControl = forwardRef<
             defaultValue,
             onChange,
             size = "md",
-            radius = "sm",
+            radius,
+            shadow,
             fullWidth = false,
             color,
             disabled = false,
@@ -151,6 +151,7 @@ export const SegmentedControl = forwardRef<
                 )}
                 style={{
                     ...getRadius(radius),
+                    ...getShadow(shadow),
                     ...style
                 }}
                 {...props}
