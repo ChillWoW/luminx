@@ -18,7 +18,7 @@
     },
     "scripts": {
         "build:tailwind": "tailwindcss -i ./src/style.css -o ./dist/style.css",
-        "copy:css": "node scripts/copy-css.js",
+        "copy:css": "node ../../../scripts/copy-css.js",
         "build": "tsc && npm run build:tailwind && npm run copy:css",
         "build:clean": "cls && rmdir /s /q dist && npm run build",
         "pack": "npm run build && npm pack",

@@ -18,7 +18,9 @@
     },
     "scripts": {
         "build:tailwind": "tailwindcss -i ./src/style.css -o ./dist/style.css",
-        "build": "tsc && npm run build:tailwind",
+        "copy:css": "node ../../../scripts/copy-css.js",
+        "build": "tsc && npm run build:tailwind && npm run copy:css",
+        "build:clean": "cls && rmdir /s /q dist && npm run build",
         "pack": "npm run build && npm pack",
         "pack:clean": "cls && npm run build && npm pack && rmdir /s /q dist",
         "pack:post": "npm run build && npm publish"
@@ -26,7 +28,7 @@
     "peerDependencies": {
         "react": ">=16.8.0",
         "react-dom": ">=16.8.0",
-        "@luminx/core": ">=2.0.0-pre.1",
+        "@luminx/core": ">=2.0.0",
         "dayjs": ">=1.0.0"
     },
     "dependencies": {
