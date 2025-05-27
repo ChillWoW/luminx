@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useTheme } from "../_theme";
 import { useTabs } from "./context";
 import { TabsListProps } from "./types";
-import "../style.css";
 
 export const TabsList = ({ className, children }: TabsListProps) => {
     const { theme, cx } = useTheme();

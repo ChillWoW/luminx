@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { cx } from "../_theme";
 import { TabsList } from "./TabsList";
 import { TabsTab } from "./TabsTab";

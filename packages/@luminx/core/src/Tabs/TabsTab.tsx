@@ -1,8 +1,7 @@
-import React, { useRef, useEffect } from "react";
-import { cx, useTheme } from "../_theme";
+import { useRef, useEffect } from "react";
+import { useTheme } from "../_theme";
 import { useTabs } from "./context";
 import { TabsTabProps } from "./types";
-import "../style.css";
 
 export const TabsTab = ({
     value,

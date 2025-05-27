@@ -37,7 +37,6 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
             openDelay = 0,
             closeDelay = 0,
             refProp = "ref",
-            color,
             radius,
             className,
             classNames,
@@ -144,7 +143,6 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                         style={{
                             ...getRadius(radius),
                             ...style,
-                            backgroundColor: color,
                             position: strategy,
                             top: y ?? 0,
                             left: x ?? 0,
@@ -173,7 +171,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                                     context={context}
                                     className={classNames?.arrow}
                                     fill={
-                                        color || theme === "light"
+                                        theme === "light"
                                             ? "var(--luminx-light-background)"
                                             : "var(--luminx-dark-background)"
                                     }

@@ -1,8 +1,6 @@
-import React from "react";
 import { useTheme } from "../_theme";
 import { useTabs } from "./context";
 import { TabsPanelProps } from "./types";
-import "../style.css";
 
 export const TabsPanel = ({
     value,
