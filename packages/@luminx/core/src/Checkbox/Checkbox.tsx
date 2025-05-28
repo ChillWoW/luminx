@@ -1,7 +1,7 @@
 import React, { forwardRef, useRef, useEffect } from "react";
 import { CheckboxProps } from "./types";
 import "../style.css";
-import { cx, getRadius, getShadow } from "../_theme";
+import { getRadius, getShadow, useTheme } from "../_theme";
 import { IconCheck } from "@tabler/icons-react";
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
@@ -40,6 +40,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
         const localRef = useRef<HTMLInputElement>(null);
         const resolvedRef = (ref ||
             inputRef ||
@@ -80,6 +82,18 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             return styles[size];
         };
 
+        const getStyles = () => {
+            if (unstyled) return;
+
+            return [
+                theme === "light"
+                    ? "border-[var(--luminx-light-border)] bg-[var(--luminx-light-background)]"
+                    : "border-[var(--luminx-dark-border)] bg-[var(--luminx-dark-background)]",
+                (checked || indeterminate) &&
+                    "bg-[var(--luminx-primary)] border-[var(--luminx-primary)]"
+            ];
+        };
+
         const renderIcon = () => {
             if (!Icon) {
                 return (
@@ -91,7 +105,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                         )}
                     >
                         {indeterminate ? (
-                            <div className="w-2/3 h-0.5 bg-[var(--lumin-text)]" />
+                            <div className="w-2 h-0.5 bg-[var(--luminx-dark-text)]" />
                         ) : (
                             <IconCheck size={16} />
                         )}
@@ -134,12 +148,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                     <div
                         className={cx(
                             "flex items-center justify-center absolute top-0 left-0 w-full h-full",
-                            !unstyled && [
-                                "border border-[var(--lumin-border)] bg-[var(--lumin-background)]",
-                                (checked || indeterminate) && [
-                                    "bg-[var(--lumin-primary)] border-[var(--lumin-primary)]"
-                                ]
-                            ],
+                            getStyles(),
                             classNames?.inner
                         )}
                         style={{
@@ -180,14 +189,16 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                             <label
                                 className={cx(
                                     textSizeClass(),
-                                    "text-[var(--lumin-text)]",
+                                    theme === "light"
+                                        ? "text-[var(--luminx-light-text)]"
+                                        : "text-[var(--luminx-dark-text)]",
                                     disabled && "cursor-not-allowed",
                                     classNames?.label
                                 )}
                             >
                                 {label}
                                 {required && (
-                                    <span className="text-[var(--lumin-error)] ml-1">
+                                    <span className="text-[var(--luminx-error)] ml-1">
                                         *
                                     </span>
                                 )}
@@ -197,7 +208,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                         {hint && !error && (
                             <div
                                 className={cx(
-                                    "text-[var(--lumin-hint)] text-sm",
+                                    "text-sm",
+                                    theme === "light"
+                                        ? "text-[var(--luminx-light-hint)]"
+                                        : "text-[var(--luminx-dark-hint)]",
                                     disabled && "cursor-not-allowed",
                                     classNames?.hint
                                 )}
@@ -209,7 +223,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                         {error && (
                             <div
                                 className={cx(
-                                    "text-[var(--lumin-error)] text-sm",
+                                    "text-[var(--luminx-error)] text-sm",
                                     classNames?.error
                                 )}
                             >

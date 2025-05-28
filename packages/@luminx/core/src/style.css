@@ -27,30 +27,34 @@
     --lumin-black: #000;
 
     --lumin-scrollbar-color: var(--lumin-border);
-    --lumin-scrollbar-background: var(--lumin-background);
+    --lumin-scrollbar-background: transparent;
 }
 
-.lumin-scrollbar {
+.luminx-scrollbar {
     scrollbar-width: thin;
     scrollbar-color: var(--lumin-scrollbar-color)
         var(--lumin-scrollbar-background);
 }
 
-.lumin-scrollbar::-webkit-scrollbar {
+.luminx-scrollbar::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
 
-.lumin-scrollbar::-webkit-scrollbar-track {
+.luminx-scrollbar::-webkit-scrollbar-track {
     background: var(--lumin-scrollbar-background);
     border-radius: 4px;
 }
 
-.lumin-scrollbar::-webkit-scrollbar-thumb {
+.luminx-scrollbar::-webkit-scrollbar-thumb {
     background: var(--lumin-scrollbar-color);
     border-radius: 4px;
 }
 
-.lumin-scrollbar::-webkit-scrollbar-thumb:hover {
+.luminx-scrollbar::-webkit-scrollbar-thumb:hover {
     background: var(--lumin-scrollbar-color);
+}
+
+.luminx-scrollbar::-webkit-scrollbar-button {
+    display: none;
 }

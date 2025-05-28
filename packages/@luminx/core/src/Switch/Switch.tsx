@@ -1,14 +1,11 @@
 import React, { forwardRef } from "react";
 import { SwitchProps } from "./types";
-import { cx } from "../_theme";
-import "../style.css";
+import { useTheme } from "../_theme";
 
 export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
     (
         {
             fullWidth,
-            color,
-            thumbColor,
             size = "md",
 
             label,
@@ -33,6 +30,8 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
         },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
         const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
             if (!disabled && !readOnly && onChange) {
                 onChange(event.target.checked);
@@ -83,6 +82,14 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
 
         const currentSize = sizeClass();
 
+        const getCheckedColor = () => {
+            if (checked) return "bg-[var(--luminx-primary)]";
+
+            return theme === "light"
+                ? "bg-[var(--luminx-light-background)]"
+                : "bg-[var(--luminx-dark-background)]";
+        };
+
         return (
             <div
                 className={cx(
@@ -119,16 +126,11 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                             className={cx(
                                 "relative inline-flex items-center rounded-full transition-colors duration-200 ease-in-out cursor-pointer",
                                 currentSize.track,
-                                checked
-                                    ? "bg-[var(--lumin-primary)]"
-                                    : "bg-[var(--lumin-background)]",
+                                getCheckedColor(),
                                 disabled && "cursor-not-allowed",
                                 classNames?.track,
                                 checked && classNames?.activeTrack
                             )}
-                            style={{
-                                backgroundColor: color
-                            }}
                             onClick={
                                 !disabled && !readOnly
                                     ? () => onChange?.(!checked)
@@ -151,7 +153,10 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
 
                             <span
                                 className={cx(
-                                    "absolute rounded-full bg-white transition-transform duration-200 ease-in-out",
+                                    "absolute rounded-full transition-transform duration-200 ease-in-out bg-[var(--luminx-primary)] ring-2 ring-inset",
+                                    thumbIcon
+                                        ? "bg-[var(--luminx-white)] text-[var(--luminx-black)] ring-0"
+                                        : "ring-[var(--luminx-white)]",
                                     currentSize.thumb,
                                     "top-[2px] left-[2px]",
                                     checked && currentSize.thumbTranslate,
@@ -159,9 +164,6 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                                     checked && classNames?.activeThumb,
                                     "flex items-center justify-center"
                                 )}
-                                style={{
-                                    backgroundColor: thumbColor
-                                }}
                             >
                                 {thumbIcon}
                             </span>
@@ -179,7 +181,9 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                                 <label
                                     className={cx(
                                         currentSize.label,
-                                        "text-[var(--lumin-text)]",
+                                        theme === "light"
+                                            ? "text-[var(--luminx-light-text)]"
+                                            : "text-[var(--luminx-dark-text)]",
                                         disabled && "cursor-not-allowed",
                                         classNames?.label
                                     )}
@@ -188,7 +192,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                                     {required && (
                                         <span
                                             className={cx(
-                                                "text-[var(--lumin-error)] ml-1",
+                                                "text-[var(--luminx-error)] ml-1",
                                                 classNames?.required
                                             )}
                                             aria-hidden="true"
@@ -202,7 +206,10 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                             {hint && !error && (
                                 <p
                                     className={cx(
-                                        "text-[var(--lumin-hint)] text-sm",
+                                        "text-sm",
+                                        theme === "light"
+                                            ? "text-[var(--luminx-light-hint)]"
+                                            : "text-[var(--luminx-dark-hint)]",
                                         classNames?.hint
                                     )}
                                 >
@@ -213,7 +220,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                             {error && (
                                 <p
                                     className={cx(
-                                        "text-[var(--lumin-error)] text-sm",
+                                        "text-[var(--luminx-error)] text-sm",
                                         classNames?.error
                                     )}
                                 >

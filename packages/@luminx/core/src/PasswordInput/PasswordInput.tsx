@@ -1,16 +1,19 @@
 import React, { useState, useCallback } from "react";
 import { Input } from "../Input/Input";
 import { PasswordInputProps } from "./types";
-import { VisibilityIcon } from "../_icons";
-import "../style.css";
+import { useTheme } from "../_theme";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 
 export const PasswordInput = ({
     visible: externalVisible,
     onVisibilityChange,
     visibilityToggle = true,
     visibilityToggleIcon,
+    classNames,
     ...props
 }: PasswordInputProps) => {
+    const { theme, cx } = useTheme();
+
     const [internalVisible, setInternalVisible] = useState(false);
 
     const isVisible =
@@ -25,18 +28,25 @@ export const PasswordInput = ({
         }
     }, [isVisible, onVisibilityChange]);
 
+    const eyeIcon = (reveal: boolean) =>
+        reveal ? <IconEye size={20} /> : <IconEyeOff size={20} />;
+
     const controlButton = visibilityToggle && (
         <div className="inline-flex flex-col h-full">
             <button
                 type="button"
-                className="w-7 h-[30px] flex items-center justify-center hover:bg-[var(--lumin-secondary)] rounded-md"
+                className={cx(
+                    "w-7 h-[30px] flex items-center justify-center rounded-full hover:bg-[var(--luminx-primary-light)]",
+                    theme === "light"
+                        ? "text-[var(--luminx-light-text)]"
+                        : "text-[var(--luminx-dark-text)]",
+                    classNames?.visibilityToggle
+                )}
                 onClick={handleToggleVisibility}
             >
-                {visibilityToggleIcon ? (
-                    visibilityToggleIcon(isVisible)
-                ) : (
-                    <VisibilityIcon size={18} reveal={isVisible} />
-                )}
+                {visibilityToggleIcon
+                    ? visibilityToggleIcon(isVisible)
+                    : eyeIcon(isVisible)}
             </button>
         </div>
     );
@@ -49,7 +59,7 @@ export const PasswordInput = ({
             disabled={props.disabled}
             classNames={{
                 rightSection: "p-1",
-                ...props.classNames
+                ...classNames
             }}
             {...props}
         />

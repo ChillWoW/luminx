@@ -1,5 +1,5 @@
 import { InputProps } from "../Input";
-import { ColorPickerFormat } from "../ColorPicker/types";
+import { ColorPickerFormat, ColorPickerProps } from "../ColorPicker/types";
 import { ColorSwatchProps } from "../ColorSwatch";
 
 export interface ColorInputProps extends Omit<InputProps, "onChange"> {
@@ -10,6 +10,7 @@ export interface ColorInputProps extends Omit<InputProps, "onChange"> {
     hidePreview?: boolean;
     showEyeDropper?: boolean;
     colorSwatchProps?: ColorSwatchProps;
+    colorPickerProps?: ColorPickerProps;
     withPicker?: boolean;
     classNames?: ColorInputClassNames & InputProps["classNames"];
 }

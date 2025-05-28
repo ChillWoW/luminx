@@ -1,17 +1,19 @@
 import React from "react";
 import { IndicatorProps } from "./types";
-import { getRadius, cx } from "../_theme";
+import { getRadius, cx, getShadow } from "../_theme";
 
 export const Indicator = ({
     children,
     show = true,
     position = "top-right",
-    size = "md",
+    size = "sm",
     radius = "full",
-    withBorder = false,
-    content,
+    shadow,
+    label,
+    style,
     className,
-    classNames
+    classNames,
+    ...props
 }: IndicatorProps) => {
     const positionClasses = {
         "top-right": "top-0 right-0 -translate-y-1/4 translate-x-1/4",
@@ -24,30 +26,33 @@ export const Indicator = ({
         xs: "w-2 h-2 text-[0.5rem]",
         sm: "w-3 h-3 text-[0.625rem]",
         md: "w-4 h-4 text-xs",
-        lg: "w-5 h-5 text-sm"
+        lg: "w-5 h-5 text-sm",
+        xl: "w-6 h-6 text-base"
     };
 
     return (
         <div
-            className={cx("relative inline-flex", classNames?.root, className)}
+            className={cx("relative inline-flex w-fit", classNames?.root)}
+            {...props}
         >
             {children}
             {show && (
                 <div
                     className={cx(
-                        "absolute flex items-center justify-center bg-[var(--lumin-primary)]",
+                        "absolute flex items-center justify-center bg-[var(--luminx-primary)]",
                         sizeClasses[size],
                         positionClasses[position],
-                        withBorder &&
-                            "ring-2 ring-white dark:ring-[var(--lumin-border)]",
-                        content ? "min-w-4 px-1" : "",
-                        classNames?.indicator
+                        label && "w-fit px-1",
+                        classNames?.indicator,
+                        className
                     )}
                     style={{
-                        ...getRadius(radius)
+                        ...getRadius(radius),
+                        ...getShadow(shadow),
+                        ...style
                     }}
                 >
-                    {content}
+                    {label}
                 </div>
             )}
         </div>

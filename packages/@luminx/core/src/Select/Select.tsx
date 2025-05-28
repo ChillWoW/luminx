@@ -1,52 +1,67 @@
-import React, { useEffect, useRef, useState, forwardRef } from "react";
+import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { Input } from "../Input";
-import { cn } from "../_utils";
-import { Option, OptionGroup, SelectProps } from "./types";
-import { ClearIcon, ChevronIcon } from "./Icons";
-import { CheckIcon } from "../_icons";
-import { cx, getRadius, getShadow } from "../_theme";
-import "../style.css";
+import { SelectOption, SelectOptionGroup, SelectProps } from "./types";
+import { getRadius, getShadow, useTheme } from "../_theme";
+import { IconCheck, IconChevronDown, IconX } from "@tabler/icons-react";
 
 export const Select = forwardRef<HTMLInputElement, SelectProps>(
     (
         {
             data = [],
+            value,
+            onChange,
+
+            placeholder,
+            radius,
+            shadow,
+            fullWidth,
+
+            placement = "bottom",
+            maxHeight = 250,
+            zIndex = 9999,
+            stayOpenOnSelect = false,
 
             searchable = false,
             clearable = false,
             allowDeselect = true,
-            nothingFound = "No results found",
+            disabled,
+            readOnly,
 
-            searchValue: controlledSearchValue,
+            searchValue,
             onSearchChange,
-
             filter,
+            noResults = "No results found",
 
-            dropdownOpened = false,
+            dropdownIcon,
+            clearIcon,
+            checkIcon,
+            checkIconPosition = "start",
+            withCheckIcon = true,
+
+            initialOpened = false,
             onDropdownOpen,
             onDropdownClose,
 
-            onChange,
-
-            comboboxProps,
             classNames,
 
             ...props
         },
         ref
     ) => {
-        const [isOpen, setIsOpen] = useState(dropdownOpened);
+        const { theme, cx } = useTheme();
+
+        const [isOpen, setIsOpen] = useState(initialOpened);
         const [selectedValue, setSelectedValue] = useState<string | null>(
-            (props.value as string) || null
+            (value as string) || null
         );
-        const [search, setSearch] = useState(controlledSearchValue || "");
-        const [highlightedIndex, setHighlightedIndex] = useState(-1);
+        const [search, setSearch] = useState(searchValue || "");
 
+        const containerRef = useRef<HTMLDivElement>(null);
         const dropdownRef = useRef<HTMLDivElement>(null);
-        const innerInputRef = useRef<HTMLInputElement>(null);
+        const inputRef = useRef<HTMLInputElement>(null);
 
-        const inputRefCallback = (element: HTMLInputElement) => {
-            innerInputRef.current = element;
+        const handleInputRef = (element: HTMLInputElement) => {
+            inputRef.current = element;
 
             if (typeof ref === "function") {
                 ref(element);
@@ -55,16 +70,18 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             }
         };
 
-        const processedData = React.useMemo(() => {
-            const processed: Option[] = [];
+        const processedData = useMemo(() => {
+            if (!data.length) return [];
 
-            data.forEach((item) => {
+            const processed: SelectOption[] = [];
+
+            for (const item of data) {
                 if (typeof item === "string") {
                     processed.push({ value: item, label: item });
                 } else if ("value" in item) {
-                    processed.push(item as Option);
+                    processed.push(item as SelectOption);
                 } else if ("group" in item) {
-                    const group = item as OptionGroup;
+                    const group = item as SelectOptionGroup;
                     group.items.forEach((groupItem) => {
                         if (typeof groupItem === "string") {
                             processed.push({
@@ -80,12 +97,12 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                         }
                     });
                 }
-            });
+            }
 
             return processed;
         }, [data]);
 
-        const filteredOptions = React.useMemo(() => {
+        const filteredOptions = useMemo(() => {
             if (!search) return processedData;
 
             if (filter) {
@@ -97,9 +114,9 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             );
         }, [processedData, search, filter]);
 
-        const groupedOptions = React.useMemo(() => {
-            const groups: Record<string, Option[]> = {};
-            const noGroup: Option[] = [];
+        const groupedOptions = useMemo(() => {
+            const groups: Record<string, SelectOption[]> = {};
+            const noGroup: SelectOption[] = [];
 
             filteredOptions.forEach((option) => {
                 if (option.group) {
@@ -122,67 +139,60 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 if (
                     dropdownRef.current &&
                     !dropdownRef.current.contains(event.target as Node) &&
-                    innerInputRef.current &&
-                    !innerInputRef.current.contains(event.target as Node)
+                    containerRef.current &&
+                    !containerRef.current.contains(event.target as Node)
                 ) {
                     closeDropdown();
                 }
             };
 
             document.addEventListener("mousedown", handleClickOutside);
+
             return () => {
                 document.removeEventListener("mousedown", handleClickOutside);
             };
         }, [isOpen]);
 
         useEffect(() => {
-            setIsOpen(dropdownOpened);
-        }, [dropdownOpened]);
+            if (value !== undefined) {
+                setSelectedValue(value as string);
+            }
+        }, [value]);
 
         useEffect(() => {
-            if (controlledSearchValue !== undefined) {
-                setSearch(controlledSearchValue);
+            if (searchValue !== undefined) {
+                setSearch(searchValue);
             }
-        }, [controlledSearchValue]);
-
-        useEffect(() => {
-            if (props.value !== undefined) {
-                setSelectedValue(props.value as string);
-            }
-        }, [props.value]);
+        }, [searchValue]);
 
         const openDropdown = () => {
-            if (!props.disabled && !props.readOnly) {
-                setIsOpen(true);
-                onDropdownOpen?.();
-                if (searchable) {
-                    setTimeout(() => innerInputRef.current?.focus(), 0);
-                }
+            if (disabled || readOnly) return;
+
+            setIsOpen(true);
+            onDropdownOpen?.();
+
+            if (searchable) {
+                setTimeout(() => inputRef.current?.focus(), 0);
             }
         };
 
         const closeDropdown = () => {
             setIsOpen(false);
             onDropdownClose?.();
+
             if (searchable) {
                 setSearch("");
-                if (controlledSearchValue === undefined) {
+                if (searchValue === undefined) {
                     onSearchChange?.("");
                 }
             }
         };
 
         const toggleDropdown = () => {
-            if (isOpen) {
-                closeDropdown();
-            } else {
-                openDropdown();
-            }
+            isOpen ? closeDropdown() : openDropdown();
         };
 
-        const handleOptionClick = (option: Option) => {
-            const { dropdownStayOpen = true } = comboboxProps || {};
-
+        const handleOptionClick = (option: SelectOption) => {
             const newValue = option.value;
 
             if (allowDeselect && selectedValue === newValue) {
@@ -193,50 +203,20 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 onChange?.(newValue, option);
             }
 
-            if (!dropdownStayOpen) {
+            if (!stayOpenOnSelect) {
                 closeDropdown();
             }
         };
 
         const handleInputChange = (value: string) => {
             setSearch(value);
-            if (controlledSearchValue === undefined) {
+
+            if (searchValue === undefined) {
                 onSearchChange?.(value);
             }
 
             if (!isOpen) {
                 openDropdown();
-            }
-
-            setHighlightedIndex(-1);
-        };
-
-        const handleKeyDown = (e: React.KeyboardEvent) => {
-            if (e.key === "Escape") {
-                closeDropdown();
-            } else if (e.key === "ArrowDown") {
-                e.preventDefault();
-                if (!isOpen) {
-                    openDropdown();
-                } else {
-                    setHighlightedIndex((prev) =>
-                        prev < filteredOptions.length - 1 ? prev + 1 : 0
-                    );
-                }
-            } else if (e.key === "ArrowUp") {
-                e.preventDefault();
-                if (isOpen) {
-                    setHighlightedIndex((prev) =>
-                        prev > 0 ? prev - 1 : filteredOptions.length - 1
-                    );
-                }
-            } else if (e.key === "Enter") {
-                e.preventDefault();
-                if (isOpen && highlightedIndex >= 0) {
-                    handleOptionClick(filteredOptions[highlightedIndex]);
-                } else if (!isOpen) {
-                    openDropdown();
-                }
             }
         };
 
@@ -246,7 +226,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             onChange?.("", undefined);
         };
 
-        const displayValue = React.useMemo(() => {
+        const displayValue = useMemo(() => {
             if (searchable && isOpen) {
                 return search;
             }
@@ -259,130 +239,36 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             return selectedOption ? selectedOption.label : "";
         }, [selectedValue, processedData, searchable, isOpen, search]);
 
-        // Render dropdown
-        const renderDropdown = () => {
-            if (!isOpen) return null;
-
-            const {
-                position = "bottom",
-                middlewares,
-                offset = 4,
-                transitionProps,
-                dropdownPadding = 4,
-                shadow,
-                radius = props.radius || "md"
-            } = comboboxProps || {};
-
-            return (
-                <div
-                    ref={dropdownRef}
-                    className={cn(
-                        "absolute z-50 w-full bg-[var(--lumin-background)] border border-[var(--lumin-border)]",
-                        "max-h-60 overflow-auto",
-                        "lumin-scrollbar",
-                        position === "top"
-                            ? "bottom-full mb-1"
-                            : "top-full mt-1",
-                        "transition-opacity duration-200",
-                        transitionProps?.transition === "pop" &&
-                            "transform origin-top transition-transform",
-                        classNames?.dropdown,
-                        classNames?.scrollbar
-                    )}
-                    style={{
-                        padding: dropdownPadding,
-                        ...getRadius(radius),
-                        ...getShadow(shadow)
-                    }}
-                >
-                    {filteredOptions.length === 0 ? (
-                        nothingFound && (
-                            <div
-                                className={cn(
-                                    "p-2 text-sm text-center text-[var(--lumin-hint)]",
-                                    classNames?.nothingFound
-                                )}
-                            >
-                                {nothingFound}
-                            </div>
-                        )
-                    ) : (
-                        <div className="flex flex-col gap-1">
-                            {groupedOptions.noGroup.map((option, index) =>
-                                renderOption(option, index, comboboxProps)
-                            )}
-
-                            {Object.entries(groupedOptions.groups).map(
-                                ([groupName, options]) => (
-                                    <div
-                                        key={groupName}
-                                        className="flex flex-col"
-                                    >
-                                        <div
-                                            className={cn(
-                                                "px-2 py-1 text-xs font-semibold text-[var(--lumin-hint)]",
-                                                classNames?.dropdownGroup
-                                            )}
-                                        >
-                                            {groupName}
-                                        </div>
-                                        {options.map((option, index) =>
-                                            renderOption(
-                                                option,
-                                                groupedOptions.noGroup.length +
-                                                    Object.entries(
-                                                        groupedOptions.groups
-                                                    ).findIndex(
-                                                        ([name]) =>
-                                                            name === groupName
-                                                    ) +
-                                                    index,
-                                                comboboxProps
-                                            )
-                                        )}
-                                    </div>
-                                )
-                            )}
-                        </div>
-                    )}
-                </div>
-            );
-        };
-
-        const renderOption = (
-            option: Option,
-            index: number,
-            comboboxProps: any
-        ) => {
+        const renderOption = (option: SelectOption, index: number) => {
             const isSelected = option.value === selectedValue;
-            const isHighlighted = index === highlightedIndex;
-
-            const {
-                checkIcon,
-                checkIconPosition = "start",
-                withCheckIcon = true
-            } = comboboxProps || {};
 
             const checkMark = () => (
-                <div className="text-[--lumin-text]">
-                    {checkIcon ? checkIcon : <CheckIcon size={14} />}
+                <div
+                    className={cx(
+                        theme === "light"
+                            ? "text-[var(--luminx-light-text)]"
+                            : "text-[var(--luminx-dark-text)]"
+                    )}
+                >
+                    {checkIcon || <IconCheck size={18} />}
                 </div>
             );
 
             return (
                 <div
                     key={option.value}
-                    className={cn(
-                        "px-3 py-2 text-sm cursor-pointer flex items-center text-[var(--lumin-text)] rounded-md",
+                    className={cx(
+                        "flex gap-2",
+                        "px-3 py-2 text-sm cursor-pointer flex items-center rounded-md",
+                        theme === "light"
+                            ? "text-[var(--luminx-light-text)] hover:bg-[var(--luminx-light-background-hover)]"
+                            : "text-[var(--luminx-dark-text)] hover:bg-[var(--luminx-dark-background-hover)]",
                         "transition-colors duration-150 ease-in-out",
+                        isSelected && "font-medium",
                         isSelected &&
-                            "bg-[var(--lumin-background-hover)] font-medium",
-                        !isSelected &&
-                            isHighlighted &&
-                            "bg-[var(--lumin-background-hover)]",
-                        !isSelected &&
-                            !isHighlighted &&
-                            "hover:bg-[var(--lumin-background-hover)]",
+                            (theme === "light"
+                                ? "bg-[var(--luminx-light-background-hover)]"
+                                : "bg-[var(--luminx-dark-background-hover)]"),
                         option.disabled && "opacity-60 cursor-not-allowed",
                         classNames?.dropdownOption,
                         isSelected && classNames?.dropdownOptionSelected
@@ -404,42 +290,130 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             );
         };
 
+        const renderDropdown = () => {
+            if (!isOpen) return null;
+
+            return (
+                <div
+                    ref={dropdownRef}
+                    className={cx(
+                        "absolute w-full border overflow-y-auto luminx-scrollbar",
+                        theme === "light"
+                            ? "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)]"
+                            : "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)]",
+                        placement === "top"
+                            ? "bottom-full mb-1"
+                            : "top-full mt-1",
+                        "transition-opacity duration-100",
+                        classNames?.dropdown,
+                        classNames?.scrollbar
+                    )}
+                    style={{
+                        maxHeight,
+                        padding: 4,
+                        zIndex: zIndex || 9999,
+                        ...getRadius(radius),
+                        ...getShadow(shadow)
+                    }}
+                >
+                    {filteredOptions.length === 0 ? (
+                        noResults && (
+                            <div
+                                className={cx(
+                                    "p-2 text-sm text-center",
+                                    theme === "light"
+                                        ? "text-[var(--luminx-light-hint)]"
+                                        : "text-[var(--luminx-dark-hint)]",
+                                    classNames?.noResults
+                                )}
+                            >
+                                {noResults}
+                            </div>
+                        )
+                    ) : (
+                        <div className="flex flex-col gap-1">
+                            {groupedOptions.noGroup.map((option, index) =>
+                                renderOption(option, index)
+                            )}
+
+                            {Object.entries(groupedOptions.groups).map(
+                                ([groupName, options]) => (
+                                    <div
+                                        key={groupName}
+                                        className="flex flex-col"
+                                    >
+                                        <div
+                                            className={cx(
+                                                "px-2 py-1 text-xs font-semibold",
+                                                theme === "light"
+                                                    ? "text-[var(--luminx-light-hint)]"
+                                                    : "text-[var(--luminx-dark-hint)]",
+                                                classNames?.dropdownGroup
+                                            )}
+                                        >
+                                            {groupName}
+                                        </div>
+                                        {options.map((option, index) =>
+                                            renderOption(option, index)
+                                        )}
+                                    </div>
+                                )
+                            )}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
         return (
-            <div className="relative">
+            <div
+                className={cx("relative", fullWidth && "w-full")}
+                ref={containerRef}
+            >
                 <Input
-                    {...props}
-                    inputRef={inputRefCallback}
+                    inputRef={handleInputRef}
                     value={displayValue}
-                    readOnly={!searchable || props.readOnly}
+                    placeholder={placeholder}
+                    readOnly={!searchable || readOnly}
+                    disabled={disabled}
+                    radius={radius}
+                    shadow={shadow}
+                    fullWidth={fullWidth}
                     onClick={toggleDropdown}
                     onChange={searchable ? handleInputChange : undefined}
-                    onKeyDown={handleKeyDown}
                     rightSection={
-                        props.rightSection || (
-                            <div className="flex items-center">
-                                {clearable && selectedValue && (
-                                    <button
-                                        type="button"
-                                        className="p-1 text-[var(--lumin-hint)] hover:text-[var(--lumin-text)]"
-                                        onClick={handleClear}
-                                        aria-label="Clear"
-                                    >
-                                        <ClearIcon
-                                            className={classNames?.clearIcon}
-                                        />
-                                    </button>
-                                )}
-                                <ChevronIcon
-                                    className={cn(
+                        <div className="flex items-center">
+                            {clearable && selectedValue && (
+                                <button
+                                    type="button"
+                                    className={cx(
+                                        "p-1",
+                                        theme === "light"
+                                            ? "text-[var(--luminx-light-hint)] hover:text-[var(--luminx-light-text)]"
+                                            : "text-[var(--luminx-dark-hint)] hover:text-[var(--luminx-dark-text)]",
+                                        classNames?.clearIcon
+                                    )}
+                                    onClick={handleClear}
+                                    aria-label="Clear"
+                                >
+                                    {clearIcon || <IconX size={18} />}
+                                </button>
+                            )}
+                            {dropdownIcon || (
+                                <IconChevronDown
+                                    size={18}
+                                    className={cx(
+                                        "transform duration-150 ease-in-out",
                                         isOpen && "rotate-180",
                                         classNames?.chevronIcon
                                     )}
                                     onClick={toggleDropdown}
                                 />
-                            </div>
-                        )
+                            )}
+                        </div>
                     }
                     classNames={classNames}
+                    {...props}
                 />
                 {renderDropdown()}
             </div>
@@ -447,4 +421,4 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
     }
 );
 
-Select.displayName = "@luminx/core/Select";
+Select.displayName = "Select";

@@ -1,6 +1,5 @@
 import { CSSProperties, ReactNode } from "react";
 
-export type ModalPadding = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type ModalRadius = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type ModalShadow = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type ModalSize = "xs" | "sm" | "md" | "lg" | "xl" | "full" | "auto";
@@ -16,7 +15,6 @@ export interface ModalProps {
     centered?: boolean;
     fullScreen?: boolean;
     lockScroll?: boolean;
-    padding?: ModalPadding;
     radius?: ModalRadius;
     shadow?: ModalShadow;
     size?: ModalSize;
@@ -24,7 +22,6 @@ export interface ModalProps {
     withCloseButton?: boolean;
     withOverlay?: boolean;
     overlayOpacity?: number;
-    withinPortal?: boolean;
     zIndex?: number;
     style?: CSSProperties;
     className?: string;

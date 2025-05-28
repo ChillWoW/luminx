@@ -1,7 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import { DrawerProps } from "./types";
 import { DrawerContext } from "./context";
-import { Portal } from "../Portal";
 import { DrawerRoot } from "./DrawerRoot";
 import { DrawerContent } from "./DrawerContent";
 import { DrawerTitle } from "./DrawerTitle";
@@ -12,7 +11,6 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
         children,
         opened,
         onClose,
-        withinPortal = true,
         canClose = true,
         closeOnEscape = true,
         lockScroll = true,
@@ -23,7 +21,6 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
         shadow = "sm",
         size = "md",
         radius = "none",
-        padding = "md",
         zIndex,
         position = "left",
         offset = 0,
@@ -79,29 +76,28 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
 
     if (!mounted) return null;
 
-    const Component = (
-        <DrawerContext.Provider
-            value={{
-                zIndex,
-                classNames,
-                overlayOpacity,
-                canClose,
-                closeOnClickOutside,
-                onClose,
-                withCloseButton,
-                size,
-                radius,
-                shadow,
-                padding,
-                withOverlay,
-                position,
-                offset,
-                style,
-                className,
-                opened: visible,
-                transitionDuration
-            }}
-        >
+    const contextValue = {
+        zIndex,
+        classNames,
+        overlayOpacity,
+        canClose,
+        closeOnClickOutside,
+        onClose,
+        withCloseButton,
+        size,
+        radius,
+        shadow,
+        withOverlay,
+        position,
+        offset,
+        style,
+        className,
+        opened: visible,
+        transitionDuration
+    };
+
+    return (
+        <DrawerContext.Provider value={contextValue}>
             <DrawerRoot>
                 <DrawerContent ref={ref}>
                     {(title || withCloseButton) && (
@@ -112,8 +108,6 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
             </DrawerRoot>
         </DrawerContext.Provider>
     );
-
-    return withinPortal ? <Portal>{Component}</Portal> : Component;
 });
 
 const DrawerExtended = Object.assign(Drawer, {

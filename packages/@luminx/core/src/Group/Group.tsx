@@ -73,4 +73,4 @@ export const Group = forwardRef<HTMLDivElement, GroupProps>(
     }
 );
 
-Group.displayName = "Group";
+Group.displayName = "@luminx/core/Group";

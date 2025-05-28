@@ -20,7 +20,6 @@ import {
 import { CalendarHeader } from "../_shared/CalendarHeader";
 import { PickerGrid } from "../_shared/PickerGrid";
 import { PickerControl } from "../_shared/PickerControl";
-import "../style.css";
 
 export type YearPickerBaseProps = {
     yearsListFormat?: string;

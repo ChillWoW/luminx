@@ -7,7 +7,9 @@ export type Shadow =
     | "xl"
     | "2xl"
     | "3xl"
-    | "4xl";
+    | "4xl"
+    | string
+    | number;
 
 export interface GetShadowProps {
     shadow?: Shadow;

@@ -1,7 +1,7 @@
 import { forwardRef, ReactNode } from "react";
-import { cx } from "../_theme";
+import { useTheme } from "../_theme";
 import { useDrawerContext } from "./context";
-import { getShadow, getPadding, getCornerRadius } from "../_theme";
+import { getShadow, getCornerRadius } from "../_theme";
 import "../style.css";
 
 export interface DrawerContentProps {
@@ -15,13 +15,17 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
             size,
             radius,
             shadow,
-            padding,
             classNames,
             position = "left",
             offset = 0,
             opened,
+            zIndex,
             transitionDuration = 300
         } = useDrawerContext();
+
+        const z = zIndex || 200;
+
+        const { theme, cx } = useTheme();
 
         const positionStyles = {
             left: { left: offset, top: 0, bottom: 0 },
@@ -69,8 +73,11 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
             <div
                 ref={ref}
                 className={cx(
-                    "flex flex-col bg-[var(--lumin-background)]",
-                    "fixed z-[2]",
+                    "flex flex-col p-4",
+                    theme === "light"
+                        ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]"
+                        : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]",
+                    "fixed",
                     {
                         "h-full": isVertical,
                         "w-full": !isVertical
@@ -87,9 +94,9 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
                         corner: "right"
                     }),
                     ...getShadow(shadow || "sm"),
-                    ...getPadding(padding || "md"),
                     transform: getTransform(),
                     transition: `transform ${transitionDuration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
+                    zIndex: z + 8,
                     ...style
                 }}
             >

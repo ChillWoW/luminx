@@ -1,6 +1,6 @@
 {
     "name": "@luminx/dates",
-    "version": "1.1.2",
+    "version": "2.0.0",
     "description": "React date components library focused on simplicity and ease of use",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -18,7 +18,9 @@
     },
     "scripts": {
         "build:tailwind": "tailwindcss -i ./src/style.css -o ./dist/style.css",
-        "build": "tsc && npm run build:tailwind",
+        "copy:css": "node ../../../scripts/copy-css.js",
+        "build": "tsc && npm run build:tailwind && npm run copy:css",
+        "build:clean": "cls && rmdir /s /q dist && npm run build",
         "pack": "npm run build && npm pack",
         "pack:clean": "cls && npm run build && npm pack && rmdir /s /q dist",
         "pack:post": "npm run build && npm publish"
@@ -26,7 +28,6 @@
     "peerDependencies": {
         "react": ">=16.8.0",
         "react-dom": ">=16.8.0",
-        "@luminx/core": ">=1.0.5",
         "dayjs": ">=1.0.0"
     },
     "dependencies": {

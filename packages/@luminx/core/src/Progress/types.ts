@@ -1,32 +1,40 @@
 import { ReactNode } from "react";
+import { Radius, Shadow } from "../_theme";
 
-export type ProgressRadius = "none" | "xs" | "sm" | "md" | "lg" | "xl";
+export type ProgressSize = "xs" | "sm" | "md" | "lg" | "xl";
+export type ProgressLabelPosition = "left" | "center" | "right";
 
 export interface ProgressRootProps {
-    size?: number | string;
-    color?: string;
-    radius?: ProgressRadius;
-    striped?: boolean;
-    animated?: boolean;
-    transitionDuration?: number;
-    className?: string;
     children?: ReactNode;
+    size?: ProgressSize;
+    radius?: Radius;
+    shadow?: Shadow;
+    className?: string;
 }
 
 export interface ProgressSectionProps {
     value: number;
-    color?: string;
     className?: string;
+    striped?: boolean;
+    animated?: boolean;
     children?: ReactNode;
 }
 
 export interface ProgressLabelProps {
     children: ReactNode;
+    position?: ProgressLabelPosition;
     className?: string;
 }
 
 export interface ProgressProps
     extends ProgressRootProps,
-        Omit<ProgressSectionProps, "className" | "children"> {
+        Omit<
+            ProgressSectionProps,
+            "className" | "children" | "position" | "value"
+        > {
+    value?: number;
     label?: ReactNode;
+    labelPosition?: ProgressLabelPosition;
+    striped?: boolean;
+    animated?: boolean;
 }

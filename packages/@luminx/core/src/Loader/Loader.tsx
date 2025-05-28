@@ -5,7 +5,7 @@ import { cx } from "../_theme";
 
 export const Loader = ({
     size = 40,
-    color = "white",
+    color = "var(--luminx-primary)",
     speed = 0.8,
     stroke = 5,
     strokeLength = 0.25,

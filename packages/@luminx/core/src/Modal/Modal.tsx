@@ -2,7 +2,6 @@ import { forwardRef, useEffect, useState } from "react";
 import { AnimationState, ModalProps } from "./types";
 import { ModalContext } from "./context";
 import { ModalRoot } from "./ModalRoot";
-import { Portal } from "../Portal";
 import { ModalContent } from "./ModalContent";
 import { ModalTitle } from "./ModalTitle";
 import { ModalBody } from "./ModalBody";
@@ -12,7 +11,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
         children,
         opened,
         onClose,
-        withinPortal = true,
         canClose = true,
         closeOnEscape = true,
         lockScroll = true,
@@ -23,7 +21,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
         shadow = "sm",
         size = "md",
         radius = "md",
-        padding = "md",
         zIndex,
         centered = true,
         overlayOpacity = 0.6,
@@ -87,7 +84,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
 
     if (!mounted || !visible) return null;
 
-    const Component = (
+    return (
         <ModalContext.Provider
             value={{
                 zIndex,
@@ -101,7 +98,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
                 size,
                 radius,
                 shadow,
-                padding,
                 fullScreen,
                 withOverlay,
                 style,
@@ -121,8 +117,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
             </ModalRoot>
         </ModalContext.Provider>
     );
-
-    return withinPortal ? <Portal>{Component}</Portal> : Component;
 });
 
 const ModalExtended = Object.assign(Modal, {

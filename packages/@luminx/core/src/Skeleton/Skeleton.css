@@ -1,8 +1,15 @@
 .skeleton-shimmer {
     position: relative;
     overflow: hidden;
-    background-color: var(--lumin-background);
     animation: pulse 1.5s ease-in-out infinite;
+}
+
+[data-theme="dark"] .skeleton-shimmer {
+    background-color: var(--luminx-dark-background);
+}
+
+[data-theme="light"] .skeleton-shimmer {
+    background-color: var(--luminx-light-background);
 }
 
 @keyframes pulse {

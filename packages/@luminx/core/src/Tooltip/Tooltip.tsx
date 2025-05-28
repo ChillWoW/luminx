@@ -1,14 +1,22 @@
-import React, {
-    cloneElement,
-    useCallback,
-    useEffect,
-    useRef,
-    useState
-} from "react";
+import React, { cloneElement, useRef, useState } from "react";
 import { TooltipProps } from "./types";
-import "../style.css";
-import { getRadius, cx } from "../_theme";
+import { getRadius, useTheme } from "../_theme";
 import { Transition } from "../Transition";
+import {
+    useFloating,
+    autoUpdate,
+    offset,
+    flip,
+    shift,
+    arrow,
+    useHover,
+    useFocus,
+    useDismiss,
+    useRole,
+    useInteractions,
+    Placement,
+    FloatingArrow
+} from "@floating-ui/react";
 
 export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
     (
@@ -16,7 +24,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
             children,
             label,
             position = "top",
-            offset = 5,
+            offset: offsetProp = 5,
             disabled = false,
             opened,
             withArrow = false,
@@ -29,7 +37,6 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
             openDelay = 0,
             closeDelay = 0,
             refProp = "ref",
-            color,
             radius,
             className,
             classNames,
@@ -38,147 +45,63 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         },
         ref
     ) => {
-        const [visible, setVisible] = useState(opened || false);
-        const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-        const targetRef = useRef<HTMLElement | null>(null);
-        const tooltipRef = useRef<HTMLDivElement | null>(null);
+        const { theme, cx } = useTheme();
 
-        const finalOpenDelay = openDelay;
-        const finalCloseDelay = closeDelay;
+        const [open, setOpen] = useState(opened || false);
+        const arrowRef = useRef<SVGSVGElement>(null);
 
-        const clearTimeouts = () => {
-            if (timeoutRef.current) {
-                clearTimeout(timeoutRef.current);
-                timeoutRef.current = null;
-            }
+        const convertPosition = (pos: string): Placement => {
+            return pos as Placement;
         };
 
-        const handleOpen = () => {
-            if (disabled) return;
+        const { x, y, strategy, refs, middlewareData, context } = useFloating({
+            placement: convertPosition(position),
+            open,
+            onOpenChange: (opened) => {
+                if (opened === undefined) return;
+                setOpen(opened);
+            },
+            middleware: [
+                offset(
+                    typeof offsetProp === "number"
+                        ? offsetProp
+                        : {
+                              mainAxis: offsetProp?.mainAxis ?? 5,
+                              crossAxis: offsetProp?.crossAxis ?? 0
+                          }
+                ),
+                flip(),
+                shift(),
+                ...(withArrow ? [arrow({ element: arrowRef })] : [])
+            ],
+            whileElementsMounted: autoUpdate
+        });
 
-            clearTimeouts();
-            timeoutRef.current = setTimeout(
-                () => setVisible(true),
-                finalOpenDelay
-            );
-        };
+        const hover = useHover(context, {
+            enabled: events.hover && !disabled,
+            delay: { open: openDelay, close: closeDelay }
+        });
 
-        const handleClose = () => {
-            if (opened !== undefined) return;
+        const focus = useFocus(context, {
+            enabled: events.focus && !disabled
+        });
 
-            clearTimeouts();
-            timeoutRef.current = setTimeout(
-                () => setVisible(false),
-                finalCloseDelay
-            );
-        };
+        const dismiss = useDismiss(context);
 
-        useEffect(() => {
-            if (visible && targetRef.current && tooltipRef.current) {
-                const targetRect = targetRef.current.getBoundingClientRect();
-                const tooltipRect = tooltipRef.current.getBoundingClientRect();
+        const role = useRole(context, { role: "tooltip" });
 
-                let top = 0;
-                let left = 0;
+        const { getReferenceProps, getFloatingProps } = useInteractions([
+            hover,
+            focus,
+            dismiss,
+            role
+        ]);
 
-                // Calculate position
-                if (position.startsWith("top")) {
-                    top =
-                        targetRect.top -
-                        tooltipRect.height -
-                        (typeof offset === "number" ? offset : 5);
-                    left =
-                        targetRect.left +
-                        targetRect.width / 2 -
-                        tooltipRect.width / 2;
-
-                    if (position === "top-start") {
-                        left = targetRect.left;
-                    } else if (position === "top-end") {
-                        left = targetRect.right - tooltipRect.width;
-                    }
-                } else if (position.startsWith("bottom")) {
-                    top =
-                        targetRect.bottom +
-                        (typeof offset === "number" ? offset : 5);
-                    left =
-                        targetRect.left +
-                        targetRect.width / 2 -
-                        tooltipRect.width / 2;
-
-                    if (position === "bottom-start") {
-                        left = targetRect.left;
-                    } else if (position === "bottom-end") {
-                        left = targetRect.right - tooltipRect.width;
-                    }
-                } else if (position.startsWith("left")) {
-                    left =
-                        targetRect.left -
-                        tooltipRect.width -
-                        (typeof offset === "number" ? offset : 5);
-                    top =
-                        targetRect.top +
-                        targetRect.height / 2 -
-                        tooltipRect.height / 2;
-
-                    if (position === "left-start") {
-                        top = targetRect.top;
-                    } else if (position === "left-end") {
-                        top = targetRect.bottom - tooltipRect.height;
-                    }
-                } else if (position.startsWith("right")) {
-                    left =
-                        targetRect.right +
-                        (typeof offset === "number" ? offset : 5);
-                    top =
-                        targetRect.top +
-                        targetRect.height / 2 -
-                        tooltipRect.height / 2;
-
-                    if (position === "right-start") {
-                        top = targetRect.top;
-                    } else if (position === "right-end") {
-                        top = targetRect.bottom - tooltipRect.height;
-                    }
-                }
-
-                tooltipRef.current.style.left = `${left}px`;
-                tooltipRef.current.style.top = `${top}px`;
-            }
-        }, [visible, position, offset]);
-
-        useEffect(() => {
+        React.useEffect(() => {
             if (opened !== undefined) {
-                setVisible(opened);
+                setOpen(opened);
             }
         }, [opened]);
-
-        useEffect(() => {
-            return () => clearTimeouts();
-        }, []);
-
-        const eventHandlers = !disabled
-            ? {
-                  ...(events.hover
-                      ? {
-                            onMouseEnter: handleOpen,
-                            onMouseLeave: handleClose
-                        }
-                      : {}),
-                  ...(events.focus
-                      ? {
-                            onFocus: handleOpen,
-                            onBlur: handleClose
-                        }
-                      : {}),
-                  ...(events.touch
-                      ? {
-                            onTouchStart: handleOpen,
-                            onTouchEnd: handleClose
-                        }
-                      : {})
-              }
-            : {};
 
         if (!label) {
             return <>{children}</>;
@@ -187,27 +110,19 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         const clonedChild = cloneElement(
             React.Children.only(children) as React.ReactElement,
             {
-                [refProp]: (node: HTMLElement) => {
-                    targetRef.current = node;
-
-                    const childRef = (children as any).ref;
-                    if (typeof childRef === "function") {
-                        childRef(node);
-                    } else if (childRef) {
-                        childRef.current = node;
-                    }
-                },
-                ...eventHandlers,
-                "aria-describedby": visible ? "tooltip" : undefined
+                [refProp]: refs.setReference,
+                ...getReferenceProps({
+                    "aria-describedby": open ? "tooltip" : undefined
+                })
             } as any
         );
 
-        const tooltipElement = visible && (
-            <Transition mounted={visible} transition="fade">
+        const tooltipElement = open && (
+            <Transition mounted={open} transition="fade">
                 {(transitionStyles) => (
                     <div
                         ref={(node) => {
-                            tooltipRef.current = node;
+                            refs.setFloating(node);
                             if (typeof ref === "function") {
                                 ref(node);
                             } else if (ref) {
@@ -217,21 +132,30 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                         role="tooltip"
                         id="tooltip"
                         className={cx(
-                            "fixed z-50 pointer-events-none bg-[var(--lumin-background)]",
+                            "fixed z-50 pointer-events-none",
                             "transition-opacity duration-200",
-                            visible ? "opacity-100" : "opacity-0",
+                            open ? "opacity-100" : "opacity-0",
+                            theme === "light"
+                                ? "bg-[var(--luminx-light-background)]"
+                                : "bg-[var(--luminx-dark-background)]",
                             classNames?.root
                         )}
                         style={{
                             ...getRadius(radius),
                             ...style,
-                            backgroundColor: color
+                            position: strategy,
+                            top: y ?? 0,
+                            left: x ?? 0,
+                            ...transitionStyles
                         }}
-                        {...others}
+                        {...getFloatingProps(others)}
                     >
                         <div
                             className={cx(
-                                "py-1 px-2 text-sm text-[var(--lumin-text)]",
+                                "py-1 px-2 text-sm",
+                                theme === "light"
+                                    ? "text-[var(--luminx-light-text)]"
+                                    : "text-[var(--luminx-dark-text)]",
                                 multiline
                                     ? "text-left max-w-xs"
                                     : "text-center whitespace-nowrap",
@@ -242,33 +166,21 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                             }}
                         >
                             {withArrow && (
-                                <div
-                                    className={cx(
-                                        "absolute w-2 h-2 bg-inherit transform rotate-45",
-                                        position.startsWith("top")
-                                            ? "bottom-0 translate-y-1/2"
-                                            : position.startsWith("bottom")
-                                            ? "top-0 -translate-y-1/2"
-                                            : position.startsWith("left")
-                                            ? "right-0 translate-x-1/2"
-                                            : "left-0 -translate-x-1/2",
-                                        classNames?.arrow
-                                    )}
-                                    style={{
-                                        width: arrowSize,
-                                        height: arrowSize,
-                                        borderRadius: arrowRadius
-                                    }}
+                                <FloatingArrow
+                                    ref={arrowRef}
+                                    context={context}
+                                    className={classNames?.arrow}
+                                    fill={
+                                        theme === "light"
+                                            ? "var(--luminx-light-background)"
+                                            : "var(--luminx-dark-background)"
+                                    }
+                                    width={arrowSize * 2}
+                                    height={arrowSize}
+                                    tipRadius={arrowRadius}
                                 />
                             )}
-                            <div
-                                className={cx(
-                                    "tooltip-content",
-                                    classNames?.content
-                                )}
-                            >
-                                {label}
-                            </div>
+                            <div className={classNames?.content}>{label}</div>
                         </div>
                     </div>
                 )}
@@ -278,7 +190,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         return (
             <div
                 className={cx(
-                    "tooltip-wrapper relative",
+                    "relative",
                     inline ? "inline" : "inline-block",
                     className
                 )}

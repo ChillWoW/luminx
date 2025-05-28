@@ -1,12 +1,13 @@
 import { ButtonHTMLAttributes, ElementType } from "react";
 import { Radius, Shadow } from "../_theme";
-import { TooltipProps } from "../Tooltip";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type ButtonVariant = "filled" | "outline" | "unstyled";
 export type ButtonLoaderPosition = "left" | "right";
+export type ButtonAlign = "left" | "center" | "right";
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+    extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color"> {
     type?: "button" | "submit" | "reset";
     as?: ElementType;
     leftSection?: React.ReactNode;
@@ -25,8 +26,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     href?: string;
     target?: string;
     preventDefault?: boolean;
-    tooltip?: boolean;
-    tooltipProps?: Omit<TooltipProps, "children">;
+    align?: ButtonAlign;
     style?: React.CSSProperties;
     className?: string;
     classNames?: ButtonClassNames;
@@ -37,5 +37,6 @@ export interface ButtonClassNames {
     leftSection?: string;
     rightSection?: string;
     disabled?: string;
+    sectionDisabled?: string;
     loader?: string;
 }

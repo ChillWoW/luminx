@@ -35,7 +35,19 @@ export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
     withColumnBorders?: boolean;
     withRowBorders?: boolean;
     className?: string;
+    classNames?: TableClassNames;
     children?: React.ReactNode;
+}
+
+export interface TableClassNames {
+    root?: string;
+    thead?: string;
+    tbody?: string;
+    tfoot?: string;
+    caption?: string;
+    tr?: string;
+    th?: string;
+    td?: string;
 }
 
 export interface TableTheadProps

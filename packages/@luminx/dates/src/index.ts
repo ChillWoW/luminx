@@ -1,5 +1,3 @@
-import "./style.css";
-
 export * from "./DatesProvider";
 export * from "./YearPicker";
 export * from "./MonthPicker";

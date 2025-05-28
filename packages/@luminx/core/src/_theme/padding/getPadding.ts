@@ -10,12 +10,3 @@ export const getPadding = (padding?: Padding) => {
 
     return { padding: defaultPaddingObj?.value || "0rem" };
 };
-
-export const usePadding = (padding?: Padding) => {
-    const paddingToUse = padding || "md";
-    const paddingObj = defaultPaddingValues.find(
-        (p) => p.name === paddingToUse
-    );
-
-    return paddingObj?.value || "0rem";
-};

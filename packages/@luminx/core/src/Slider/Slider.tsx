@@ -6,8 +6,7 @@ import React, {
     useCallback
 } from "react";
 import { SliderProps } from "./types";
-import { cx } from "../_theme";
-import "../style.css";
+import { getRadius, useTheme } from "../_theme";
 
 export const Slider = forwardRef<HTMLDivElement, SliderProps>(
     (
@@ -37,6 +36,8 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
         },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
         const [currentValue, setCurrentValue] = useState(
             value !== undefined ? value : defaultValue
         );
@@ -62,14 +63,18 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
         const getValueFromPosition = useCallback(
             (position: number) => {
                 const clampedPosition = Math.min(Math.max(position, 0), 100);
-                const rawValue = min + (clampedPosition / 100) * (max - min);
 
                 const stepsCount = (max - min) / step;
                 const stepPercentage = 100 / stepsCount;
                 const steps = Math.round(clampedPosition / stepPercentage);
                 const steppedValue = min + steps * step;
 
-                return Math.min(Math.max(steppedValue, min), max);
+                const precisionFactor = 1000000;
+                const roundedValue =
+                    Math.round(steppedValue * precisionFactor) /
+                    precisionFactor;
+
+                return Math.min(Math.max(roundedValue, min), max);
             },
             [min, max, step]
         );
@@ -179,20 +184,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
             return styles[size];
         };
 
-        const radiusClass = () => {
-            const styles = {
-                none: "rounded-none",
-                sm: "rounded-sm",
-                md: "rounded",
-                lg: "rounded-lg",
-                xl: "rounded-xl",
-                full: "rounded-full"
-            };
-            return styles[radius];
-        };
-
         const currentSize = sizeClass();
-        const currentRadius = radiusClass();
         const position = getPositionFromValue(currentValue);
         const showLabel =
             labelAlwaysOn || isDragging || (isHovered && showLabelOnHover);
@@ -215,31 +207,37 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                     className={cx(
                         "relative w-full",
                         currentSize.track,
-                        currentRadius,
                         "cursor-pointer",
                         disabled && "cursor-not-allowed",
                         classNames?.trackContainer
                     )}
+                    style={{
+                        ...getRadius(radius)
+                    }}
                     onClick={disabled ? undefined : handleTrackClick}
                 >
                     <div
                         className={cx(
                             "absolute inset-0",
-                            currentRadius,
-                            "bg-[var(--lumin-background)]",
+                            theme === "light"
+                                ? "bg-[var(--luminx-light-background)]"
+                                : "bg-[var(--luminx-dark-background)]",
                             classNames?.track
                         )}
-                        style={{ backgroundColor: trackColor }}
+                        style={{
+                            ...getRadius(radius),
+                            backgroundColor: trackColor
+                        }}
                     />
 
                     <div
                         className={cx(
                             "absolute top-0 bottom-0",
-                            currentRadius,
-                            "bg-[var(--lumin-primary)]",
+                            "bg-[var(--luminx-primary)]",
                             classNames?.bar
                         )}
                         style={{
+                            ...getRadius(radius),
                             [inverted ? "right" : "left"]: 0,
                             width: `${position}%`,
                             backgroundColor: barColor
@@ -259,17 +257,17 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                             >
                                 <div
                                     className={cx(
-                                        "w-1 h-1 rounded-full bg-white",
-                                        markPosition <= position
-                                            ? "bg-[var(--lumin-primary)]"
-                                            : "bg-[var(--lumin-background)]",
+                                        "w-1 h-1 rounded-full",
                                         classNames?.mark
                                     )}
                                 />
                                 {mark.label && (
                                     <div
                                         className={cx(
-                                            "absolute top-4 -translate-x-1/2 text-xs text-[var(--lumin-text)]",
+                                            "absolute top-4 -translate-x-1/2 text-xs",
+                                            theme === "light"
+                                                ? "text-[var(--luminx-light-text)]"
+                                                : "text-[var(--luminx-dark-text)]",
                                             classNames?.markLabel
                                         )}
                                     >
@@ -284,7 +282,11 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                         ref={thumbRef}
                         className={cx(
                             "absolute top-1/2 -translate-x-1/2 -translate-y-1/2",
-                            "bg-[var(--lumin-text)] rounded-full",
+                            "rounded-full",
+                            theme === "light"
+                                ? "bg-[var(--luminx-white)] ring-[var(--luminx-primary)]"
+                                : "bg-[var(--luminx-primary)] ring-[var(--luminx-white)]",
+                            "ring-2 ring-inset",
                             "cursor-grab active:cursor-grabbing",
                             "transition-shadow duration-200",
                             !disabled && "hover:shadow-md focus:shadow-md",
@@ -314,7 +316,10 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                     {label && showLabel && (
                         <div
                             className={cx(
-                                "absolute -top-8 transform -translate-x-1/2 bg-[var(--lumin-background)] text-[var(--lumin-text)] px-2 py-1 rounded text-xs whitespace-nowrap",
+                                "absolute -top-8 transform -translate-x-1/2 px-2 py-1 rounded text-xs whitespace-nowrap",
+                                theme === "light"
+                                    ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]"
+                                    : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]",
                                 "transition-opacity duration-200",
                                 showLabel ? "opacity-100" : "opacity-0",
                                 classNames?.label

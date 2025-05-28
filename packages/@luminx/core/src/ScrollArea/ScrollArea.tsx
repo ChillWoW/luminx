@@ -30,7 +30,7 @@ export const ScrollArea = ({
             <div
                 ref={actualViewportRef}
                 className={cx(
-                    "h-full w-full lumin-scrollbar",
+                    "h-full w-full luminx-scrollbar",
                     scrollbars === "y"
                         ? "overflow-x-hidden overflow-y-auto"
                         : "",
@@ -72,7 +72,7 @@ export const ScrollAreaAutosize = ({
             <div
                 ref={viewportRef || contentRef}
                 className={cx(
-                    "w-full lumin-scrollbar",
+                    "w-full luminx-scrollbar",
                     scrollbars === "y"
                         ? "overflow-x-hidden overflow-y-auto"
                         : "",

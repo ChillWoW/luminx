@@ -9,7 +9,12 @@
     "scripts": {
         "build": "npm run build --workspaces",
         "copy-css": "npm run copy-css --workspaces",
-        "prepublishOnly": "npm run build"
+        "prepublishOnly": "npm run build",
+        "version:update": "node scripts/update-versions.js",
+        "version:patch": "node scripts/update-versions.js patch",
+        "version:minor": "node scripts/update-versions.js minor",
+        "version:major": "node scripts/update-versions.js major",
+        "version:pre": "node scripts/update-versions.js prerelease"
     },
     "devDependencies": {
         "@types/node": "^20",

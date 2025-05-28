@@ -4,15 +4,17 @@ import { AnchorProps } from "./types";
 export const Anchor = ({
     children,
     underline = "hover",
+    className,
     ...props
 }: AnchorProps) => {
     return (
         <a
             className={cx(
-                "text-[var(--lumin-primary)]",
+                "text-[var(--luminx-primary)]",
                 underline === "always" && "underline",
                 underline === "hover" && "hover:underline",
-                underline === "never" && "no-underline"
+                underline === "never" && "no-underline",
+                className
             )}
             {...props}
         >

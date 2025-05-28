@@ -87,7 +87,7 @@ export const FileInput = ({
                 type="button"
                 onClick={clearFiles}
                 className={cx(
-                    "flex items-center justify-center w-6 h-6 rounded-full hover:bg-[var(--lumin-secondary)] transition-colors",
+                    "flex items-center justify-center w-6 h-6 hover:bg-[var(--luminx-primary-light)] transition-colors rounded-full",
                     classNames?.clearButton
                 )}
             >

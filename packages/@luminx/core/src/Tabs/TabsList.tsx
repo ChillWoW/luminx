@@ -1,10 +1,11 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { cx } from "../_theme";
+import { useTheme } from "../_theme";
 import { useTabs } from "./context";
 import { TabsListProps } from "./types";
-import "../style.css";
 
 export const TabsList = ({ className, children }: TabsListProps) => {
+    const { theme, cx } = useTheme();
+
     const {
         orientation,
         position,
@@ -78,7 +79,10 @@ export const TabsList = ({ className, children }: TabsListProps) => {
     return (
         <div
             className={cx(
-                "relative border-[var(--lumin-border)]",
+                "relative",
+                theme === "light"
+                    ? "border-[var(--luminx-light-border)]"
+                    : "border-[var(--luminx-dark-border)]",
                 isVertical
                     ? ["flex flex-col", variant !== "pills" && "border-r"]
                     : [
@@ -111,7 +115,7 @@ export const TabsList = ({ className, children }: TabsListProps) => {
             {variant !== "pills" && (
                 <div
                     className={cx(
-                        "bg-[var(--lumin-primary)] transition-all duration-200 absolute",
+                        "bg-[var(--luminx-primary)] transition-all duration-200 absolute",
                         isVertical
                             ? "right-0 w-[2px] -mr-[1px]"
                             : "bottom-0 h-[2px] -mb-[1px]",

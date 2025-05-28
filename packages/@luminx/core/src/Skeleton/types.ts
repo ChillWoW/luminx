@@ -1,12 +1,11 @@
 import { HTMLAttributes } from "react";
-
-export type SkeletonRadius = "none" | "sm" | "md" | "lg" | "xl" | "full";
+import { Radius, Shadow } from "../_theme";
 
 export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
     height?: string | number;
     width?: string | number;
-    radius?: SkeletonRadius;
-    circle?: boolean;
+    radius?: Radius;
+    shadow?: Shadow;
     animate?: boolean;
     visible?: boolean;
     className?: string;

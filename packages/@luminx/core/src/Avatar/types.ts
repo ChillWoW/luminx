@@ -1,34 +1,16 @@
 import React, { ElementType, ReactNode } from "react";
+import { Radius, Shadow } from "../_theme";
 
 export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
-export type AvatarRadius =
-    | "none"
-    | "sm"
-    | "md"
-    | "lg"
-    | "xl"
-    | "2xl"
-    | "3xl"
-    | "4xl"
-    | "full";
-export type AvatarShadow =
-    | "none"
-    | "sm"
-    | "md"
-    | "lg"
-    | "xl"
-    | "2xl"
-    | "3xl"
-    | "4xl";
 
 export interface AvatarProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     children?: ReactNode;
     src?: string;
     alt?: string;
     size?: AvatarSize;
-    radius?: AvatarRadius;
-    shadow?: AvatarShadow;
-    color?: string;
+    radius?: Radius;
+    shadow?: Shadow;
+    withBorder?: boolean;
     component?: ElementType;
     className?: string;
 }

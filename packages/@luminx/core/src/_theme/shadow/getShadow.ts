@@ -1,20 +1,17 @@
 import { defaultShadowValues } from "./default";
 import { Shadow } from "./types";
 
-export const getShadow = (shadow?: Shadow) => {
-    const shadowObj = defaultShadowValues.find((s) => s.name === shadow);
+const shadowMap = new Map(defaultShadowValues.map((s) => [s.name, s.value]));
 
-    if (shadowObj) return { boxShadow: shadowObj.value };
+const shadowHelper = (shadow?: Shadow, fallback: Shadow = "none") => {
+    if (shadowMap.has(shadow as string)) return shadowMap.get(shadow as string);
 
-    const defaultShadowObj = defaultShadowValues.find((s) => s.name === "none");
+    if (typeof shadow === "number") return `${shadow}px`;
+    if (typeof shadow === "string") return shadow;
 
-    return { boxShadow: defaultShadowObj?.value || "none" };
+    return shadowMap.get(fallback) || "none";
 };
 
-// Hook-based version for components
-export const useShadow = (shadow?: Shadow) => {
-    const shadowToUse = shadow || "none";
-    const shadowObj = defaultShadowValues.find((s) => s.name === shadowToUse);
-
-    return shadowObj?.value || "none";
-};
+export const getShadow = (shadow?: Shadow) => ({
+    boxShadow: shadowHelper(shadow)
+});

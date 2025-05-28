@@ -7,8 +7,6 @@ export interface CheckboxProps
     extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "size"> {
     fullWidth?: boolean;
     unstyled?: boolean;
-    color?: string;
-    iconColor?: string;
     size?: CheckboxSize;
     radius?: Radius;
     shadow?: Shadow;

@@ -6,7 +6,6 @@ export type PillSize = "xs" | "sm" | "md" | "lg" | "xl";
 export interface PillProps extends React.HTMLAttributes<HTMLDivElement> {
     size?: PillSize;
     withRemoveButton?: boolean;
-    fullWidth?: boolean;
     disabled?: boolean;
     radius?: Radius;
     shadow?: Shadow;

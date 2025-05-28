@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { BadgeProps } from "./types";
-import { getRadius, getShadow, cx } from "../_theme";
+import { getRadius, getShadow, useTheme } from "../_theme";
 
 export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
     (
@@ -20,6 +20,8 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
         },
         ref
     ) => {
+        const { theme, cx } = useTheme();
+
         const getSize = () => {
             switch (size) {
                 case "xs":
@@ -38,9 +40,9 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
         const getVariant = () => {
             switch (variant) {
                 case "outline":
-                    return "border border-[var(--lumin-primary)] text-[var(--lumin-text)]";
+                    return "border border-[var(--luminx-primary)] text-[var(--luminx-dark-text)]";
                 default:
-                    return "bg-[var(--lumin-primary)] text-[var(--lumin-text)]";
+                    return "bg-[var(--luminx-primary)] text-[var(--luminx-dark-text)]";
             }
         };
 
@@ -72,14 +74,16 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
             );
         };
 
+        const Element = Component as React.ElementType | "div";
+
         return (
-            <Component
+            <Element
                 ref={ref}
                 className={cx(
                     "inline-flex items-center whitespace-nowrap font-medium w-fit",
                     getVariant(),
                     getSize(),
-                    fullWidth && "lumin-badge-root-fw",
+                    fullWidth && "w-full",
                     classNames?.root,
                     className
                 )}
@@ -92,7 +96,7 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
                 {renderSection(leftSection, "left")}
                 <span className={cx(classNames?.label)}>{children}</span>
                 {renderSection(rightSection, "right")}
-            </Component>
+            </Element>
         );
     }
 );

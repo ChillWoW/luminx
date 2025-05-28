@@ -1,10 +1,13 @@
 import { ElementType, MouseEvent, ReactElement, ReactNode } from "react";
 import { TransitionProps } from "../Transition";
+import {
+    UseFloatingReturn,
+    FloatingContext,
+    ReferenceType
+} from "@floating-ui/react";
+import { Radius, Shadow } from "../_theme";
 
 export type MenuTrigger = "hover" | "click" | "click-hover";
-export type MenuRadius = "none" | "xs" | "sm" | "md" | "lg" | "xl";
-export type MenuShadow = "none" | "xs" | "sm" | "md" | "lg" | "xl";
-export type MenuPadding = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type MenuPosition =
     | "bottom"
     | "bottom-start"
@@ -25,8 +28,8 @@ export interface MenuProps {
     opened?: boolean;
     onChange?: (opened: boolean) => void;
     trigger?: MenuTrigger;
-    radius?: MenuRadius;
-    shadow?: MenuShadow;
+    radius?: Radius;
+    shadow?: Shadow;
     position?: MenuPosition;
     width?: number | string;
     offset?: number;
@@ -56,8 +59,11 @@ export interface MenuClassNames {
 export interface MenuContextType extends MenuProps {
     toggle: () => void;
     setOpened: (opened: boolean) => void;
-    setTargetElement: (element: HTMLElement | null) => void;
-    targetElement: HTMLElement | null;
+    refs: UseFloatingReturn<ReferenceType>["refs"];
+    context: FloatingContext<ReferenceType>;
+    floatingStyles: UseFloatingReturn<ReferenceType>["floatingStyles"];
+    getReferenceProps: (props?: any) => any;
+    getFloatingProps: (props?: any) => any;
     targetId: string;
     dropdownId: string;
     classNames?: MenuClassNames;
@@ -70,7 +76,6 @@ export interface MenuTargetProps {
 export interface MenuDropdownProps {
     children: ReactNode;
     className?: string;
-    padding?: MenuPadding;
 }
 
 export type MenuLabelPosition = "left" | "center" | "right";
@@ -90,7 +95,7 @@ export interface MenuItemProps {
     onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
     className?: string;
     component?: ElementType | string;
-    radius?: MenuRadius;
+    radius?: Radius;
     [key: string]: any;
 }
 

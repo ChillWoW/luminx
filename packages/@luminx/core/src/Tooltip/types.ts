@@ -1,4 +1,5 @@
 import { HTMLAttributes, ReactNode } from "react";
+import { Radius } from "../_theme";
 
 export type TooltipPosition =
     | "top"
@@ -25,8 +26,6 @@ export interface TooltipOffset {
     crossAxis?: number;
 }
 
-export type TooltipRadius = "none" | "sm" | "md" | "lg" | "xl";
-
 export interface TooltipProps extends HTMLAttributes<HTMLDivElement> {
     label: ReactNode;
     children: ReactNode;
@@ -43,8 +42,7 @@ export interface TooltipProps extends HTMLAttributes<HTMLDivElement> {
     events?: TooltipEvents;
     openDelay?: number;
     closeDelay?: number;
-    color?: string;
-    radius?: TooltipRadius;
+    radius?: Radius;
     refProp?: string;
     classNames?: {
         root?: string;

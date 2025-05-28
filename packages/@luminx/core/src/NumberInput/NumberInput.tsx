@@ -1,9 +1,8 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { Input } from "../Input/Input";
 import { NumberInputProps } from "./types";
-import { cx } from "../_theme";
-import { ChevronIcon } from "../_icons";
-import "../style.css";
+import { useTheme } from "../_theme";
+import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 
 export const NumberInput = ({
     min,
@@ -24,9 +23,13 @@ export const NumberInput = ({
     suffix,
     ...props
 }: NumberInputProps) => {
+    const { theme, cx } = useTheme();
+
     const [value, setValue] = useState<number>(
         props.value !== undefined ? Number(props.value) : defaultValue
     );
+
+    const [displayValue, setDisplayValue] = useState<string | null>(null);
 
     const formatValue = useCallback(
         (num: number): string => {
@@ -97,22 +100,75 @@ export const NumberInput = ({
             let newValueString = valueString;
 
             if (valueString === "") {
-                newValueString = "0";
+                setValue(0);
+                setDisplayValue(null);
+                onChange?.(0);
+                return;
             }
 
             const isValidChar = new RegExp(
-                `^[0-9${allowNegative ? "-" : ""}${
+                `^[0-9${allowNegative ? "\\-" : ""}${
                     allowDecimal ? "\\" + decimalSeparator : ""
                 }${thousandSeparator ? "\\" + thousandSeparator : ""}${
-                    prefix ? prefix : ""
-                }${suffix ? suffix : ""}]*$`
+                    prefix ? prefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") : ""
+                }${
+                    suffix ? suffix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") : ""
+                }]*$`
             );
 
             if (!isValidChar.test(newValueString)) {
                 return;
             }
 
+            if (allowDecimal && newValueString === decimalSeparator) {
+                setValue(0);
+                setDisplayValue(`0${decimalSeparator}`);
+                onChange?.(0);
+                return;
+            }
+
+            if (allowNegative && newValueString === "-") {
+                setValue(0);
+                setDisplayValue("-");
+                onChange?.(0);
+                return;
+            }
+
+            if (allowDecimal && newValueString.includes(decimalSeparator)) {
+                setDisplayValue(newValueString);
+
+                if (newValueString.endsWith(decimalSeparator)) {
+                    const baseValue = parseValue(newValueString.slice(0, -1));
+                    if (!isNaN(baseValue)) {
+                        setValue(baseValue);
+                        onChange?.(baseValue);
+                    }
+                    return;
+                }
+
+                const parsedValue = parseValue(newValueString);
+                if (!isNaN(parsedValue)) {
+                    let finalValue = parsedValue;
+                    if (min !== undefined && finalValue < min) finalValue = min;
+                    if (max !== undefined && finalValue > max) finalValue = max;
+
+                    if (precision !== undefined) {
+                        const factor = Math.pow(10, precision);
+                        finalValue = Math.round(finalValue * factor) / factor;
+                    }
+
+                    setValue(finalValue);
+                    onChange?.(finalValue);
+                }
+                return;
+            }
+
+            setDisplayValue(null);
             let newValue = parseValue(newValueString);
+
+            if (isNaN(newValue)) {
+                return;
+            }
 
             if (min !== undefined && newValue < min) newValue = min;
             if (max !== undefined && newValue > max) newValue = max;
@@ -144,6 +200,7 @@ export const NumberInput = ({
         const newValue = value + step;
         if (max !== undefined && newValue > max) return;
         setValue(newValue);
+        setDisplayValue(null);
         onChange?.(newValue);
     }, [value, step, max, onChange]);
 
@@ -152,6 +209,7 @@ export const NumberInput = ({
         if (min !== undefined && newValue < min) return;
         if (!allowNegative && newValue < 0) return;
         setValue(newValue);
+        setDisplayValue(null);
         onChange?.(newValue);
     }, [value, step, min, onChange, allowNegative]);
 
@@ -162,32 +220,48 @@ export const NumberInput = ({
         (!allowNegative && value - step < 0);
 
     const controlButtons = (
-        <div className="inline-flex flex-col h-full border-l border-[var(--lumin-border)]">
+        <div
+            className={cx(
+                "inline-flex flex-col h-full border-l",
+                theme === "light"
+                    ? "border-[var(--luminx-light-border)]"
+                    : "border-[var(--luminx-dark-border)]",
+                classNames?.controlButtons
+            )}
+        >
             <button
                 type="button"
                 className={cx(
-                    "w-7 h-[20px] flex items-center justify-center hover:bg-[var(--lumin-secondary)] border-b border-[var(--lumin-border)]",
+                    "w-7 h-[20px] flex items-center justify-center border-b",
+                    theme === "light"
+                        ? "border-[var(--luminx-light-border)] text-[var(--luminx-light-text)]"
+                        : "border-[var(--luminx-dark-border)] text-[var(--luminx-dark-text)]",
                     isIncrementDisabled && "opacity-60 cursor-not-allowed",
+                    !isIncrementDisabled &&
+                        "hover:bg-[var(--luminx-primary-light)]",
                     classNames?.incrementButton
                 )}
                 onClick={increment}
                 disabled={isIncrementDisabled}
-                title="Increase"
             >
-                <ChevronIcon size={8} />
+                <IconChevronUp size={16} />
             </button>
             <button
                 type="button"
                 onClick={decrement}
                 disabled={isDecrementDisabled}
                 className={cx(
-                    "w-7 h-[20px] flex items-center justify-center hover:bg-[var(--lumin-secondary)]",
+                    "w-7 h-[20px] flex items-center justify-center",
+                    theme === "light"
+                        ? "border-[var(--luminx-light-border)] text-[var(--luminx-light-text)]"
+                        : "border-[var(--luminx-dark-border)] text-[var(--luminx-dark-text)]",
                     isDecrementDisabled && "opacity-60 cursor-not-allowed",
+                    !isDecrementDisabled &&
+                        "hover:bg-[var(--luminx-primary-light)]",
                     classNames?.decrementButton
                 )}
-                title="Decrease"
             >
-                <ChevronIcon size={8} className="rotate-180" />
+                <IconChevronDown size={16} />
             </button>
         </div>
     );
@@ -195,7 +269,8 @@ export const NumberInput = ({
     return (
         <Input
             type="text"
-            value={formatValue(value)}
+            inputMode={allowDecimal ? "decimal" : "numeric"}
+            value={displayValue !== null ? displayValue : formatValue(value)}
             onChange={handleChange}
             rightSection={hideControls ? null : controlButtons}
             rightSectionPadding={0}

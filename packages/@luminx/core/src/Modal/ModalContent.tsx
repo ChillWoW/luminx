@@ -1,5 +1,5 @@
 import { forwardRef, ReactNode } from "react";
-import { cx } from "../_theme";
+import { useTheme } from "../_theme";
 import { useModalContext } from "./context";
 import { getRadius, getShadow, getPadding } from "../_theme";
 
@@ -13,13 +13,14 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
             size,
             radius,
             shadow,
-            padding,
             classNames,
             fullScreen,
             animationState,
             transitionDuration = 200,
             transitionTimingFunction = "ease"
         } = useModalContext();
+
+        const { theme, cx } = useTheme();
 
         const sizeClass = {
             xs: "w-[320px]",
@@ -59,7 +60,10 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
             <div
                 ref={ref}
                 className={cx(
-                    "relative bg-[var(--lumin-background)] flex flex-col",
+                    "relative flex flex-col p-3",
+                    theme === "light"
+                        ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]"
+                        : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]",
                     !fullScreen ? sizeClass[size || "md"] : "w-full h-full",
                     fullScreen && "rounded-none border-0",
                     classNames?.content
@@ -67,7 +71,6 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
                 style={{
                     ...(!fullScreen ? getRadius(radius || "md") : {}),
                     ...getShadow(shadow || "sm"),
-                    ...getPadding(padding || "md"),
                     transform: getTransformValue(),
                     opacity: getOpacityValue(),
                     transition: `transform ${transitionDuration}ms ${transitionTimingFunction}, opacity ${transitionDuration}ms ${transitionTimingFunction}`

@@ -6,5 +6,4 @@ export * from "./FirstIcon";
 export * from "./LastIcon";
 export * from "./NextIcon";
 export * from "./PreviousIcon";
-export * from "./VisibilityIcon";
 export * from "./XIcon";

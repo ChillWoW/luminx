@@ -1,22 +1,21 @@
 import { defaultRadiusValues } from "./default";
 import { GetCornerRadiusProps, Radius } from "./types";
 
-export const getRadius = (radius?: Radius) => {
-    const radiusObj = defaultRadiusValues.find((r) => r.name === radius);
+const radiusMap = new Map(defaultRadiusValues.map((r) => [r.name, r.value]));
 
-    if (radiusObj) return { borderRadius: radiusObj.value };
+const radiusHelper = (radius?: Radius, fallback: Radius = "md") => {
+    if (radiusMap.has(radius as string))
+        return radiusMap.get(radius as string)!;
 
-    const defaultRadiusObj = defaultRadiusValues.find((r) => r.name === "md");
+    if (typeof radius === "number") return `${radius}px`;
+    if (typeof radius === "string") return radius;
 
-    return { borderRadius: defaultRadiusObj?.value || "0rem" };
+    return radiusMap.get(fallback) || "0rem";
 };
 
-export const useRadius = (radius?: Radius) => {
-    const radiusToUse = radius || "md";
-    const radiusObj = defaultRadiusValues.find((r) => r.name === radiusToUse);
-
-    return radiusObj?.value || "0rem";
-};
+export const getRadius = (radius?: Radius) => ({
+    borderRadius: radiusHelper(radius)
+});
 
 export const getCornerRadius = (props: GetCornerRadiusProps) => {
     const { radius, defaultRadius = "md", corner } = props;

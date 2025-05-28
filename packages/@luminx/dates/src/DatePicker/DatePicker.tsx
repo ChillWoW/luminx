@@ -19,7 +19,6 @@ import { PickerControl } from "../_shared/PickerControl";
 import { MonthPicker } from "../MonthPicker";
 import { YearPicker } from "../YearPicker";
 import { CalendarHeader } from "../_shared/CalendarHeader";
-import "../style.css";
 
 function getDaysOfMonth(year: number, month: number): Date[] {
     const days: Date[] = [];
