@@ -122,7 +122,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             <Element
                 className={cx(
                     "inline-flex items-center gap-2 font-medium cursor-pointer relative rounded-md whitespace-nowrap select-none transition-all duration-150",
-                    useAnimation && "active:translate-y-0.5",
+                    useAnimation &&
+                        (!disabled || !loading) &&
+                        "active:translate-y-0.5",
                     sizeClasses(),
                     getVariant(),
                     fullWidth && "w-full",
