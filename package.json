@@ -6,6 +6,16 @@
     "workspaces": [
         "packages/*"
     ],
+    "keywords": [
+        "react",
+        "tailwind",
+        "components",
+        "design",
+        "frontend",
+        "ui",
+        "ui-kit",
+        "nextjs"
+    ],
     "scripts": {
         "build": "npm run build --workspaces",
         "copy-css": "npm run copy-css --workspaces",
