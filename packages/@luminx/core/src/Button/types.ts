@@ -1,5 +1,4 @@
 import { ButtonHTMLAttributes, ElementType } from "react";
-import { Radius, Shadow } from "../_theme";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type ButtonVariant = "filled" | "outline" | "unstyled";
@@ -13,12 +12,9 @@ export interface ButtonProps
     leftSection?: React.ReactNode;
     rightSection?: React.ReactNode;
     variant?: ButtonVariant;
-    radius?: Radius;
-    shadow?: Shadow;
     size?: ButtonSize;
     disabled?: boolean;
     active?: boolean;
-    hover?: boolean;
     loading?: boolean;
     loadingPosition?: ButtonLoaderPosition;
     loader?: React.ReactNode;
@@ -27,7 +23,7 @@ export interface ButtonProps
     target?: string;
     preventDefault?: boolean;
     align?: ButtonAlign;
-    style?: React.CSSProperties;
+    useAnimation?: boolean;
     className?: string;
     classNames?: ButtonClassNames;
 }

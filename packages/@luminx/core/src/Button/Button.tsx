@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 import { ComponentLoader } from "../_utils";
 import { ButtonProps } from "./types";
-import { getRadius, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
@@ -12,11 +12,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             leftSection,
             rightSection,
             variant = "filled",
-            radius = "md",
             size = "sm",
             disabled,
             active,
-            hover = true,
             loading,
             loadingPosition = "left",
             loader,
@@ -24,7 +22,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             href,
             target,
             align = "center",
-            style,
+            useAnimation = true,
             className,
             classNames,
             ...props
@@ -123,19 +121,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         return (
             <Element
                 className={cx(
-                    "inline-flex items-center gap-2 font-medium cursor-pointer relative whitespace-nowrap select-none transition-colors duration-200",
+                    "inline-flex items-center gap-2 font-medium cursor-pointer relative rounded-md whitespace-nowrap select-none transition-all duration-150",
+                    useAnimation && "active:translate-y-0.5",
                     sizeClasses(),
                     getVariant(),
                     fullWidth && "w-full",
-                    (disabled || loading) && "opacity-60 cursor-not-allowed",
+                    (disabled || loading) &&
+                        "opacity-60 cursor-not-allowed active:translate-y-0",
                     (disabled || loading) && classNames?.disabled,
                     classNames?.root,
                     className
                 )}
-                style={{
-                    ...getRadius(radius),
-                    ...style
-                }}
                 disabled={disabled || loading}
                 ref={ref}
                 href={href}
