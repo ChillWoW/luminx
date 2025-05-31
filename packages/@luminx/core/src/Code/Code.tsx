@@ -18,8 +18,7 @@ import {
     IconTerminal2
 } from "@tabler/icons-react";
 import { CodeProps } from "./types";
-import { cx, getRadius, getShadow, useTheme } from "../_theme";
-import "../style.css";
+import { cx, useTheme } from "../_theme";
 import { Tooltip } from "../Tooltip";
 
 const themeStyles = {
@@ -46,8 +45,6 @@ export const Code = ({
     wrapLongLines = false,
     copyable = true,
     onCopy,
-    radius,
-    shadow,
     maxHeight,
     lineNumbersStyle,
     startingLineNumber = 1,
@@ -114,17 +111,14 @@ export const Code = ({
     return (
         <div
             className={cx(
-                "relative group rounded-md overflow-hidden border-0",
+                "relative group overflow-hidden border-0 rounded-md",
                 libraryTheme === "light"
                     ? "bg-[var(--luminx-light-background)]"
                     : "bg-[var(--luminx-dark-background)]",
                 classNames?.container,
                 className
             )}
-            style={{
-                ...getRadius(radius),
-                ...getShadow(shadow)
-            }}
+            style={maxHeight ? { maxHeight } : undefined}
         >
             {showFileName && (
                 <div
@@ -146,7 +140,7 @@ export const Code = ({
                     <button
                         onClick={handleCopy}
                         className={cx(
-                            "absolute top-5 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity",
+                            "absolute top-5 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out",
                             classNames?.copyButton
                         )}
                     >
@@ -173,7 +167,7 @@ export const Code = ({
                     lineNumberStyle={customLineNumberStyle}
                     startingLineNumber={startingLineNumber}
                     className={cx(
-                        "!m-0 !p-4 !bg-transparent luminx-scrollbar overflow-auto",
+                        "!m-0 !p-4 !bg-transparent overflow-auto luminx-scrollbar",
                         classNames?.scrollbar
                     )}
                     customStyle={{

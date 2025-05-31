@@ -1,5 +1,4 @@
 import React, { ElementType, ReactNode } from "react";
-import { Radius, Shadow } from "../_theme";
 
 export type BadgeVariant = "filled" | "outline";
 export type BadgeSize = "xs" | "sm" | "md" | "lg" | "xl";
@@ -14,8 +13,6 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
     children?: ReactNode;
     variant?: BadgeVariant;
     size?: BadgeSize;
-    radius?: Radius;
-    shadow?: Shadow;
     leftSection?: ReactNode;
     rightSection?: ReactNode;
     fullWidth?: boolean;

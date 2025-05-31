@@ -25,8 +25,6 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             src,
             alt = "avatar",
             size = "md",
-            shadow,
-            radius = "full",
             withBorder,
             component: Component = "div",
             className,
@@ -76,16 +74,12 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         return (
             <Element
                 className={cx(
-                    "inline-flex items-center justify-center overflow-hidden",
+                    "inline-flex items-center justify-center overflow-hidden rounded-full",
                     getBackground(),
                     getBorder(),
                     getSize(),
                     className
                 )}
-                style={{
-                    ...getRadius(radius),
-                    ...getShadow(shadow)
-                }}
                 ref={ref}
                 {...props}
             >

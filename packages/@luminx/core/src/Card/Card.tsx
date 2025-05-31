@@ -1,9 +1,16 @@
-import { forwardRef } from "react";
+import {
+    Children,
+    cloneElement,
+    forwardRef,
+    isValidElement,
+    ReactElement
+} from "react";
 import { CardProps } from "./types";
-import { getRadius, getShadow, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
+import { CardSection } from "./CardSection";
 
-export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ children, radius, shadow, withBorder, className, ...props }, ref) => {
+const Card = forwardRef<HTMLDivElement, CardProps>(
+    ({ children, withBorder, className, ...props }, ref) => {
         const { theme, cx } = useTheme();
 
         const getBorder = () => {
@@ -24,20 +31,40 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
                     theme === "light"
                         ? "bg-[var(--luminx-light-background)]"
                         : "bg-[var(--luminx-dark-background)]",
-                    "p-2",
+                    "rounded-md",
                     getBorder(),
                     className
                 )}
-                style={{
-                    ...getRadius(radius),
-                    ...getShadow(shadow)
-                }}
                 {...props}
             >
-                {children}
+                {Children.map(children, (child, index) => {
+                    if (isValidElement(child)) {
+                        const element = child as ReactElement<{
+                            className?: string;
+                        }>;
+
+                        // Check if this is a Card.Section component
+                        const isCardSection = element.type === CardSection;
+
+                        return cloneElement(element, {
+                            className: cx(
+                                // Only add padding if it's NOT a Card.Section
+                                !isCardSection ? "p-2" : "",
+                                element.props.className
+                            )
+                        });
+                    }
+                    return child;
+                })}
             </div>
         );
     }
 );
 
-Card.displayName = "@luminx/core/Card";
+const ExtendedCard = Object.assign(Card, {
+    Section: CardSection
+});
+
+ExtendedCard.displayName = "@luminx/core/Card";
+
+export { ExtendedCard as Card };

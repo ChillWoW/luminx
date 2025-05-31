@@ -8,8 +8,6 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
             children,
             variant = "filled",
             size = "sm",
-            radius = "xl",
-            shadow,
             leftSection,
             rightSection,
             fullWidth = false,
@@ -80,17 +78,13 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
             <Element
                 ref={ref}
                 className={cx(
-                    "inline-flex items-center whitespace-nowrap font-medium w-fit",
+                    "inline-flex items-center whitespace-nowrap font-medium w-fit rounded-xl",
                     getVariant(),
                     getSize(),
                     fullWidth && "w-full",
                     classNames?.root,
                     className
                 )}
-                style={{
-                    ...getRadius(radius),
-                    ...getShadow(shadow)
-                }}
                 {...props}
             >
                 {renderSection(leftSection, "left")}

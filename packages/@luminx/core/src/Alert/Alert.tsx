@@ -11,8 +11,6 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
             variant = "filled",
             icon,
             iconPosition = "center",
-            radius,
-            shadow,
             withCloseButton = false,
             closeButtonLabel = "Close",
             onClose,
@@ -68,16 +66,12 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                 ref={ref}
                 role="alert"
                 className={cx(
-                    "p-3",
+                    "p-3 rounded-md",
                     getVariant(),
                     withBorder && getBorder,
                     classNames?.root,
                     className
                 )}
-                style={{
-                    ...getRadius(radius),
-                    ...getShadow(shadow)
-                }}
                 {...props}
             >
                 <div

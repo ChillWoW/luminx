@@ -1,16 +1,5 @@
 import { ReactNode } from "react";
-import { Padding, Shadow } from "../_theme";
 
-export type AlertRadius =
-    | "none"
-    | "xs"
-    | "sm"
-    | "md"
-    | "lg"
-    | "xl"
-    | "2xl"
-    | "3xl"
-    | "4xl";
 export type AlertVariant = "filled" | "outline";
 export type IconPosition = "start" | "center" | "end";
 
@@ -26,9 +15,6 @@ export interface AlertProps {
     variant?: AlertVariant;
     icon?: ReactNode;
     iconPosition?: IconPosition;
-    radius?: AlertRadius;
-    shadow?: Shadow;
-    padding?: Padding;
     withCloseButton?: boolean;
     closeButtonLabel?: string;
     onClose?: () => void;

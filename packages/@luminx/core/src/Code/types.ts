@@ -1,4 +1,3 @@
-import { Radius, Shadow } from "../_theme";
 import { ReactNode } from "react";
 
 export interface CodeClassNames {
@@ -38,8 +37,6 @@ export interface CodeProps {
     fileName?: string;
     showFileIcon?: boolean;
     fileIcon?: ReactNode;
-    radius?: Radius;
-    shadow?: Shadow;
     maxHeight?: string | number;
     lineNumbersBackgroundColor?: string;
     lineNumbersStyle?: React.CSSProperties;

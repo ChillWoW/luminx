@@ -7,8 +7,6 @@ import { IconCheck } from "@tabler/icons-react";
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     (
         {
-            radius,
-            shadow,
             fullWidth,
             unstyled = false,
             size = "md",
@@ -147,14 +145,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 >
                     <div
                         className={cx(
-                            "flex items-center justify-center absolute top-0 left-0 w-full h-full",
+                            "flex items-center justify-center absolute top-0 left-0 w-full h-full rounded-md",
                             getStyles(),
                             classNames?.inner
                         )}
-                        style={{
-                            ...getRadius(radius),
-                            ...getShadow(shadow)
-                        }}
                     >
                         {renderIcon()}
                     </div>
