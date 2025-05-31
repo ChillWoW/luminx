@@ -3,30 +3,7 @@
 @tailwind utilities;
 
 :root {
-    /* Dark */
-    --lumin-background: #242424;
-    --lumin-background-hover: #2f2f2f;
-    --lumin-border: #3a3a3a;
-    --lumin-border-hover: #4a4a4a;
-    --lumin-text: #fff;
-    --lumin-hint: #969494;
-    --lumin-placeholder: #808080;
-    --lumin-section: #d8d0d0;
-
-    /* Primary */
-    --lumin-primary: #4187f6;
-    --lumin-primary-hover: #3170d6;
-
-    /* Secondary */
-    --lumin-secondary: #51546d;
-    --lumin-secondary-hover: #41445d;
-
-    /* Other */
-    --lumin-error: #e23b3b;
-    --lumin-success: #63da63;
-    --lumin-black: #000;
-
-    --lumin-scrollbar-color: var(--lumin-border);
+    --lumin-scrollbar-color: #3a3a3a;
     --lumin-scrollbar-background: transparent;
 }
 
