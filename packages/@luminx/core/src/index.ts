@@ -35,6 +35,7 @@ export * from "./PasswordInput";
 export * from "./Pill";
 export * from "./Portal";
 export * from "./Progress";
+export * from "./Radio";
 export * from "./ScrollArea";
 export * from "./SegmentedControl";
 export * from "./Select";
