@@ -140,7 +140,7 @@ export const Code = ({
                     <button
                         onClick={handleCopy}
                         className={cx(
-                            "absolute top-5 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out",
+                            "absolute top-5 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out text-white",
                             classNames?.copyButton
                         )}
                     >
