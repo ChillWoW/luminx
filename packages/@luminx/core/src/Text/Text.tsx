@@ -7,101 +7,125 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(
         {
             size = "md",
             weight = "normal",
-            align = "left",
+            align,
             lineClamp,
             truncate,
             inline,
             inherit,
+            italic,
+            underline,
             span,
             dimmed,
             className,
-            style,
             children,
             ...props
         },
         ref
     ) => {
         const { theme } = useTheme();
-
         const Component = span ? "span" : "p";
 
-        const sizeMap = {
-            xs: "0.75rem", // 12px
-            sm: "0.875rem", // 14px
-            md: "1rem", // 16px
-            base: "1rem", // 16px
-            lg: "1.125rem", // 18px
-            xl: "1.25rem", // 20px
-            "2xl": "1.5rem", // 24px
-            "3xl": "1.875rem", // 30px
-            "4xl": "2.25rem", // 36px
-            "5xl": "3rem", // 42px
-            "6xl": "3.75rem", // 48px
-            "7xl": "4.5rem", // 54px
-            "8xl": "6rem", // 60px
-            "9xl": "8rem", // 66px
-            "10xl": "10rem" // 72px
+        const getSizeClass = () => {
+            if (typeof size === "number") return `text-[${size}px]`;
+
+            const map = {
+                xs: "text-xs",
+                sm: "text-sm",
+                md: "text-base",
+                base: "text-base",
+                lg: "text-lg",
+                xl: "text-xl",
+                "2xl": "text-2xl",
+                "3xl": "text-3xl",
+                "4xl": "text-4xl",
+                "5xl": "text-5xl",
+                "6xl": "text-6xl",
+                "7xl": "text-7xl",
+                "8xl": "text-8xl",
+                "9xl": "text-9xl",
+                "10xl": "text-[10rem]"
+            };
+
+            return map[size as keyof typeof map] || `text-[${size}]`;
         };
 
-        const getSize = () => {
-            if (typeof size === "number") {
-                return `${size}px`;
-            }
+        const getWeightClass = () => {
+            if (typeof weight === "number") return `font-[${weight}]`;
 
-            return sizeMap[size as keyof typeof sizeMap] || size;
+            const map = {
+                thin: "font-thin",
+                extralight: "font-extralight",
+                light: "font-light",
+                normal: "font-normal",
+                medium: "font-medium",
+                semibold: "font-semibold",
+                bold: "font-bold",
+                extrabold: "font-extrabold",
+                black: "font-black",
+                100: "font-thin",
+                200: "font-extralight",
+                300: "font-light",
+                400: "font-normal",
+                500: "font-medium",
+                600: "font-semibold",
+                700: "font-bold",
+                800: "font-extrabold",
+                900: "font-black"
+            };
+
+            return map[weight as keyof typeof map] || `font-[${weight}]`;
         };
 
-        const combinedStyle: React.CSSProperties = {
-            textAlign: align,
-            fontWeight: weight,
-            fontSize: getSize(),
-            ...style
+        const getAlignClass = () => {
+            const map = {
+                left: "text-left",
+                center: "text-center",
+                right: "text-right",
+                justify: "text-justify",
+                start: "text-start",
+                end: "text-end"
+            };
+
+            return map[align as keyof typeof map] || "";
         };
 
-        if (lineClamp) {
-            combinedStyle.display = "-webkit-box";
-            combinedStyle.WebkitLineClamp = lineClamp;
-            combinedStyle.WebkitBoxOrient = "vertical";
-            combinedStyle.overflow = "hidden";
-        }
+        const getLineClampClass = () => {
+            if (!lineClamp) return "";
+            return `line-clamp-${lineClamp}`;
+        };
 
-        if (truncate) {
-            combinedStyle.overflow = "hidden";
-            combinedStyle.textOverflow = "ellipsis";
-            combinedStyle.whiteSpace = "nowrap";
+        const getTruncateClass = () => {
+            if (!truncate) return "";
 
-            if (truncate === "start") {
-                combinedStyle.direction = "rtl";
-                combinedStyle.textAlign = "left";
-            }
-        }
+            return truncate === "start" ? "truncate rtl text-left" : "truncate";
+        };
 
-        if (inline) {
-            combinedStyle.display = "inline";
-        }
+        const classes = cx(
+            theme === "light"
+                ? "text-[var(--luminx-light-text)]"
+                : "text-[var(--luminx-dark-text)]",
 
-        if (inherit) {
-            combinedStyle.fontSize = "inherit";
-            combinedStyle.fontWeight = "inherit";
-            combinedStyle.color = "inherit";
-        }
+            dimmed &&
+                (theme === "light"
+                    ? "text-[var(--luminx-light-hint)]"
+                    : "text-[var(--luminx-dark-hint)]"),
+
+            !inherit && getSizeClass(),
+            !inherit && getWeightClass(),
+            !inherit && getAlignClass(),
+
+            getLineClampClass(),
+            getTruncateClass(),
+            inline && "inline",
+            inherit && "text-inherit font-inherit",
+            italic && "italic",
+            underline && "underline",
+
+            className
+        );
 
         return (
-            <Component
-                ref={ref}
-                className={cx(
-                    theme === "light"
-                        ? "text-[var(--luminx-light-text)]"
-                        : "text-[var(--luminx-dark-text)]",
-                    dimmed &&
-                        (theme === "light"
-                            ? "text-[var(--luminx-light-hint)]"
-                            : "text-[var(--luminx-dark-hint)]"),
-                    className
-                )}
-                style={combinedStyle}
-                {...props}
-            >
+            <Component ref={ref} className={classes} {...props}>
                 {children}
             </Component>
         );
