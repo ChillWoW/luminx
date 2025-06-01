@@ -1,11 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import {
-    Input,
-    InputProps,
-    useTheme,
-    getRadius,
-    getShadow
-} from "@luminx/core";
+import { Input, InputProps, useTheme } from "@luminx/core";
 import { DatePicker } from "../DatePicker";
 import { useDatesContext } from "../DatesProvider";
 import type { DateValue, DateRangeValue } from "../_shared/types";
@@ -23,10 +17,9 @@ export const DateInput = <T extends DateValue | DateRangeValue>({
     allowDeselect = true,
     disabled = false,
     error,
-    dropdownRadius,
-    dropdownShadow,
     clearable = false,
     type = "default",
+    dropdownWidth = "320px",
     className,
     classNames,
     ...others
@@ -62,13 +55,6 @@ export const DateInput = <T extends DateValue | DateRangeValue>({
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
-
-    useEffect(() => {
-        if (opened && dropdownRef.current && inputRef.current) {
-            const inputWidth = inputRef.current.offsetWidth;
-            dropdownRef.current.style.width = `${inputWidth}px`;
-        }
-    }, [opened]);
 
     const handleInputClick = () => {
         if (!disabled) {
@@ -143,16 +129,13 @@ export const DateInput = <T extends DateValue | DateRangeValue>({
                 <div
                     ref={dropdownRef}
                     className={cx(
-                        "absolute z-10 mt-1 p-2",
+                        "absolute z-10 mt-1 p-2 rounded-md",
                         theme === "light"
                             ? "bg-[var(--luminx-light-background)]"
                             : "bg-[var(--luminx-dark-background)]",
                         classNames?.dropdown
                     )}
-                    style={{
-                        ...getRadius(dropdownRadius),
-                        ...getShadow(dropdownShadow)
-                    }}
+                    style={{ width: dropdownWidth }}
                 >
                     {type === "range" ? (
                         <DatePicker

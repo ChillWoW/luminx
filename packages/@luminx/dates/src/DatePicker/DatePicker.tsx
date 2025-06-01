@@ -19,6 +19,7 @@ import { PickerControl } from "../_shared/PickerControl";
 import { MonthPicker } from "../MonthPicker";
 import { YearPicker } from "../YearPicker";
 import { CalendarHeader } from "../_shared/CalendarHeader";
+import { useTheme } from "@luminx/core";
 
 function getDaysOfMonth(year: number, month: number): Date[] {
     const days: Date[] = [];
@@ -49,7 +50,7 @@ function getDaysOfMonth(year: number, month: number): Date[] {
 export type DatePickerBaseProps = {
     monthLabelFormat?: string;
     yearLabelFormat?: string;
-    weekdayFormat?: string;
+    weekdayFormat?: "dd" | "ddd" | "dddd";
 };
 
 export type DatePickerSingleProps = Omit<SinglePickerProps, "getControlProps"> &
@@ -97,6 +98,8 @@ export function DatePicker(props: DatePickerProps) {
         ariaLabels,
         ...others
     } = props;
+
+    const { theme, cx } = useTheme();
 
     const allowDeselect =
         type === "default"
@@ -294,73 +297,124 @@ export function DatePicker(props: DatePickerProps) {
                         }
                         onLabelClick={() => setViewMode("months")}
                     />
-                    <div className="grid grid-cols-7 gap-1 mb-1">
-                        {weekdayNames.map((weekday, i) => (
-                            <div
-                                key={i}
-                                className="text-center text-sm font-medium text-[var(--lumin-dates-hint)]"
-                            >
-                                {weekday}
-                            </div>
-                        ))}
+                    <div className="flex flex-col gap-1 mb-1">
+                        <div className="flex gap-1">
+                            {weekdayNames.map((weekday, i) => (
+                                <div
+                                    key={i}
+                                    className={cx(
+                                        "flex-1 text-center text-sm font-medium",
+                                        theme === "light"
+                                            ? "text-[var(--luminx-light-hint)]"
+                                            : "text-[var(--luminx-dark-hint)]"
+                                    )}
+                                    style={{ minWidth: 0 }}
+                                >
+                                    {weekday}
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                    <div className="grid grid-cols-7 gap-1">
-                        {columnDays.map((day, dayIndex) => {
-                            let selected = false;
-                            let inRange = false;
-                            let isRangeStart = false;
-                            let isRangeEnd = false;
 
-                            const outside = day.getMonth() !== columnMonth;
-                            const weekend = isWeekend(day);
-
-                            if (type === "default" && value instanceof Date) {
-                                selected = areDatesEqual(day, value);
-                            } else if (
-                                type === "multiple" &&
-                                Array.isArray(value)
-                            ) {
-                                selected = isDateInArray(day, value as Date[]);
-                            } else if (
-                                type === "range" &&
-                                Array.isArray(value)
-                            ) {
-                                const rangeStatus = isDateInRange(
-                                    day,
-                                    value as DateRangeValue
-                                );
-                                selected =
-                                    rangeStatus.isStart || rangeStatus.isEnd;
-                                inRange = rangeStatus.inRange;
-                                isRangeStart = rangeStatus.isStart;
-                                isRangeEnd = rangeStatus.isEnd;
-                            }
-
-                            const disabled = isDateDisabled(day, {
-                                minDate,
-                                maxDate
-                            });
-
-                            const dayControlProps = getDayProps?.(day) || {};
+                    <div className="flex flex-col gap-1">
+                        {Array.from({
+                            length: Math.ceil(columnDays.length / 7)
+                        }).map((_, weekIndex) => {
+                            const weekStart = weekIndex * 7;
+                            const weekDays = columnDays.slice(
+                                weekStart,
+                                weekStart + 7
+                            );
 
                             return (
-                                <PickerControl
-                                    key={dayIndex}
-                                    selected={selected}
-                                    inRange={inRange}
-                                    isRangeStart={isRangeStart}
-                                    isRangeEnd={isRangeEnd}
-                                    disabled={disabled}
-                                    outside={outside}
-                                    weekend={weekend}
-                                    size={size}
-                                    onClick={() =>
-                                        !disabled && handleDaySelect(day)
-                                    }
-                                    {...dayControlProps}
-                                >
-                                    {day.getDate()}
-                                </PickerControl>
+                                <div key={weekIndex} className="flex gap-1">
+                                    {weekDays.map((day, dayIndex) => {
+                                        let selected = false;
+                                        let inRange = false;
+                                        let isRangeStart = false;
+                                        let isRangeEnd = false;
+
+                                        const outside =
+                                            day.getMonth() !== columnMonth;
+                                        const weekend = isWeekend(day);
+
+                                        if (
+                                            type === "default" &&
+                                            value instanceof Date
+                                        ) {
+                                            selected = areDatesEqual(
+                                                day,
+                                                value
+                                            );
+                                        } else if (
+                                            type === "multiple" &&
+                                            Array.isArray(value)
+                                        ) {
+                                            selected = isDateInArray(
+                                                day,
+                                                value as Date[]
+                                            );
+                                        } else if (
+                                            type === "range" &&
+                                            Array.isArray(value)
+                                        ) {
+                                            const rangeStatus = isDateInRange(
+                                                day,
+                                                value as DateRangeValue
+                                            );
+                                            selected =
+                                                rangeStatus.isStart ||
+                                                rangeStatus.isEnd;
+                                            inRange = rangeStatus.inRange;
+                                            isRangeStart = rangeStatus.isStart;
+                                            isRangeEnd = rangeStatus.isEnd;
+                                        }
+
+                                        const disabled = isDateDisabled(day, {
+                                            minDate,
+                                            maxDate
+                                        });
+
+                                        const dayControlProps =
+                                            getDayProps?.(day) || {};
+
+                                        return (
+                                            <div
+                                                key={weekStart + dayIndex}
+                                                className="flex-1"
+                                                style={{ minWidth: 0 }}
+                                            >
+                                                <PickerControl
+                                                    selected={selected}
+                                                    inRange={inRange}
+                                                    isRangeStart={isRangeStart}
+                                                    isRangeEnd={isRangeEnd}
+                                                    disabled={disabled}
+                                                    outside={outside}
+                                                    weekend={weekend}
+                                                    size={size}
+                                                    onClick={() =>
+                                                        !disabled &&
+                                                        handleDaySelect(day)
+                                                    }
+                                                    className="w-full"
+                                                    {...dayControlProps}
+                                                >
+                                                    {day.getDate()}
+                                                </PickerControl>
+                                            </div>
+                                        );
+                                    })}
+                                    {weekDays.length < 7 &&
+                                        Array.from({
+                                            length: 7 - weekDays.length
+                                        }).map((_, emptyIndex) => (
+                                            <div
+                                                key={`empty-${emptyIndex}`}
+                                                className="flex-1"
+                                            />
+                                        ))}
+                                </div>
                             );
                         })}
                     </div>

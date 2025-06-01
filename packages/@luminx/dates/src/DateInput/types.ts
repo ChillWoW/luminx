@@ -18,6 +18,7 @@ export interface DateInputProps<T = DateValue | DateRangeValue>
     dropdownShadow?: Shadow;
     error?: string;
     clearable?: boolean;
+    dropdownWidth?: string | number;
     className?: string;
     classNames?: DateInputClassNames;
 }

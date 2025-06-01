@@ -1,12 +1,8 @@
 import React, { createContext, useContext } from "react";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
 import localeData from "dayjs/plugin/localeData";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
 dayjs.extend(localeData);
 dayjs.extend(customParseFormat);
 
@@ -14,39 +10,28 @@ export interface DatesSettings {
     locale?: string;
     firstDayOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
     weekendDays?: number[];
-    timezone?: string;
-    dateFormat?: string;
-    timeFormat?: string;
+    consistentWeeks?: boolean;
 }
 
 interface DatesProviderContextValue {
-    settings: DatesSettings;
-    getTimezone: () => string | undefined;
+    settings: Required<DatesSettings>;
+    getWeekdayNames: (format?: "dd" | "ddd" | "dddd") => string[];
+    getMonthNames: (format?: "MMM" | "MMMM") => string[];
+    isWeekend: (date: Date) => boolean;
     formatDate: (date: Date | string | number, format?: string) => string;
     parseDate: (dateString: string, format?: string) => Date | null;
-    getWeekdayNames: (format?: string) => string[];
-    getMonthNames: (format?: string) => string[];
-    isWeekend: (date: Date) => boolean;
 }
 
-const DEFAULT_SETTINGS: DatesSettings = {
+const DEFAULT_SETTINGS: Required<DatesSettings> = {
     locale: "en",
-    firstDayOfWeek: 1, // 0 = Sunday, 6 = Saturday
+    firstDayOfWeek: 1,
     weekendDays: [0, 6],
-    timezone: undefined,
-    dateFormat: "YYYY-MM-DD",
-    timeFormat: "HH:mm"
+    consistentWeeks: false
 };
 
-const DatesProviderContext = createContext<DatesProviderContextValue>({
-    settings: DEFAULT_SETTINGS,
-    getTimezone: () => undefined,
-    formatDate: () => "",
-    parseDate: () => null,
-    getWeekdayNames: () => [],
-    getMonthNames: () => [],
-    isWeekend: () => false
-});
+const DatesProviderContext = createContext<DatesProviderContextValue | null>(
+    null
+);
 
 export interface DatesProviderProps {
     settings?: DatesSettings;
@@ -54,110 +39,81 @@ export interface DatesProviderProps {
 }
 
 export function DatesProvider({ settings = {}, children }: DatesProviderProps) {
-    const mergedSettings: DatesSettings = {
+    const mergedSettings: Required<DatesSettings> = {
         ...DEFAULT_SETTINGS,
         ...settings
     };
 
-    if (mergedSettings.locale && mergedSettings.locale !== "en") {
-        try {
-            // Only import the locale if needed
-            import(`dayjs/locale/${mergedSettings.locale}`)
-                .then(() => dayjs.locale(mergedSettings.locale))
-                .catch((error) => {
-                    console.warn(
-                        `Failed to load dayjs locale "${mergedSettings.locale}"`,
-                        error
-                    );
-                });
-        } catch (error) {
-            console.warn(
-                `Failed to set dayjs locale to "${mergedSettings.locale}"`,
-                error
-            );
-        }
+    if (mergedSettings.locale !== "en") {
+        dayjs.locale(mergedSettings.locale);
     }
 
-    const getTimezone = () => mergedSettings.timezone;
-
-    const formatDate = (date: Date | string | number, format?: string) => {
-        const dayjsDate = dayjs(date);
-        const timezone = getTimezone();
-        const formatString = format || mergedSettings.dateFormat;
-
-        if (timezone) {
-            return dayjsDate.tz(timezone).format(formatString);
-        }
-
-        return dayjsDate.format(formatString);
-    };
-
-    const parseDate = (dateString: string, format?: string) => {
-        const formatString = format || mergedSettings.dateFormat;
-        const parsed = dayjs(dateString, formatString);
-        return parsed.isValid() ? parsed.toDate() : null;
-    };
-
-    const getWeekdayNames = (format = "dd") => {
+    const getWeekdayNames = (format: "dd" | "ddd" | "dddd" = "dd") => {
         const localeData = dayjs().localeData();
-        const weekdays = localeData.weekdays();
-        const weekdaysShort = localeData.weekdaysShort();
-        const weekdaysMin = localeData.weekdaysMin();
-
         let names: string[];
+
         switch (format) {
             case "dd":
-                names = weekdaysMin;
+                names = localeData.weekdaysMin();
                 break;
             case "ddd":
-                names = weekdaysShort;
+                names = localeData.weekdaysShort();
                 break;
             case "dddd":
-                names = weekdays;
+                names = localeData.weekdays();
                 break;
             default:
-                names = weekdaysMin;
+                names = localeData.weekdaysMin();
         }
 
-        const { firstDayOfWeek = 0 } = mergedSettings;
+        const { firstDayOfWeek } = mergedSettings;
         return [
             ...names.slice(firstDayOfWeek),
             ...names.slice(0, firstDayOfWeek)
         ];
     };
 
-    const getMonthNames = (format = "MMM") => {
+    const getMonthNames = (format: "MMM" | "MMMM" = "MMM") => {
         const localeData = dayjs().localeData();
-        const months = localeData.months();
-        const monthsShort = localeData.monthsShort();
 
         switch (format) {
             case "MMM":
-                return monthsShort;
+                return localeData.monthsShort();
             case "MMMM":
-                return months;
+                return localeData.months();
             default:
-                return monthsShort;
+                return localeData.monthsShort();
         }
     };
 
     const isWeekend = (date: Date) => {
         const day = date.getDay();
-        return mergedSettings.weekendDays?.includes(day) || false;
+        return mergedSettings.weekendDays.includes(day);
+    };
+
+    const formatDate = (
+        date: Date | string | number,
+        format = "YYYY-MM-DD"
+    ) => {
+        return dayjs(date).format(format);
+    };
+
+    const parseDate = (dateString: string, format = "YYYY-MM-DD") => {
+        const parsed = dayjs(dateString, format);
+        return parsed.isValid() ? parsed.toDate() : null;
+    };
+
+    const contextValue: DatesProviderContextValue = {
+        settings: mergedSettings,
+        getWeekdayNames,
+        getMonthNames,
+        isWeekend,
+        formatDate,
+        parseDate
     };
 
     return (
-        <DatesProviderContext.Provider
-            value={{
-                settings: mergedSettings,
-                getTimezone,
-                formatDate,
-                parseDate,
-                getWeekdayNames,
-                getMonthNames,
-                isWeekend
-            }}
-        >
+        <DatesProviderContext.Provider value={contextValue}>
             {children}
         </DatesProviderContext.Provider>
     );
@@ -173,10 +129,7 @@ export function useDatesContext() {
     return context;
 }
 
-export function formatWithTimezone(
-    date: Date | string | number,
-    format = "YYYY-MM-DD"
-) {
-    const { formatDate } = useDatesContext();
-    return formatDate(date, format);
+export function useDatesSettings() {
+    const { settings } = useDatesContext();
+    return settings;
 }
