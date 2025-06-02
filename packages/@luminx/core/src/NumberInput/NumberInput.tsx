@@ -30,6 +30,7 @@ export const NumberInput = ({
     );
 
     const [displayValue, setDisplayValue] = useState<string | null>(null);
+    const [isTyping, setIsTyping] = useState<boolean>(false);
 
     const formatValue = useCallback(
         (num: number): string => {
@@ -95,13 +96,47 @@ export const NumberInput = ({
         [prefix, suffix, decimalSeparator, thousandSeparator]
     );
 
+    const clampValue = useCallback(
+        (val: number): number => {
+            let clampedValue = val;
+            if (min !== undefined && clampedValue < min) clampedValue = min;
+            if (max !== undefined && clampedValue > max) clampedValue = max;
+            return clampedValue;
+        },
+        [min, max]
+    );
+
+    const applyPrecision = useCallback(
+        (val: number): number => {
+            if (precision !== undefined) {
+                const factor = Math.pow(10, precision);
+                return Math.round(val * factor) / factor;
+            }
+            return val;
+        },
+        [precision]
+    );
+
+    const commitValue = useCallback(
+        (rawValue: number) => {
+            const clampedValue = clampValue(rawValue);
+            const finalValue = applyPrecision(clampedValue);
+            setValue(finalValue);
+            setDisplayValue(null);
+            setIsTyping(false);
+            onChange?.(finalValue);
+        },
+        [clampValue, applyPrecision, onChange]
+    );
+
     const handleChange = useCallback(
         (valueString: string) => {
-            let newValueString = valueString;
+            setIsTyping(true);
 
             if (valueString === "") {
                 setValue(0);
                 setDisplayValue(null);
+                setIsTyping(false);
                 onChange?.(0);
                 return;
             }
@@ -116,29 +151,29 @@ export const NumberInput = ({
                 }]*$`
             );
 
-            if (!isValidChar.test(newValueString)) {
+            if (!isValidChar.test(valueString)) {
                 return;
             }
 
-            if (allowDecimal && newValueString === decimalSeparator) {
+            if (allowDecimal && valueString === decimalSeparator) {
                 setValue(0);
                 setDisplayValue(`0${decimalSeparator}`);
                 onChange?.(0);
                 return;
             }
 
-            if (allowNegative && newValueString === "-") {
+            if (allowNegative && valueString === "-") {
                 setValue(0);
                 setDisplayValue("-");
                 onChange?.(0);
                 return;
             }
 
-            if (allowDecimal && newValueString.includes(decimalSeparator)) {
-                setDisplayValue(newValueString);
+            if (allowDecimal && valueString.includes(decimalSeparator)) {
+                setDisplayValue(valueString);
 
-                if (newValueString.endsWith(decimalSeparator)) {
-                    const baseValue = parseValue(newValueString.slice(0, -1));
+                if (valueString.endsWith(decimalSeparator)) {
+                    const baseValue = parseValue(valueString.slice(0, -1));
                     if (!isNaN(baseValue)) {
                         setValue(baseValue);
                         onChange?.(baseValue);
@@ -146,72 +181,77 @@ export const NumberInput = ({
                     return;
                 }
 
-                const parsedValue = parseValue(newValueString);
+                const parsedValue = parseValue(valueString);
                 if (!isNaN(parsedValue)) {
-                    let finalValue = parsedValue;
-                    if (min !== undefined && finalValue < min) finalValue = min;
-                    if (max !== undefined && finalValue > max) finalValue = max;
-
-                    if (precision !== undefined) {
-                        const factor = Math.pow(10, precision);
-                        finalValue = Math.round(finalValue * factor) / factor;
-                    }
-
-                    setValue(finalValue);
-                    onChange?.(finalValue);
+                    setValue(parsedValue);
+                    onChange?.(parsedValue);
                 }
                 return;
             }
 
             setDisplayValue(null);
-            let newValue = parseValue(newValueString);
+            const newValue = parseValue(valueString);
 
             if (isNaN(newValue)) {
                 return;
-            }
-
-            if (min !== undefined && newValue < min) newValue = min;
-            if (max !== undefined && newValue > max) newValue = max;
-
-            if (precision !== undefined) {
-                const factor = Math.pow(10, precision);
-                newValue = Math.round(newValue * factor) / factor;
             }
 
             setValue(newValue);
             onChange?.(newValue);
         },
         [
-            min,
-            max,
-            precision,
-            onChange,
             allowDecimal,
             allowNegative,
             decimalSeparator,
             thousandSeparator,
             prefix,
             suffix,
-            parseValue
+            parseValue,
+            onChange
         ]
+    );
+
+    const handleBlur = useCallback(
+        (event: React.FocusEvent<HTMLInputElement>) => {
+            if (isTyping) {
+                commitValue(value);
+            }
+            props.onBlur?.(event);
+        },
+        [isTyping, value, commitValue, props.onBlur]
+    );
+
+    const handleKeyDown = useCallback(
+        (event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (event.key === "Enter" && isTyping) {
+                commitValue(value);
+                event.currentTarget.blur();
+            }
+            props.onKeyDown?.(event);
+        },
+        [isTyping, value, commitValue, props.onKeyDown]
     );
 
     const increment = useCallback(() => {
         const newValue = value + step;
-        if (max !== undefined && newValue > max) return;
-        setValue(newValue);
+        const clampedValue = clampValue(newValue);
+        if (clampedValue === value) return;
+        setValue(clampedValue);
         setDisplayValue(null);
-        onChange?.(newValue);
-    }, [value, step, max, onChange]);
+        setIsTyping(false);
+        onChange?.(clampedValue);
+    }, [value, step, clampValue, onChange]);
 
     const decrement = useCallback(() => {
         const newValue = value - step;
-        if (min !== undefined && newValue < min) return;
         if (!allowNegative && newValue < 0) return;
-        setValue(newValue);
+        const clampedValue = clampValue(newValue);
+        if (clampedValue === value) return;
+        setValue(clampedValue);
         setDisplayValue(null);
-        onChange?.(newValue);
-    }, [value, step, min, onChange, allowNegative]);
+        setIsTyping(false);
+        onChange?.(clampedValue);
+    }, [value, step, allowNegative, clampValue, onChange]);
 
     const isIncrementDisabled = disabled || (max !== undefined && value >= max);
     const isDecrementDisabled =
@@ -272,6 +312,8 @@ export const NumberInput = ({
             inputMode={allowDecimal ? "decimal" : "numeric"}
             value={displayValue !== null ? displayValue : formatValue(value)}
             onChange={handleChange}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
             rightSection={hideControls ? null : controlButtons}
             rightSectionPadding={0}
             disabled={disabled}
