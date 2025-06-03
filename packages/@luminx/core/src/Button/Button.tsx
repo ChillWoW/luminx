@@ -23,6 +23,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             target,
             align = "center",
             useAnimation = true,
+            uppercase,
             className,
             classNames,
             ...props
@@ -147,7 +148,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                     "left"
                 )}
                 <div className={cx("flex-1 flex items-center", getAlign())}>
-                    {children}
+                    {uppercase ? (children as string).toUpperCase() : children}
                 </div>
                 {renderSection(
                     loading && loadingPosition === "right"
