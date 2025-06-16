@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 import { InputProps } from "./types";
-import { getShadow, getRadius, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 
 export const Input = ({
     // Component type
     component = "input",
 
     // Appearance
-    radius = "md",
-    shadow,
     fullWidth,
     unstyled = false,
 
@@ -197,7 +196,7 @@ export const Input = ({
     const renderFormControl = () => (
         <div
             className={cx(
-                "flex items-center overflow-hidden transition-colors",
+                "flex items-center overflow-hidden transition-colors rounded-md",
                 !unstyled && [
                     theme === "light"
                         ? "bg-[var(--luminx-light-background)] border border-[var(--luminx-light-border)]"
@@ -211,8 +210,6 @@ export const Input = ({
                 classNames?.container
             )}
             style={{
-                ...getRadius(radius),
-                ...getShadow(shadow),
                 ...style
             }}
         >
@@ -294,6 +291,57 @@ export const Input = ({
                 );
 
             case "textarea":
+                const isAutoSize = (props as any).autoSize;
+
+                if (isAutoSize) {
+                    return (
+                        <TextareaAutosize
+                            ref={inputRef as React.Ref<HTMLTextAreaElement>}
+                            autoFocus={autoFocus}
+                            disabled={disabled}
+                            readOnly={readOnly}
+                            placeholder={placeholder}
+                            aria-invalid={!!error}
+                            aria-label={props.ariaLabel}
+                            aria-describedby={props.ariaDescribedBy}
+                            aria-controls={props.ariaControls}
+                            name={props.name}
+                            value={
+                                controlledValue !== undefined
+                                    ? controlledValue
+                                    : localValue
+                            }
+                            onChange={handleChange as any}
+                            onFocus={onFocus as any}
+                            onBlur={onBlur as any}
+                            onKeyDown={(
+                                e: React.KeyboardEvent<HTMLTextAreaElement>
+                            ) => {
+                                onKeyDown?.(e as any);
+                                if (
+                                    onEnterPress &&
+                                    e.key === "Enter" &&
+                                    !e.shiftKey
+                                ) {
+                                    e.preventDefault();
+                                    onEnterPress(e as any);
+                                }
+                            }}
+                            minRows={(props as any).minRows || rows}
+                            maxRows={(props as any).maxRows}
+                            className={cx(
+                                baseStyles,
+                                "resize-none",
+                                theme === "light"
+                                    ? "text-[var(--luminx-light-text)]"
+                                    : "text-[var(--luminx-dark-text)]",
+                                classNames?.input
+                            )}
+                            style={style as any}
+                        />
+                    );
+                }
+
                 return (
                     <textarea
                         ref={inputRef as React.Ref<HTMLTextAreaElement>}

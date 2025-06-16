@@ -1,6 +1,5 @@
 import { CSSProperties, ReactNode } from "react";
 import { LoaderProps } from "../Loader";
-import { Radius, Shadow } from "../_theme";
 
 export interface NotificationProps {
     children: ReactNode;
@@ -8,8 +7,6 @@ export interface NotificationProps {
     loading?: boolean;
     loaderProps?: LoaderProps;
     onClose?: () => void;
-    radius?: Radius;
-    shadow?: Shadow;
     title?: ReactNode;
     withBorder?: boolean;
     withCloseButton?: boolean;

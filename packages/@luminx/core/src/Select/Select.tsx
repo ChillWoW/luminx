@@ -12,8 +12,6 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             onChange,
 
             placeholder,
-            radius,
-            shadow,
             fullWidth,
 
             placement = "bottom",
@@ -297,7 +295,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 <div
                     ref={dropdownRef}
                     className={cx(
-                        "absolute w-full border overflow-y-auto luminx-scrollbar",
+                        "absolute w-full border overflow-y-auto luminx-scrollbar rounded-md",
                         theme === "light"
                             ? "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)]"
                             : "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)]",
@@ -311,9 +309,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                     style={{
                         maxHeight,
                         padding: 4,
-                        zIndex: zIndex || 9999,
-                        ...getRadius(radius),
-                        ...getShadow(shadow)
+                        zIndex: zIndex || 9999
                     }}
                 >
                     {filteredOptions.length === 0 ? (
@@ -376,8 +372,6 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                     placeholder={placeholder}
                     readOnly={!searchable || readOnly}
                     disabled={disabled}
-                    radius={radius}
-                    shadow={shadow}
                     fullWidth={fullWidth}
                     onClick={toggleDropdown}
                     onChange={searchable ? handleInputChange : undefined}

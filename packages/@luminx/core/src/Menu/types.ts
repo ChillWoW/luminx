@@ -1,11 +1,9 @@
 import { ElementType, MouseEvent, ReactElement, ReactNode } from "react";
-import { TransitionProps } from "../Transition";
 import {
     UseFloatingReturn,
     FloatingContext,
     ReferenceType
 } from "@floating-ui/react";
-import { Radius, Shadow } from "../_theme";
 
 export type MenuTrigger = "hover" | "click" | "click-hover";
 export type MenuPosition =
@@ -28,8 +26,6 @@ export interface MenuProps {
     opened?: boolean;
     onChange?: (opened: boolean) => void;
     trigger?: MenuTrigger;
-    radius?: Radius;
-    shadow?: Shadow;
     position?: MenuPosition;
     width?: number | string;
     offset?: number;
@@ -40,7 +36,6 @@ export interface MenuProps {
     withinPortal?: boolean;
     portalTarget?: HTMLElement | string;
     itemTabIndex?: number;
-    transitionProps?: TransitionProps;
     classNames?: MenuClassNames;
 }
 
@@ -95,7 +90,6 @@ export interface MenuItemProps {
     onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
     className?: string;
     component?: ElementType | string;
-    radius?: Radius;
     [key: string]: any;
 }
 

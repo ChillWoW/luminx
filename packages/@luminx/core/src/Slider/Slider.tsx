@@ -6,7 +6,7 @@ import React, {
     useCallback
 } from "react";
 import { SliderProps } from "./types";
-import { getRadius, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 
 export const Slider = forwardRef<HTMLDivElement, SliderProps>(
     (
@@ -29,7 +29,6 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
             onChange,
             onChangeEnd,
             size = "md",
-            radius = "full",
             className,
             classNames,
             ...props
@@ -205,39 +204,34 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                 <div
                     ref={trackRef}
                     className={cx(
-                        "relative w-full",
+                        "relative w-full rounded-full",
                         currentSize.track,
                         "cursor-pointer",
                         disabled && "cursor-not-allowed",
                         classNames?.trackContainer
                     )}
-                    style={{
-                        ...getRadius(radius)
-                    }}
                     onClick={disabled ? undefined : handleTrackClick}
                 >
                     <div
                         className={cx(
-                            "absolute inset-0",
+                            "absolute inset-0 rounded-full",
                             theme === "light"
                                 ? "bg-[var(--luminx-light-background)]"
                                 : "bg-[var(--luminx-dark-background)]",
                             classNames?.track
                         )}
                         style={{
-                            ...getRadius(radius),
                             backgroundColor: trackColor
                         }}
                     />
 
                     <div
                         className={cx(
-                            "absolute top-0 bottom-0",
+                            "absolute top-0 bottom-0 rounded-full",
                             "bg-[var(--luminx-primary)]",
                             classNames?.bar
                         )}
                         style={{
-                            ...getRadius(radius),
                             [inverted ? "right" : "left"]: 0,
                             width: `${position}%`,
                             backgroundColor: barColor

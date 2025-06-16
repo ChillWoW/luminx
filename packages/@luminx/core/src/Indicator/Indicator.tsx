@@ -1,14 +1,12 @@
 import React from "react";
 import { IndicatorProps } from "./types";
-import { getRadius, cx, getShadow } from "../_theme";
+import { cx } from "../_theme";
 
 export const Indicator = ({
     children,
     show = true,
     position = "top-right",
     size = "sm",
-    radius = "full",
-    shadow,
     label,
     style,
     className,
@@ -39,18 +37,13 @@ export const Indicator = ({
             {show && (
                 <div
                     className={cx(
-                        "absolute flex items-center justify-center bg-[var(--luminx-primary)]",
+                        "absolute flex items-center justify-center bg-[var(--luminx-primary)] rounded-full",
                         sizeClasses[size],
                         positionClasses[position],
                         label && "w-fit px-1",
                         classNames?.indicator,
                         className
                     )}
-                    style={{
-                        ...getRadius(radius),
-                        ...getShadow(shadow),
-                        ...style
-                    }}
                 >
                     {label}
                 </div>

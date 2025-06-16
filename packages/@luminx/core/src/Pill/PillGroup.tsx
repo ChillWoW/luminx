@@ -10,8 +10,6 @@ export const PillGroup = ({
     onRemove,
     disabled,
     children,
-    radius,
-    shadow,
     className
 }: PillGroupProps) => {
     return (
@@ -20,9 +18,7 @@ export const PillGroup = ({
                 size,
                 withRemoveButton,
                 disabled,
-                onRemove,
-                radius,
-                shadow
+                onRemove
             }}
         >
             <div className={cx("flex flex-wrap gap-1", className)}>

@@ -1,10 +1,9 @@
 import { usePillGroupContext } from "./context";
 import { Pill } from "./Pill";
 import { PillProps } from "./types";
-import "../style.css";
 
 export const PillGroupItem = ({ ...props }: PillProps) => {
-    const { size, withRemoveButton, disabled, onRemove, radius, shadow } =
+    const { size, withRemoveButton, disabled, onRemove } =
         usePillGroupContext();
 
     return (
@@ -13,8 +12,6 @@ export const PillGroupItem = ({ ...props }: PillProps) => {
             withRemoveButton={withRemoveButton}
             disabled={disabled}
             onRemove={onRemove}
-            radius={radius}
-            shadow={shadow}
             {...props}
         />
     );

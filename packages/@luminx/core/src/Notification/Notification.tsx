@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode } from "react";
 import { NotificationProps } from "./types";
-import { useTheme, getRadius, cx, getShadow } from "../_theme";
+import { useTheme, cx } from "../_theme";
 import { Loader } from "../Loader";
 import { IconX } from "@tabler/icons-react";
 
@@ -22,13 +22,12 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
     (
         {
             children,
-            radius = "md",
-            shadow,
             title,
             icon,
             loading,
             loaderProps = {
-                size: 32
+                size: 24,
+                stroke: 4
             },
             onClose,
             withBorder,
@@ -53,7 +52,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
                 ref={ref}
                 role="alert"
                 className={cx(
-                    "p-3",
+                    "p-3 rounded-md",
                     theme === "light"
                         ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)] border-[var(--luminx-light-border)]"
                         : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)] border-[var(--luminx-dark-border)]",
@@ -61,8 +60,6 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
                     className
                 )}
                 style={{
-                    ...getRadius(radius),
-                    ...getShadow(shadow),
                     ...style
                 }}
                 {...props}

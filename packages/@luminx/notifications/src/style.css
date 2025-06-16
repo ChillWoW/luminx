@@ -1,0 +1,136 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@keyframes luminx-slide-in-from-right-full {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes luminx-slide-in-from-left-full {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes luminx-slide-in-from-top {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes luminx-slide-in-from-bottom {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Exit animations */
+@keyframes luminx-slide-out-to-right {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes luminx-slide-out-to-left {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes luminx-slide-out-to-top {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes luminx-slide-out-to-bottom {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+.luminx-animate-in {
+    animation-fill-mode: both;
+}
+
+.luminx-animate-out {
+    animation-fill-mode: both;
+}
+
+.luminx-slide-in-from-right-full {
+    animation-name: luminx-slide-in-from-right-full;
+}
+
+.luminx-slide-in-from-left-full {
+    animation-name: luminx-slide-in-from-left-full;
+}
+
+.luminx-slide-in-from-top {
+    animation-name: luminx-slide-in-from-top;
+}
+
+.luminx-slide-in-from-bottom {
+    animation-name: luminx-slide-in-from-bottom;
+}
+
+.luminx-slide-out-to-right {
+    animation-name: luminx-slide-out-to-right;
+}
+
+.luminx-slide-out-to-left {
+    animation-name: luminx-slide-out-to-left;
+}
+
+.luminx-slide-out-to-top {
+    animation-name: luminx-slide-out-to-top;
+}
+
+.luminx-slide-out-to-bottom {
+    animation-name: luminx-slide-out-to-bottom;
+}
+
+.luminx-duration-300 {
+    animation-duration: 300ms;
+}

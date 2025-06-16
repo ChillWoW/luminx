@@ -17,10 +17,19 @@ export const Textarea = ({
             rows={rows}
             cols={cols}
             resize={resize}
+            autoSize={autoSize}
+            minRows={minRows}
+            maxRows={maxRows}
             style={{
                 ...(props.style || {}),
-                minHeight: minRows ? `${minRows * 1.5}rem` : undefined,
-                maxHeight: maxRows ? `${maxRows * 1.5}rem` : undefined
+                ...(autoSize
+                    ? {}
+                    : {
+                          minHeight: minRows
+                              ? `${minRows * 1.5}rem`
+                              : undefined,
+                          maxHeight: maxRows ? `${maxRows * 1.5}rem` : undefined
+                      })
             }}
             {...props}
         />

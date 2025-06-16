@@ -1,5 +1,4 @@
 import { HTMLAttributes, ReactNode } from "react";
-import { Radius, Shadow } from "../_theme";
 
 export type SegmentedControlSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type SegmentedControlOrientation = "horizontal" | "vertical";
@@ -22,8 +21,6 @@ export interface SegmentedControlProps
     defaultValue?: string;
     onChange?: (value: string) => void;
     size?: SegmentedControlSize;
-    radius?: Radius;
-    shadow?: Shadow;
     fullWidth?: boolean;
     disabled?: boolean;
     readOnly?: boolean;

@@ -23,6 +23,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             target,
             align = "center",
             useAnimation = true,
+            uppercase,
             className,
             classNames,
             ...props
@@ -128,6 +129,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                     sizeClasses(),
                     getVariant(),
                     fullWidth && "w-full",
+                    uppercase && "uppercase",
                     (disabled || loading) &&
                         "opacity-60 cursor-not-allowed active:translate-y-0",
                     (disabled || loading) && classNames?.disabled,

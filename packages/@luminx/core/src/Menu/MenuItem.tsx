@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { MenuItemProps } from "./types";
 import { useMenu } from "./context";
-import { getRadius, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 
 export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
     (props, ref) => {
@@ -41,7 +41,6 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
             children,
             className,
             disabled,
-            radius,
             ...otherProps
         } = props;
 
@@ -53,7 +52,7 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
             onClick: handleClick,
             onKeyDown: handleKeyDown,
             className: cx(
-                "flex items-center w-full text-left px-3 py-2 text-sm transition-colors",
+                "flex items-center w-full text-left px-3 py-2 text-sm transition-colors rounded-md",
                 theme === "light"
                     ? "hover:bg-[var(--luminx-light-background-hover)] text-[var(--luminx-light-text)]"
                     : "hover:bg-[var(--luminx-dark-background-hover)] text-[var(--luminx-dark-text)]",
@@ -62,9 +61,6 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
                 className,
                 classNames?.item
             ),
-            style: {
-                ...getRadius(radius || "md")
-            },
             ...otherProps
         };
 

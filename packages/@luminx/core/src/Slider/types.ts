@@ -1,5 +1,4 @@
 import { HTMLAttributes } from "react";
-import { Radius } from "../_theme";
 
 export type SliderSize = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -23,7 +22,6 @@ export interface SliderProps
     onChange?: (value: number) => void;
     onChangeEnd?: (value: number) => void;
     size?: SliderSize;
-    radius?: Radius;
     className?: string;
     classNames?: SliderClassNames;
 }

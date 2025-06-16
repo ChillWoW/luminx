@@ -78,7 +78,7 @@ export const TabsTab = ({
                 orientation === "horizontal" ? "rounded-t-md" : "rounded-l-md",
                 sizeClasses[size],
                 variantClasses(),
-                isActive && variant === "pills" && "bg-[var(--lumin-primary)]",
+                isActive && variant === "pills" && "bg-[var(--luminx-primary)]",
                 isActive && classNames?.tabActive,
                 disabled && "opacity-60 cursor-not-allowed pointer-events-none",
                 grow && "flex-grow justify-center",

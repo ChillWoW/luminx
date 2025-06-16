@@ -1,7 +1,5 @@
 import { CSSProperties, ReactNode } from "react";
 
-export type DrawerRadius = "none" | "xs" | "sm" | "md" | "lg" | "xl";
-export type DrawerShadow = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type DrawerSize = "xs" | "sm" | "md" | "lg" | "xl" | "full" | "auto";
 export type DrawerPosition = "left" | "right" | "top" | "bottom";
 
@@ -13,8 +11,6 @@ export interface DrawerProps {
     closeOnClickOutside?: boolean;
     closeOnEscape?: boolean;
     lockScroll?: boolean;
-    radius?: DrawerRadius;
-    shadow?: DrawerShadow;
     size?: DrawerSize;
     title?: ReactNode;
     withCloseButton?: boolean;

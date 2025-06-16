@@ -24,6 +24,7 @@ export interface ButtonProps
     preventDefault?: boolean;
     align?: ButtonAlign;
     useAnimation?: boolean;
+    uppercase?: boolean;
     className?: string;
     classNames?: ButtonClassNames;
 }
