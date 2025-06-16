@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import { Notification, Transition } from "@/ui";
+import { Notification, Transition } from "@luminx/core";
 import { NotificationState } from "./types";
 
 export const getTransitionForPosition = (
