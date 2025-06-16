@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { Notification, Transition } from "@luminx/core";
 import { NotificationState } from "./types";
+import { useNotifications } from "./store";
 
 export const getTransitionForPosition = (
     position: NotificationState["position"]
@@ -228,3 +229,27 @@ export const NotificationContainer: React.FC<NotificationContainerProps> = ({
         </>
     );
 };
+
+// Add this new component for custom containers
+export const CustomNotificationContainer: React.FC<{
+    className?: string;
+    style?: React.CSSProperties;
+    zIndex?: number;
+}> = ({ className, style, zIndex = 1000 }) => {
+    const { state, hide } = useNotifications();
+
+    return (
+        <div className={className} style={{ ...style, zIndex }}>
+            {state.notifications.map((notification) => (
+                <NotificationItem
+                    key={notification.id}
+                    notification={notification}
+                    onHide={hide}
+                />
+            ))}
+        </div>
+    );
+};
+
+// Export NotificationItem for advanced use cases
+export { NotificationItem };

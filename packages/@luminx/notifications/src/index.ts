@@ -1,7 +1,14 @@
-export { NotificationsProvider } from "./NotificationsProvider";
+export {
+    NotificationsProvider,
+    NotificationsContextProvider
+} from "./NotificationsProvider";
 export { Notifications } from "./Notifications";
 export { useNotifications, useNotify } from "./store";
-export { getTransitionForPosition } from "./NotificationContainer";
+export {
+    getTransitionForPosition,
+    CustomNotificationContainer,
+    NotificationItem
+} from "./NotificationContainer";
 export {
     notifications,
     notify,
@@ -10,7 +17,8 @@ export {
     updateNotification,
     cleanNotifications,
     cleanNotificationsQueue,
-    updateNotificationsState
+    updateNotificationsState,
+    setGlobalNotificationsHandler
 } from "./notificationsApi";
 
 export type {
