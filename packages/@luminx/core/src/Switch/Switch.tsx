@@ -153,7 +153,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
 
                             <span
                                 className={cx(
-                                    "absolute rounded-full transition-transform duration-200 ease-in-out bg-[var(--luminx-primary)] ring-2 ring-inset",
+                                    "absolute rounded-full transition-transform duration-200 ease-in-out bg-[var(--luminx-white)] flex items-center justify-center",
                                     thumbIcon
                                         ? "bg-[var(--luminx-white)] text-[var(--luminx-black)] ring-0"
                                         : "ring-[var(--luminx-white)]",
@@ -161,8 +161,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                                     "top-[2px] left-[2px]",
                                     checked && currentSize.thumbTranslate,
                                     classNames?.thumb,
-                                    checked && classNames?.activeThumb,
-                                    "flex items-center justify-center"
+                                    checked && classNames?.activeThumb
                                 )}
                             >
                                 {thumbIcon}

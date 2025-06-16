@@ -41,6 +41,7 @@ export interface TransitionProps {
     enterDelay?: number;
     exitDelay?: number;
     keepMounted?: boolean;
+    className?: string;
     onExited?: () => void;
     onEntered?: () => void;
 }

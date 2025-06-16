@@ -1,8 +1,7 @@
 import { useMenu } from "./context";
 import { MenuDropdownProps } from "./types";
-import { getRadius, getShadow, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 import { Portal } from "../Portal";
-import { Transition } from "../Transition";
 import { FloatingFocusManager } from "@floating-ui/react";
 
 export const MenuDropdown = ({ children, className }: MenuDropdownProps) => {
@@ -18,55 +17,39 @@ export const MenuDropdown = ({ children, className }: MenuDropdownProps) => {
         withinPortal,
         portalTarget,
         trapFocus,
-        radius,
-        shadow,
         classNames,
-        transitionProps
+        context
     } = useMenu();
 
     if (!opened) return null;
 
     const dropdownComponent = (
-        <Transition
-            mounted={opened}
-            transition={transitionProps?.transition || "fade"}
-            {...transitionProps}
-        >
-            {(styles) => (
-                <div style={styles}>
-                    <FloatingFocusManager
-                        context={useMenu().context}
-                        modal={trapFocus}
-                    >
-                        <div
-                            ref={refs.setFloating}
-                            id={dropdownId}
-                            role="menu"
-                            aria-labelledby={targetId}
-                            className={cx(
-                                "p-3 overflow-hidden",
-                                theme === "light"
-                                    ? "bg-[var(--luminx-light-background)]"
-                                    : "bg-[var(--luminx-dark-background)]",
-                                className,
-                                classNames?.dropdown
-                            )}
-                            style={{
-                                position: "absolute",
-                                ...floatingStyles,
-                                ...getRadius(radius || "md"),
-                                ...getShadow(shadow || "md"),
-                                width: "var(--menu-width, auto)",
-                                zIndex: "var(--menu-z-index, 300)"
-                            }}
-                            {...getFloatingProps()}
-                        >
-                            {children}
-                        </div>
-                    </FloatingFocusManager>
+        <>
+            <FloatingFocusManager context={context} modal={trapFocus}>
+                <div
+                    ref={refs.setFloating}
+                    id={dropdownId}
+                    role="menu"
+                    aria-labelledby={targetId}
+                    className={cx(
+                        "p-3 overflow-hidden rounded-md z-50",
+                        theme === "light"
+                            ? "bg-[var(--luminx-light-background)]"
+                            : "bg-[var(--luminx-dark-background)]",
+                        className,
+                        classNames?.dropdown
+                    )}
+                    style={{
+                        position: "absolute",
+                        ...floatingStyles,
+                        width: "var(--menu-width, auto)"
+                    }}
+                    {...getFloatingProps()}
+                >
+                    {children}
                 </div>
-            )}
-        </Transition>
+            </FloatingFocusManager>
+        </>
     );
 
     if (withinPortal) {

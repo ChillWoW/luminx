@@ -1,5 +1,3 @@
-import { Radius, Shadow } from "../_theme";
-
 export interface SnippetClassNames {
     root?: string;
     label?: string;
@@ -15,8 +13,6 @@ export interface SnippetProps {
     onCopy?: (code?: string) => void;
     copyText?: string;
     copiedText?: string;
-    radius?: Radius;
-    shadow?: Shadow;
     maxWidth?: string | number;
     label?: string;
     withBorder?: boolean;

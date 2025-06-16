@@ -8,7 +8,7 @@ export function useTimelineContext() {
 
     if (!context) {
         throw new Error(
-            "Timeline components must be used within a Timeline provider"
+            "Timeline.Item components must be used within a Timeline component"
         );
     }
 

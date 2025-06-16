@@ -1,5 +1,4 @@
 import { HTMLAttributes, ReactNode } from "react";
-import { Radius } from "../_theme";
 
 export type TooltipPosition =
     | "top"
@@ -42,8 +41,8 @@ export interface TooltipProps extends HTMLAttributes<HTMLDivElement> {
     events?: TooltipEvents;
     openDelay?: number;
     closeDelay?: number;
-    radius?: Radius;
     refProp?: string;
+    zIndex?: number;
     classNames?: {
         root?: string;
         tooltip?: string;

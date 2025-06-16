@@ -70,10 +70,6 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
                 ref={ref}
                 className={cx(
                     "flex flex-col p-4",
-                    position === "left" && "rounded-r-md",
-                    position === "right" && "rounded-l-md",
-                    position === "top" && "rounded-b-md",
-                    position === "bottom" && "rounded-t-md",
                     theme === "light"
                         ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]"
                         : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]",

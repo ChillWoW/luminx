@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useTheme } from "../_theme";
 import { PaginationProps } from "./types";
-import { FirstIcon, LastIcon, NextIcon, PreviousIcon } from "../_icons";
 import {
     IconChevronLeft,
     IconChevronRight,
+    IconChevronsLeft,
     IconChevronsRight
 } from "@tabler/icons-react";
-import { IconChevronsLeft } from "@tabler/icons-react";
 
 export const Pagination = ({
     total,

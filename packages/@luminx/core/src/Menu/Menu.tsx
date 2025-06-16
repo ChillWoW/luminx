@@ -29,8 +29,6 @@ const defaultProps = (props: MenuProps) => {
         onChange: props.onChange,
         defaultOpened: props.defaultOpened || false,
         trigger: props.trigger || "click",
-        radius: props.radius || "md",
-        shadow: props.shadow || "sm",
         width: props.width || "auto",
         offset: props.offset || 8,
         zIndex: props.zIndex || 300,
@@ -41,7 +39,6 @@ const defaultProps = (props: MenuProps) => {
         withinPortal: props.withinPortal || false,
         portalTarget: props.portalTarget,
         itemTabIndex: props.itemTabIndex || -1,
-        transitionProps: props.transitionProps,
         children: props.children,
         classNames: props.classNames
     };
@@ -175,11 +172,8 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
         closeDelay: props.closeDelay,
         withinPortal: props.withinPortal,
         portalTarget: props.portalTarget,
-        radius: props.radius,
-        shadow: props.shadow,
         position: props.position || "bottom",
         offset: props.offset,
-        transitionProps: props.transitionProps,
         children: props.children
     };
 

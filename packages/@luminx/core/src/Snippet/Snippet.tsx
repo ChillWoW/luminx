@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { SnippetProps } from "./types";
-import { useTheme, getRadius, getShadow } from "../_theme";
+import { useTheme } from "../_theme";
 import { Tooltip } from "../Tooltip";
 import { IconCopy, IconCopyCheck } from "@tabler/icons-react";
 
@@ -10,8 +10,6 @@ export const Snippet = ({
     onCopy,
     copyText = "Copy",
     copiedText = "Copied!",
-    radius,
-    shadow,
     maxWidth,
     label,
     withBorder,
@@ -90,7 +88,7 @@ export const Snippet = ({
     return (
         <div
             className={cx(
-                "relative font-mono group inline-block",
+                "relative font-mono group inline-block rounded-md",
                 theme === "light"
                     ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)] border-[var(--luminx-light-border)]"
                     : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)] border-[var(--luminx-dark-border)]",
@@ -99,9 +97,7 @@ export const Snippet = ({
                 className
             )}
             style={{
-                maxWidth: maxWidth,
-                ...getRadius(radius),
-                ...getShadow(shadow)
+                maxWidth: maxWidth
             }}
         >
             {label && (

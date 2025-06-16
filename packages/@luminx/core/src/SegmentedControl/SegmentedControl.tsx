@@ -13,8 +13,6 @@ export const SegmentedControl = forwardRef<
             defaultValue,
             onChange,
             size = "md",
-            radius,
-            shadow,
             fullWidth = false,
             color,
             disabled = false,
@@ -150,8 +148,6 @@ export const SegmentedControl = forwardRef<
                     classNames?.root
                 )}
                 style={{
-                    ...getRadius(radius),
-                    ...getShadow(shadow),
                     ...style
                 }}
                 {...props}

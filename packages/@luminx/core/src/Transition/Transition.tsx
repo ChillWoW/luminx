@@ -18,7 +18,8 @@ export const Transition = ({
     exitDelay = 0,
     keepMounted = false,
     onExited,
-    onEntered
+    onEntered,
+    className
 }: TransitionProps) => {
     const [visible, setVisible] = useState(mounted);
     const controls = useAnimationControls();
@@ -108,6 +109,7 @@ export const Transition = ({
                             onEntered?.();
                         }
                     }}
+                    className={className}
                 >
                     {typeof children === "function"
                         ? children(currentStyles)

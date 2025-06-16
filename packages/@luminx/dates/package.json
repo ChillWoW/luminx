@@ -1,6 +1,6 @@
 {
     "name": "@luminx/dates",
-    "version": "2.1.11",
+    "version": "2.2.0",
     "description": "React date components library focused on simplicity and ease of use",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -29,7 +29,7 @@
         "react": ">=16.8.0",
         "react-dom": ">=16.8.0",
         "dayjs": ">=1.0.0",
-        "@luminx/core": ">=2.1.11"
+        "@luminx/core": ">=2.2.0"
     },
     "dependencies": {
         "@tabler/icons-react": "^3.31.0",

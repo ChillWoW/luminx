@@ -1,7 +1,5 @@
 import { CSSProperties, ReactNode } from "react";
 
-export type ModalRadius = "none" | "xs" | "sm" | "md" | "lg" | "xl";
-export type ModalShadow = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type ModalSize = "xs" | "sm" | "md" | "lg" | "xl" | "full" | "auto";
 export type AnimationState = "entering" | "entered" | "exiting" | "exited";
 
@@ -15,8 +13,6 @@ export interface ModalProps {
     centered?: boolean;
     fullScreen?: boolean;
     lockScroll?: boolean;
-    radius?: ModalRadius;
-    shadow?: ModalShadow;
     size?: ModalSize;
     title?: ReactNode;
     withCloseButton?: boolean;

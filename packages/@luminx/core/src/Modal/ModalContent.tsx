@@ -11,8 +11,6 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
     ({ children }, ref) => {
         const {
             size,
-            radius,
-            shadow,
             classNames,
             fullScreen,
             animationState,
@@ -60,7 +58,7 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
             <div
                 ref={ref}
                 className={cx(
-                    "relative flex flex-col p-3",
+                    "relative flex flex-col p-3 rounded-md",
                     theme === "light"
                         ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]"
                         : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]",
@@ -69,8 +67,6 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
                     classNames?.content
                 )}
                 style={{
-                    ...(!fullScreen ? getRadius(radius || "md") : {}),
-                    ...getShadow(shadow || "sm"),
                     transform: getTransformValue(),
                     opacity: getOpacityValue(),
                     transition: `transform ${transitionDuration}ms ${transitionTimingFunction}, opacity ${transitionDuration}ms ${transitionTimingFunction}`

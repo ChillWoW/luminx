@@ -1,7 +1,5 @@
 import { InputHTMLAttributes } from "react";
 
-export type InputRadius = "none" | "sm" | "md" | "lg" | "xl";
-export type InputShadow = "none" | "sm" | "md" | "lg" | "xl";
 export type InputComponent = "input" | "textarea" | "select";
 
 export interface InputProps
@@ -10,8 +8,6 @@ export interface InputProps
     component?: InputComponent;
 
     // Appearance
-    radius?: InputRadius;
-    shadow?: InputShadow;
     fullWidth?: boolean;
     unstyled?: boolean;
 
@@ -41,6 +37,11 @@ export interface InputProps
     rows?: number;
     cols?: number;
     resize?: "none" | "both" | "horizontal" | "vertical";
+
+    // Textarea autosize props
+    autoSize?: boolean;
+    minRows?: number;
+    maxRows?: number;
 
     // Custom sections
     leftSection?: React.ReactNode;

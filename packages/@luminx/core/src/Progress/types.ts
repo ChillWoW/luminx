@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { Radius, Shadow } from "../_theme";
 
 export type ProgressSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type ProgressLabelPosition = "left" | "center" | "right";
@@ -7,8 +6,6 @@ export type ProgressLabelPosition = "left" | "center" | "right";
 export interface ProgressRootProps {
     children?: ReactNode;
     size?: ProgressSize;
-    radius?: Radius;
-    shadow?: Shadow;
     className?: string;
 }
 

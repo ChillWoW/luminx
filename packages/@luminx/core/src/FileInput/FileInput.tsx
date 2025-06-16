@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { Input } from "../Input";
 import { FileInputProps } from "./types";
 import { cx } from "../_theme";
-import "../style.css";
 
 const DefaultValueComponent: React.FC<{ value: File | null | File[] }> = ({
     value

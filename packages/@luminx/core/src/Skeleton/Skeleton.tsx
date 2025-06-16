@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { SkeletonProps } from "./types";
-import { getRadius, getShadow, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 import "./Skeleton.css";
 
 export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
@@ -8,8 +8,6 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
         {
             height,
             width,
-            radius,
-            shadow,
             animate = true,
             visible = true,
             className,
@@ -28,6 +26,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
             <div
                 ref={ref}
                 className={cx(
+                    "rounded-md",
                     visible ? "relative overflow-hidden" : "hidden",
                     visible &&
                         (theme === "light"
@@ -39,9 +38,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
                 data-theme={theme === "light" ? "light" : "dark"}
                 style={{
                     height,
-                    width,
-                    ...getRadius(radius),
-                    ...getShadow(shadow)
+                    width
                 }}
                 {...props}
             >

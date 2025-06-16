@@ -8,8 +8,6 @@ export const Pill = ({
     size = "md",
     withRemoveButton = false,
     disabled = false,
-    radius = "full",
-    shadow,
     onRemove,
     classNames,
     className,
@@ -34,7 +32,7 @@ export const Pill = ({
     return (
         <div
             className={cx(
-                "flex items-center border w-fit",
+                "flex items-center border w-fit rounded-full",
                 theme === "light"
                     ? "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)] text-[var(--luminx-light-text)]"
                     : "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)] text-[var(--luminx-dark-text)]",
@@ -43,10 +41,7 @@ export const Pill = ({
                 classNames?.root,
                 className
             )}
-            style={{
-                ...getRadius(radius),
-                ...getShadow(shadow)
-            }}
+            style={{}}
             {...props}
         >
             <span className={classNames?.label}>{children}</span>

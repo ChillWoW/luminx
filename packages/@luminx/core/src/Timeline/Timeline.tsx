@@ -15,7 +15,6 @@ const Timeline = forwardRef<HTMLDivElement, TimelineProps>(
             active = -1,
             lineWidth = 2,
             bulletSize = 20,
-            radius = "full",
             align = "left",
             reverseActive = false,
             className,
@@ -43,7 +42,6 @@ const Timeline = forwardRef<HTMLDivElement, TimelineProps>(
                     lineWidth,
                     bulletSize,
                     align,
-                    radius,
                     reverseActive,
                     children
                 }}

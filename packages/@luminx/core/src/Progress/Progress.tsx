@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { cx, getRadius, getShadow, useTheme } from "../_theme";
+import { cx, useTheme } from "../_theme";
 import {
     ProgressLabelProps,
     ProgressProps,
@@ -9,14 +9,7 @@ import "./Progress.css";
 
 export const ProgressRoot = forwardRef<HTMLDivElement, ProgressProps>(
     (props, ref) => {
-        const {
-            size = "md",
-            radius = "md",
-            shadow = "none",
-            className,
-            children,
-            ...others
-        } = props;
+        const { size = "md", className, children, ...others } = props;
 
         const { theme, cx } = useTheme();
 
@@ -36,17 +29,13 @@ export const ProgressRoot = forwardRef<HTMLDivElement, ProgressProps>(
             <div
                 ref={ref}
                 className={cx(
-                    "relative w-full overflow-hidden",
+                    "relative w-full overflow-hidden rounded-md",
                     theme === "light"
                         ? "bg-[var(--luminx-light-background)]"
                         : "bg-[var(--luminx-dark-background)]",
                     sizeClasses(),
                     className
                 )}
-                style={{
-                    ...getRadius(radius),
-                    ...getShadow(shadow)
-                }}
                 {...others}
             >
                 <div className="flex absolute top-0 left-0 w-full h-full">
