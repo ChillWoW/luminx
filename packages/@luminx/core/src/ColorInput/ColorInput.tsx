@@ -95,7 +95,6 @@ export const ColorInput = ({
         <ColorSwatch
             color={currentColor}
             size={24}
-            radius="full"
             className={classNames.colorSwatch}
             {...colorSwatchProps}
         />

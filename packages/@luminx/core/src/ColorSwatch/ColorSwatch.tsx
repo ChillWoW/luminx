@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { ColorSwatchProps } from "./types";
-import { cx, getRadius, getShadow } from "../_theme";
+import { cx } from "../_theme";
 
 export const ColorSwatch = forwardRef<HTMLDivElement, ColorSwatchProps>(
     (
@@ -8,9 +8,7 @@ export const ColorSwatch = forwardRef<HTMLDivElement, ColorSwatchProps>(
             children,
             color,
             component: Component = "div",
-            shadow,
             size = 25,
-            radius,
             style,
             className,
             classNames,
@@ -24,15 +22,13 @@ export const ColorSwatch = forwardRef<HTMLDivElement, ColorSwatchProps>(
             <Element
                 ref={ref}
                 className={cx(
-                    "relative inline-flex items-center justify-center overflow-hidden",
+                    "relative inline-flex items-center justify-center rounded-full overflow-hidden",
                     classNames?.root,
                     className
                 )}
                 style={{
                     width: size,
                     height: size,
-                    ...getRadius(radius),
-                    ...getShadow(shadow),
                     ...style
                 }}
                 {...props}

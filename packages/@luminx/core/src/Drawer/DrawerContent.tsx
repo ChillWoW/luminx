@@ -1,8 +1,6 @@
 import { forwardRef, ReactNode } from "react";
 import { useTheme } from "../_theme";
 import { useDrawerContext } from "./context";
-import { getShadow, getCornerRadius } from "../_theme";
-import "../style.css";
 
 export interface DrawerContentProps {
     children: ReactNode;
@@ -13,8 +11,6 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
     ({ children, style }, ref) => {
         const {
             size,
-            radius,
-            shadow,
             classNames,
             position = "left",
             offset = 0,
@@ -74,6 +70,10 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
                 ref={ref}
                 className={cx(
                     "flex flex-col p-4",
+                    position === "left" && "rounded-r-md",
+                    position === "right" && "rounded-l-md",
+                    position === "top" && "rounded-b-md",
+                    position === "bottom" && "rounded-t-md",
                     theme === "light"
                         ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]"
                         : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]",
@@ -89,11 +89,6 @@ export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
                     ...(isVertical
                         ? { width: sizeValue }
                         : { height: sizeValue }),
-                    ...getCornerRadius({
-                        radius: radius || "none",
-                        corner: "right"
-                    }),
-                    ...getShadow(shadow || "sm"),
                     transform: getTransform(),
                     transition: `transform ${transitionDuration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
                     zIndex: z + 8,
