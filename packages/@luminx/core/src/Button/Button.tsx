@@ -129,6 +129,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                     sizeClasses(),
                     getVariant(),
                     fullWidth && "w-full",
+                    uppercase && "uppercase",
                     (disabled || loading) &&
                         "opacity-60 cursor-not-allowed active:translate-y-0",
                     (disabled || loading) && classNames?.disabled,
@@ -148,7 +149,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                     "left"
                 )}
                 <div className={cx("flex-1 flex items-center", getAlign())}>
-                    {uppercase ? (children as string).toUpperCase() : children}
+                    {children}
                 </div>
                 {renderSection(
                     loading && loadingPosition === "right"
