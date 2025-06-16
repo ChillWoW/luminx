@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "UI Component Library for React with TailwindCSS",
     "private": true,
+    "license": "MIT",
     "workspaces": [
         "packages/*"
     ],
