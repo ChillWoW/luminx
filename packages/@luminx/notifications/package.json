@@ -1,10 +1,11 @@
 {
     "name": "@luminx/notifications",
-    "version": "2.2.0",
+    "version": "2.2.11",
     "description": "React notification handler",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "style": "dist/style.css",
+    "license": "MIT",
     "repository": {
         "type": "github",
         "url": "https://github.com/ChillWoW/luminx",
