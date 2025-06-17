@@ -11,14 +11,14 @@ interface ThemeVars {
 const getThemeColors = () => {
     const vars: ThemeVars = {};
 
-    vars[`${DEFAULT_TEMPLATE}-dark-background`] = colors.dark[7];
-    vars[`${DEFAULT_TEMPLATE}-dark-background-hover`] = colors.dark[6];
-    vars[`${DEFAULT_TEMPLATE}-dark-border`] = colors.dark[5];
-    vars[`${DEFAULT_TEMPLATE}-dark-border-hover`] = colors.dark[4];
+    vars[`${DEFAULT_TEMPLATE}-dark-background`] = colors.dark[6];
+    vars[`${DEFAULT_TEMPLATE}-dark-background-hover`] = colors.dark[5];
+    vars[`${DEFAULT_TEMPLATE}-dark-border`] = colors.dark[4];
+    vars[`${DEFAULT_TEMPLATE}-dark-border-hover`] = colors.dark[3];
     vars[`${DEFAULT_TEMPLATE}-dark-text`] = colors.white;
-    vars[`${DEFAULT_TEMPLATE}-dark-hint`] = colors.dark[2];
-    vars[`${DEFAULT_TEMPLATE}-dark-placeholder`] = colors.dark[2];
-    vars[`${DEFAULT_TEMPLATE}-dark-section`] = colors.dark[1];
+    vars[`${DEFAULT_TEMPLATE}-dark-hint`] = colors.dark[1];
+    vars[`${DEFAULT_TEMPLATE}-dark-placeholder`] = colors.dark[1];
+    vars[`${DEFAULT_TEMPLATE}-dark-section`] = colors.dark[0];
 
     vars[`${DEFAULT_TEMPLATE}-light-background`] = colors.light[3];
     vars[`${DEFAULT_TEMPLATE}-light-background-hover`] = colors.light[4];
