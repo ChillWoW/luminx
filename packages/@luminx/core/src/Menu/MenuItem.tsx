@@ -52,14 +52,14 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
             onClick: handleClick,
             onKeyDown: handleKeyDown,
             className: cx(
-                "flex items-center w-full text-left px-3 py-2 text-sm transition-colors rounded-md",
+                "flex items-center w-full text-left px-3 py-1.5 text-sm rounded-md transition-all duration-150 ease-in-out",
                 theme === "light"
                     ? "hover:bg-[var(--luminx-light-background-hover)] text-[var(--luminx-light-text)]"
                     : "hover:bg-[var(--luminx-dark-background-hover)] text-[var(--luminx-dark-text)]",
                 disabled &&
                     "opacity-60 cursor-not-allowed hover:bg-transparent",
-                className,
-                classNames?.item
+                classNames?.item,
+                className
             ),
             ...otherProps
         };
@@ -67,7 +67,12 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
         return (
             <Component {...commonProps}>
                 {leftSection && (
-                    <span className={cx("mr-2", classNames?.itemSection)}>
+                    <span
+                        className={cx(
+                            "mr-2 flex-shrink-0 flex items-center justify-center",
+                            classNames?.itemSection
+                        )}
+                    >
                         {leftSection}
                     </span>
                 )}
@@ -75,7 +80,12 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
                     {children}
                 </span>
                 {rightSection && (
-                    <span className={cx("ml-2", classNames?.itemSection)}>
+                    <span
+                        className={cx(
+                            "ml-2 flex-shrink-0 flex items-center justify-center",
+                            classNames?.itemSection
+                        )}
+                    >
                         {rightSection}
                     </span>
                 )}

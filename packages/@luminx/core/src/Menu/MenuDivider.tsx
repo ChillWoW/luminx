@@ -10,7 +10,7 @@ export const MenuDivider = ({ className }: MenuDividerProps) => {
     return (
         <div
             className={cx(
-                "my-1 h-px",
+                "my-2 h-px",
                 theme === "light"
                     ? "bg-[var(--luminx-light-border)]"
                     : "bg-[var(--luminx-dark-border)]",

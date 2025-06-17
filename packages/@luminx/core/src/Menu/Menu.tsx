@@ -29,7 +29,6 @@ const defaultProps = (props: MenuProps) => {
         onChange: props.onChange,
         defaultOpened: props.defaultOpened || false,
         trigger: props.trigger || "click",
-        width: props.width || "auto",
         offset: props.offset || 8,
         zIndex: props.zIndex || 300,
         trapFocus: props.trapFocus || true,
@@ -174,7 +173,8 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
         portalTarget: props.portalTarget,
         position: props.position || "bottom",
         offset: props.offset,
-        children: props.children
+        children: props.children,
+        classNames: props.classNames
     };
 
     return (
@@ -185,15 +185,10 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
                 data-position={props.position}
                 data-trigger={props.trigger}
                 style={{
-                    ["--menu-width" as any]:
-                        typeof props.width === "number"
-                            ? `${props.width}px`
-                            : props.width,
                     ["--menu-offset" as any]:
                         typeof props.offset === "number"
                             ? `${props.offset}px`
-                            : props.offset,
-                    ["--menu-z-index" as any]: props.zIndex
+                            : props.offset
                 }}
             >
                 {props.children}
