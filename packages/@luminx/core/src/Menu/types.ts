@@ -27,7 +27,6 @@ export interface MenuProps {
     onChange?: (opened: boolean) => void;
     trigger?: MenuTrigger;
     position?: MenuPosition;
-    width?: number | string;
     offset?: number;
     zIndex?: number;
     openDelay?: number;
