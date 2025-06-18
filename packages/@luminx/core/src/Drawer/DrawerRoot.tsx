@@ -3,44 +3,12 @@ import { useDrawerContext } from "./context";
 import { cx } from "../_theme";
 
 export const DrawerRoot = ({ children }: { children: ReactNode }) => {
-    const {
-        zIndex,
-        classNames,
-        withOverlay,
-        overlayOpacity,
-        canClose,
-        closeOnClickOutside,
-        onClose,
-        opened,
-        transitionDuration = 300
-    } = useDrawerContext();
-
-    const handleOverlayClick = () => {
-        if (canClose && closeOnClickOutside) {
-            onClose?.();
-        }
-    };
+    const { zIndex, classNames, opened } = useDrawerContext();
 
     const z = zIndex || 200;
 
     return (
         <>
-            {withOverlay && (
-                <div
-                    className={cx(
-                        "fixed inset-0 bg-black",
-                        classNames?.overlay
-                    )}
-                    style={{
-                        zIndex: z,
-                        opacity: opened ? overlayOpacity : 0,
-                        transition: `opacity ${transitionDuration}ms ease`,
-                        pointerEvents: opened ? "auto" : "none"
-                    }}
-                    onClick={handleOverlayClick}
-                    aria-hidden="true"
-                />
-            )}
             <div
                 className={cx(
                     "fixed inset-0 flex overflow-hidden",
@@ -59,4 +27,4 @@ export const DrawerRoot = ({ children }: { children: ReactNode }) => {
     );
 };
 
-DrawerRoot.displayName = "DrawerRoot";
+DrawerRoot.displayName = "@luminx/core/Drawer.Root";

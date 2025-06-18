@@ -5,6 +5,7 @@ import { DrawerRoot } from "./DrawerRoot";
 import { DrawerContent } from "./DrawerContent";
 import { DrawerTitle } from "./DrawerTitle";
 import { DrawerBody } from "./DrawerBody";
+import { DrawerOverlay } from "./DrawerOverlay";
 
 const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
     const {
@@ -95,6 +96,7 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
     return (
         <DrawerContext.Provider value={contextValue}>
             <DrawerRoot>
+                <DrawerOverlay />
                 <DrawerContent ref={ref}>
                     {(title || withCloseButton) && (
                         <DrawerTitle>{title}</DrawerTitle>
@@ -107,6 +109,7 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
 });
 
 const DrawerExtended = Object.assign(Drawer, {
+    Overlay: DrawerOverlay,
     Root: DrawerRoot,
     Content: DrawerContent,
     Title: DrawerTitle,
