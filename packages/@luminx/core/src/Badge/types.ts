@@ -9,7 +9,8 @@ export interface BadgeGradient {
     deg?: number;
 }
 
-export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface BadgeProps
+    extends Omit<React.HTMLAttributes<HTMLElement>, "color"> {
     children?: ReactNode;
     variant?: BadgeVariant;
     size?: BadgeSize;
