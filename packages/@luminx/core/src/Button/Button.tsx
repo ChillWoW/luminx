@@ -2,8 +2,9 @@ import React, { forwardRef } from "react";
 import { ComponentLoader } from "../_utils";
 import { ButtonProps } from "./types";
 import { useTheme } from "../_theme";
+import { ButtonGroup } from "./ButtonGroup";
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
         {
             children,
@@ -46,11 +47,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         const getVariant = () => {
             const isLight = theme === "light";
             const isOutline = variant === "outline";
+            const isGhost = variant === "ghost";
+            const isDisabled = disabled || loading;
 
             const light = {
                 outline:
                     "border border-[var(--luminx-light-border)] text-[var(--luminx-light-text)] hover:border-[var(--luminx-light-border-hover)]",
                 solid: "bg-[var(--luminx-light-background)] hover:bg-[var(--luminx-light-background-hover)] text-[var(--luminx-light-text)]",
+                ghost: "hover:bg-[var(--luminx-light-background-hover)] text-[var(--luminx-light-text)]",
                 active: {
                     outline: "border-[var(--luminx-light-border-hover)]",
                     solid: "bg-[var(--luminx-light-background-hover)]"
@@ -61,6 +65,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 outline:
                     "border border-[var(--luminx-dark-border)] text-[var(--luminx-dark-text)] hover:border-[var(--luminx-dark-border-hover)]",
                 solid: "bg-[var(--luminx-dark-background)] hover:bg-[var(--luminx-dark-background-hover)] text-[var(--luminx-dark-text)]",
+                ghost: "hover:bg-[var(--luminx-dark-background-hover)] text-[var(--luminx-dark-text)]",
                 active: {
                     outline: "border-[var(--luminx-dark-border-hover)]",
                     solid: "bg-[var(--luminx-dark-background-hover)]"
@@ -68,7 +73,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             };
 
             const palette = isLight ? light : dark;
-            const base = isOutline ? palette.outline : palette.solid;
+            const base = isOutline
+                ? palette.outline
+                : isGhost
+                ? palette.ghost
+                : palette.solid;
             const activeClass = active
                 ? isOutline
                     ? palette.active.outline
@@ -163,3 +172,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = "@luminx/core/Button";
+
+const ExtendedButton = Object.assign(Button, {
+    Group: ButtonGroup
+});
+
+export { ExtendedButton as Button };
