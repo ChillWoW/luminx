@@ -43,8 +43,7 @@ const getThemeColors = () => {
     return vars;
 };
 
-export const themeToVars = (): ThemeVars => {
-    const { lightVariantOpacity } = useTheme();
+export const generateThemeVars = (lightVariantOpacity: number): ThemeVars => {
     const vars: ThemeVars = {};
 
     Object.entries(colors).forEach(([key, value]) => {
@@ -68,4 +67,9 @@ export const themeToVars = (): ThemeVars => {
     });
 
     return vars;
+};
+
+export const themeToVars = (): ThemeVars => {
+    const { lightVariantOpacity } = useTheme();
+    return generateThemeVars(lightVariantOpacity);
 };
