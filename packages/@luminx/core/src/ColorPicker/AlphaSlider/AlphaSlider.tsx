@@ -52,29 +52,39 @@ export const AlphaSlider = ({
         };
     }, [isDragging, onChange]);
 
+    const transparencyGridStyle = {
+        backgroundImage: `
+            linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%),
+            linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%)
+        `,
+        backgroundSize: "8px 8px",
+        backgroundPosition: "0 0, 4px 4px",
+        backgroundColor: "#ffffff"
+    };
+
     return (
         <div
             ref={sliderRef}
             className={cx(
-                "relative h-3 rounded-full cursor-pointer overflow-hidden",
+                "relative h-4 rounded-md cursor-pointer overflow-hidden",
                 className
             )}
-            style={{
-                background: `linear-gradient(to right, transparent, ${color})`
-            }}
+            style={transparencyGridStyle}
             onMouseDown={handleMouseDown}
         >
             <div
-                className="absolute bg-[var(--lumin-text)] rounded-full"
+                className="absolute inset-0"
                 style={{
-                    left: `min(max(6px, ${value * 100}%), calc(100% - 6px))`,
-                    width: "12px",
-                    height: "12px",
+                    background: `linear-gradient(to right, transparent, ${color})`
+                }}
+            />
+            <div
+                className="absolute rounded-full shadow-lg w-3 h-3 ring-2 ring-[var(--luminx-white)] shadow-sm"
+                style={{
+                    left: `min(max(8px, ${value * 100}%), calc(100% - 8px))`,
                     transform: "translateX(-50%)",
                     top: "50%",
-                    marginTop: "-6px",
-                    border: "2px solid white",
-                    boxSizing: "border-box"
+                    marginTop: "-6px"
                 }}
             />
         </div>
