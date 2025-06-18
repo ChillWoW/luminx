@@ -1,45 +1,46 @@
-import { HTMLAttributes, ReactNode } from "react";
-
+export type TimelineBorderVariant = "solid" | "dashed" | "dotted";
+export type TimelineSize = "sm" | "md" | "lg";
 export type TimelineAlign = "left" | "right";
-export type TimelineLineVariant = "solid" | "dashed" | "dotted";
-export interface TimelineContextValue {
-    active: number;
-    lineWidth: number;
-    bulletSize: number;
-    align: TimelineAlign;
-    reverseActive: boolean;
-    children: ReactNode;
-}
-
-export interface TimelineProps extends HTMLAttributes<HTMLDivElement> {
-    active?: number;
-    lineWidth?: number;
-    bulletSize?: number;
-    align?: TimelineAlign;
-    reverseActive?: boolean;
-    classNames?: TimelineClassNames;
-    children: ReactNode;
-}
-
-export interface TimelineItemProps
-    extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
-    title?: ReactNode;
-    bullet?: ReactNode;
-    lineVariant?: TimelineLineVariant;
-    isActive?: boolean;
-    classNames?: TimelineItemClassNames;
-    children?: ReactNode;
-}
 
 export interface TimelineClassNames {
     root?: string;
+    item?: string;
+    activeBullet?: string;
+    line?: string;
+    bullet?: string;
+    wrapper?: string;
+    title?: string;
+    description?: string;
+    content?: string;
 }
 
-export interface TimelineItemClassNames {
-    root?: string;
-    itemBody?: string;
-    bullet?: string;
-    line?: string;
-    title?: string;
-    content?: string;
+export interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
+    children: React.ReactNode;
+    active?: number;
+    borderVariant?: TimelineBorderVariant;
+    size?: TimelineSize;
+    align?: TimelineAlign;
+    className?: string;
+    classNames?: TimelineClassNames;
+}
+
+export interface TimelineItemProps
+    extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+    title?: React.ReactNode;
+    description?: React.ReactNode;
+    bullet?: React.ReactNode;
+    active?: boolean;
+    isLast?: boolean;
+    index?: number;
+    className?: string;
+    children?: React.ReactNode;
+}
+
+export interface TimelineContextValue {
+    active: number;
+    borderVariant: TimelineBorderVariant;
+    size: TimelineSize;
+    align: TimelineAlign;
+    totalItems: number;
+    classNames?: TimelineClassNames;
 }
