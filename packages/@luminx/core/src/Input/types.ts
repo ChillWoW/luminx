@@ -17,6 +17,7 @@ export interface InputProps
     error?: string;
     success?: string;
     placeholder?: string;
+    withAsterisk?: boolean;
 
     // State
     required?: boolean;
@@ -45,9 +46,7 @@ export interface InputProps
 
     // Custom sections
     leftSection?: React.ReactNode;
-    leftSectionPadding?: number;
     rightSection?: React.ReactNode;
-    rightSectionPadding?: number;
 
     // Handlers
     onChange?: (value: string) => void;
@@ -58,10 +57,10 @@ export interface InputProps
 
     // Refs and styling
     value?: string;
+    containerRef?: React.Ref<HTMLDivElement>;
     inputRef?: React.Ref<HTMLInputElement>;
     inputWrapperOrder?: string[];
     debounce?: number;
-    style?: React.CSSProperties;
 
     // Accessibility
     ariaLabel?: string;

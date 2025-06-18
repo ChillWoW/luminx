@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { InputProps } from "./types";
 import { useTheme } from "../_theme";
@@ -17,6 +17,7 @@ export const Input = ({
     error,
     success,
     placeholder,
+    withAsterisk,
 
     // State
     required,
@@ -38,9 +39,7 @@ export const Input = ({
 
     // Custom sections
     leftSection,
-    leftSectionPadding,
     rightSection,
-    rightSectionPadding,
 
     // Handlers
     onChange,
@@ -52,9 +51,9 @@ export const Input = ({
     // Refs and styling
     value: controlledValue,
     inputRef,
+    containerRef,
     inputWrapperOrder = ["label", "input", "hint", "error", "success"],
     debounce,
-    style,
 
     // Styling classnames
     className,
@@ -64,7 +63,6 @@ export const Input = ({
     const { theme, cx } = useTheme();
 
     const [localValue, setLocalValue] = useState(controlledValue ?? "");
-    const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         if (controlledValue !== undefined) {
@@ -72,18 +70,20 @@ export const Input = ({
         }
     }, [controlledValue]);
 
+    useEffect(() => {
+        if (!debounce || !onChange) return;
+
+        const timeout = setTimeout(() => {
+            onChange(localValue);
+        }, debounce);
+
+        return () => clearTimeout(timeout);
+    }, [localValue, debounce, onChange]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         setLocalValue(newValue);
-
-        if (debounce && onChange) {
-            if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
-            debounceTimeout.current = setTimeout(() => {
-                onChange(newValue);
-            }, debounce);
-        } else if (onChange) {
-            onChange(newValue);
-        }
+        onChange?.(newValue);
     };
 
     const renderSection = (
@@ -97,14 +97,7 @@ export const Input = ({
             theme === "light"
                 ? "text-[var(--luminx-light-section)]"
                 : "text-[var(--luminx-dark-section)]";
-        const sideClasses =
-            side === "left"
-                ? leftSectionPadding
-                    ? `pl-${leftSectionPadding}`
-                    : "pl-2"
-                : rightSectionPadding
-                ? `pr-${rightSectionPadding}`
-                : "pr-2";
+        const sideClasses = side === "left" ? "pl-2" : "pr-2";
         const sectionClasses =
             side === "left"
                 ? classNames?.leftSection
@@ -129,7 +122,7 @@ export const Input = ({
         label && (
             <label
                 className={cx(
-                    "ml-1 flex items-center gap-1",
+                    "ml-1 flex items-center gap-1 text-sm",
                     theme === "light"
                         ? "text-[var(--luminx-light-text)]"
                         : "text-[var(--luminx-dark-text)]",
@@ -138,10 +131,10 @@ export const Input = ({
                 )}
             >
                 {label}
-                {required && (
+                {withAsterisk && (
                     <span
                         className={cx(
-                            "text-[var(--luminx-error)]",
+                            "text-[var(--luminx-error)] text-xs",
                             classNames?.required
                         )}
                     >
@@ -157,7 +150,7 @@ export const Input = ({
         !success && (
             <p
                 className={cx(
-                    "ml-1 text-sm",
+                    "ml-1 text-xs",
                     theme === "light"
                         ? "text-[var(--luminx-light-hint)]"
                         : "text-[var(--luminx-dark-hint)]",
@@ -195,6 +188,7 @@ export const Input = ({
 
     const renderFormControl = () => (
         <div
+            ref={containerRef}
             className={cx(
                 "flex items-center overflow-hidden transition-colors rounded-md",
                 !unstyled && [
@@ -202,16 +196,13 @@ export const Input = ({
                         ? "bg-[var(--luminx-light-background)] border border-[var(--luminx-light-border)]"
                         : "bg-[var(--luminx-dark-background)] border border-[var(--luminx-dark-border)]",
                     error && "border-[var(--luminx-error)]",
-                    "focus-within:border-[var(--luminx-primary)]",
+                    !readOnly && "focus-within:border-[var(--luminx-primary)]",
                     !error && success && "border-[var(--luminx-success)]",
                     disabled && "opacity-60 cursor-not-allowed"
                 ],
                 fullWidth && "w-full",
                 classNames?.container
             )}
-            style={{
-                ...style
-            }}
         >
             {leftSection && renderSection(leftSection, "left")}
 
@@ -239,10 +230,10 @@ export const Input = ({
 
         const baseStyles = cx(
             !unstyled &&
-                "w-full border-none bg-transparent outline-none text-white px-3 py-2 flex items-center justify-center h-full leading-normal",
+                "w-full border-none bg-transparent outline-none px-3 py-2 flex items-center justify-center h-full leading-normal",
             !unstyled && theme === "light"
-                ? "placeholder:[color:var(--luminx-light-placeholder)]"
-                : "placeholder:[color:var(--luminx-dark-placeholder)]",
+                ? "placeholder:[color:var(--luminx-light-placeholder)] placeholder:text-sm"
+                : "placeholder:[color:var(--luminx-dark-placeholder)] placeholder:text-sm",
             disabled && "opacity-60 cursor-not-allowed"
         );
 
@@ -280,7 +271,7 @@ export const Input = ({
                                 : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]",
                             classNames?.input
                         )}
-                        style={style}
+                        required={required}
                     >
                         {options?.map((option) => (
                             <option key={option.value} value={option.value}>
@@ -306,6 +297,7 @@ export const Input = ({
                             aria-describedby={props.ariaDescribedBy}
                             aria-controls={props.ariaControls}
                             name={props.name}
+                            required={required}
                             value={
                                 controlledValue !== undefined
                                     ? controlledValue
@@ -337,7 +329,6 @@ export const Input = ({
                                     : "text-[var(--luminx-dark-text)]",
                                 classNames?.input
                             )}
-                            style={style as any}
                         />
                     );
                 }
@@ -354,6 +345,7 @@ export const Input = ({
                         aria-describedby={props.ariaDescribedBy}
                         aria-controls={props.ariaControls}
                         name={props.name}
+                        required={required}
                         value={
                             controlledValue !== undefined
                                 ? controlledValue
@@ -383,7 +375,6 @@ export const Input = ({
                                 : "text-[var(--luminx-dark-text)]",
                             classNames?.input
                         )}
-                        style={style}
                     />
                 );
 
@@ -403,6 +394,7 @@ export const Input = ({
                         aria-controls={props.ariaControls}
                         name={props.name}
                         inputMode={props.inputMode}
+                        required={required}
                         value={
                             controlledValue !== undefined
                                 ? controlledValue
@@ -422,13 +414,12 @@ export const Input = ({
                         pattern={pattern}
                         className={cx(
                             baseStyles,
-                            "[-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+                            "[-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-sm",
                             theme === "light"
                                 ? "text-[var(--luminx-light-text)]"
                                 : "text-[var(--luminx-dark-text)]",
                             classNames?.input
                         )}
-                        style={style}
                         {...props}
                     />
                 );
