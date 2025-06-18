@@ -89,13 +89,11 @@ export function DatePicker(props: DatePickerProps) {
         onChange,
         minDate,
         maxDate,
-        size = "md",
         monthLabelFormat = "MMMM YYYY",
         yearLabelFormat = "YYYY",
         weekdayFormat = "dd",
         numberOfColumns = 1,
         getDayProps,
-        ariaLabels,
         ...others
     } = props;
 
@@ -232,10 +230,9 @@ export function DatePicker(props: DatePickerProps) {
                 type="default"
                 value={activeDate}
                 onChange={handleMonthSelect}
+                date={activeDate}
                 minDate={minDate}
                 maxDate={maxDate}
-                size={size}
-                ariaLabels={ariaLabels}
                 numberOfColumns={numberOfColumns}
             />
         );
@@ -247,10 +244,9 @@ export function DatePicker(props: DatePickerProps) {
                 type="default"
                 value={activeDate}
                 onChange={handleYearSelect}
+                date={activeDate}
                 minDate={minDate}
                 maxDate={maxDate}
-                size={size}
-                ariaLabels={ariaLabels}
                 numberOfColumns={numberOfColumns}
             />
         );
@@ -276,10 +272,6 @@ export function DatePicker(props: DatePickerProps) {
                 <div key={columnIndex} className="mb-4 last:mb-0">
                     <CalendarHeader
                         label={columnMonthLabel}
-                        nextLabel={ariaLabels?.nextMonth || "Next month"}
-                        previousLabel={
-                            ariaLabels?.previousMonth || "Previous month"
-                        }
                         nextDisabled={
                             columnIndex === numberOfColumns - 1 &&
                             isNextMonthDisabled
@@ -334,8 +326,6 @@ export function DatePicker(props: DatePickerProps) {
                                         let isRangeStart = false;
                                         let isRangeEnd = false;
 
-                                        const outside =
-                                            day.getMonth() !== columnMonth;
                                         const weekend = isWeekend(day);
 
                                         if (
@@ -390,9 +380,7 @@ export function DatePicker(props: DatePickerProps) {
                                                     isRangeStart={isRangeStart}
                                                     isRangeEnd={isRangeEnd}
                                                     disabled={disabled}
-                                                    outside={outside}
                                                     weekend={weekend}
-                                                    size={size}
                                                     onClick={() =>
                                                         !disabled &&
                                                         handleDaySelect(day)
