@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useRef, useEffect } from "react";
 import { SegmentedControlProps, SegmentedControlItem } from "./types";
-import { getRadius, getShadow, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 
 export const SegmentedControl = forwardRef<
     HTMLDivElement,
@@ -22,7 +22,6 @@ export const SegmentedControl = forwardRef<
             orientation = "horizontal",
             className,
             classNames,
-            style,
             ...props
         },
         ref
@@ -34,8 +33,6 @@ export const SegmentedControl = forwardRef<
                 defaultValue ||
                 (typeof data[0] === "string" ? data[0] : data[0].value)
         );
-        const [indicatorStyle, setIndicatorStyle] =
-            useState<React.CSSProperties>({});
         const controlRefs = useRef<(HTMLLabelElement | null)[]>([]);
         const rootRef = useRef<HTMLDivElement>(null);
 
@@ -44,58 +41,6 @@ export const SegmentedControl = forwardRef<
                 setActiveValue(value);
             }
         }, [value]);
-
-        useEffect(() => {
-            const activeIndex = data.findIndex(
-                (item) =>
-                    (typeof item === "string" ? item : item.value) ===
-                    activeValue
-            );
-
-            if (
-                activeIndex >= 0 &&
-                rootRef.current &&
-                controlRefs.current[activeIndex]
-            ) {
-                const activeControl = controlRefs.current[activeIndex];
-                if (!activeControl) return;
-
-                const rootRect = rootRef.current.getBoundingClientRect();
-                const activeRect = activeControl.getBoundingClientRect();
-
-                const style: React.CSSProperties = {
-                    transitionDuration: `${transitionDuration}ms`,
-                    transitionTimingFunction: transitionTimingFunction
-                };
-
-                if (orientation === "horizontal") {
-                    style.width = `${activeRect.width}px`;
-                    style.height = `${activeRect.height}px`;
-                    style.transform = `translateX(${
-                        activeRect.left - rootRect.left
-                    }px)`;
-                } else {
-                    style.width = `${activeRect.width}px`;
-                    style.height = `${activeRect.height}px`;
-                    style.transform = `translateY(${
-                        activeRect.top - rootRect.top
-                    }px)`;
-                }
-
-                if (color) {
-                    style.backgroundColor = color;
-                }
-
-                setIndicatorStyle(style);
-            }
-        }, [
-            activeValue,
-            data,
-            orientation,
-            transitionDuration,
-            transitionTimingFunction,
-            color
-        ]);
 
         const handleChange = (newValue: string) => {
             if (!disabled && !readOnly) {
@@ -127,12 +72,6 @@ export const SegmentedControl = forwardRef<
 
         const items = data.map(formatItem);
 
-        const getUnactiveColor = () => {
-            return theme === "light"
-                ? "text-[var(--luminx-light-hint)] hover:text-[var(--luminx-light-text)]"
-                : "text-[var(--luminx-dark-hint)] hover:text-[var(--luminx-dark-text)]";
-        };
-
         return (
             <div
                 ref={ref || rootRef}
@@ -147,9 +86,6 @@ export const SegmentedControl = forwardRef<
                     className,
                     classNames?.root
                 )}
-                style={{
-                    ...style
-                }}
                 {...props}
             >
                 <div
@@ -168,7 +104,9 @@ export const SegmentedControl = forwardRef<
                                     ? "text-[var(--luminx-light-text)]"
                                     : "text-[var(--luminx-dark-text)]",
                                 activeValue !== item.value &&
-                                    getUnactiveColor(),
+                                    (theme === "light"
+                                        ? "text-[var(--luminx-light-hint)] hover:text-[var(--luminx-light-text)]"
+                                        : "text-[var(--luminx-dark-hint)] hover:text-[var(--luminx-dark-text)]"),
                                 item.disabled &&
                                     "opacity-60 cursor-not-allowed",
                                 classNames?.item
@@ -199,7 +137,9 @@ export const SegmentedControl = forwardRef<
                                     (disabled || item.disabled || readOnly) &&
                                         "cursor-not-allowed",
                                     activeValue === item.value &&
-                                        "bg-[var(--luminx-primary-light)]",
+                                        (theme === "light"
+                                            ? "bg-[var(--luminx-light-background-hover)]"
+                                            : "bg-[var(--luminx-dark-background-hover)]"),
                                     activeValue === item.value &&
                                         classNames?.activeItem,
                                     classNames?.label,

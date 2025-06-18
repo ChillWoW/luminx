@@ -22,6 +22,8 @@ import {
     inline,
     Placement
 } from "@floating-ui/react";
+import { MenuSub } from "./MenuSub";
+import { MenuSubItem } from "./MenuSubItem";
 
 const defaultProps = (props: MenuProps) => {
     return {
@@ -29,7 +31,6 @@ const defaultProps = (props: MenuProps) => {
         onChange: props.onChange,
         defaultOpened: props.defaultOpened || false,
         trigger: props.trigger || "click",
-        width: props.width || "auto",
         offset: props.offset || 8,
         zIndex: props.zIndex || 300,
         trapFocus: props.trapFocus || true,
@@ -40,6 +41,11 @@ const defaultProps = (props: MenuProps) => {
         portalTarget: props.portalTarget,
         itemTabIndex: props.itemTabIndex || -1,
         children: props.children,
+        middlewares: props.middlewares || {
+            shift: true,
+            flip: true,
+            inline: false
+        },
         classNames: props.classNames
     };
 };
@@ -67,13 +73,20 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
         placement: props.position,
         middleware: [
             offset(props.offset || 8),
-            flip({
-                fallbackPlacements: ["top", "bottom", "right", "left"].filter(
-                    (p) => p !== props.position
-                ) as Placement[]
-            }),
-            shift({ padding: 8 }),
-            inline()
+            ...(props.middlewares?.flip
+                ? [
+                      flip({
+                          fallbackPlacements: [
+                              "top",
+                              "bottom",
+                              "right",
+                              "left"
+                          ].filter((p) => p !== props.position) as Placement[]
+                      })
+                  ]
+                : []),
+            ...(props.middlewares?.shift ? [shift({ padding: 8 })] : []),
+            ...(props.middlewares?.inline ? [inline()] : [])
         ],
         whileElementsMounted: autoUpdate
     });
@@ -174,7 +187,8 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
         portalTarget: props.portalTarget,
         position: props.position || "bottom",
         offset: props.offset,
-        children: props.children
+        children: props.children,
+        classNames: props.classNames
     };
 
     return (
@@ -185,15 +199,10 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
                 data-position={props.position}
                 data-trigger={props.trigger}
                 style={{
-                    ["--menu-width" as any]:
-                        typeof props.width === "number"
-                            ? `${props.width}px`
-                            : props.width,
                     ["--menu-offset" as any]:
                         typeof props.offset === "number"
                             ? `${props.offset}px`
-                            : props.offset,
-                    ["--menu-z-index" as any]: props.zIndex
+                            : props.offset
                 }}
             >
                 {props.children}
@@ -207,7 +216,9 @@ const ExtendedMenu = Object.assign(Menu, {
     Dropdown: MenuDropdown,
     Label: MenuLabel,
     Item: MenuItem,
-    Divider: MenuDivider
+    Divider: MenuDivider,
+    Sub: MenuSub,
+    SubItem: MenuSubItem
 });
 
 ExtendedMenu.displayName = "Menu";

@@ -6,66 +6,66 @@ import React, {
 } from "react";
 import { cx } from "../_theme";
 import { TimelineProps } from "./types";
-import { TimelineProvider } from "./context";
 import { TimelineItem } from "./TimelineItem";
+import { TimelineContext } from "./context";
 
 const Timeline = forwardRef<HTMLDivElement, TimelineProps>(
     (
         {
+            children,
             active = -1,
-            lineWidth = 2,
-            bulletSize = 20,
+            borderVariant = "solid",
+            size = "md",
             align = "left",
-            reverseActive = false,
             className,
             classNames,
-            children,
             ...props
         },
         ref
     ) => {
+        const childrenArray = Children.toArray(children);
+        const totalItems = childrenArray.length;
+
         const enhancedChildren = Children.map(children, (child, index) => {
             if (isValidElement(child)) {
-                const isActive = reverseActive
-                    ? index >= active && active !== -1
-                    : index <= active && active !== -1;
-
-                return cloneElement(child, { isActive } as any);
+                const isActive = active >= 0 ? index <= active : false;
+                const isLast = index === totalItems - 1;
+                return cloneElement(child, {
+                    active: isActive,
+                    isLast: isLast,
+                    index: index
+                } as any);
             }
             return child;
         });
 
         return (
-            <TimelineProvider
+            <TimelineContext.Provider
                 value={{
                     active,
-                    lineWidth,
-                    bulletSize,
+                    borderVariant,
+                    size,
                     align,
-                    reverseActive,
-                    children
+                    totalItems,
+                    classNames
                 }}
             >
                 <div
                     ref={ref}
-                    className={cx(
-                        align === "left" ? "text-left" : "text-right",
-                        className,
-                        classNames?.root
-                    )}
+                    className={cx("relative", classNames?.root, className)}
                     {...props}
                 >
                     {enhancedChildren}
                 </div>
-            </TimelineProvider>
+            </TimelineContext.Provider>
         );
     }
 );
 
+Timeline.displayName = "@luminx/core/Timeline";
+
 const ExtendedTimeline = Object.assign(Timeline, {
     Item: TimelineItem
 });
-
-ExtendedTimeline.displayName = "@luminx/core/Timeline";
 
 export { ExtendedTimeline as Timeline };

@@ -90,6 +90,11 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                 : "bg-[var(--luminx-dark-background)]";
         };
 
+        const handleClick = () => {
+            if (readOnly || disabled) return;
+            onChange?.(!checked);
+        };
+
         return (
             <div
                 className={cx(
@@ -186,6 +191,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                                         disabled && "cursor-not-allowed",
                                         classNames?.label
                                     )}
+                                    onClick={handleClick}
                                 >
                                     {label}
                                     {required && (

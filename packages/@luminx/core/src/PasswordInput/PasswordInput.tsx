@@ -55,7 +55,6 @@ export const PasswordInput = ({
         <Input
             type={isVisible ? "text" : "password"}
             rightSection={controlButton}
-            rightSectionPadding={0}
             disabled={props.disabled}
             classNames={{
                 rightSection: "p-1",

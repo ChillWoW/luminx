@@ -1,8 +1,7 @@
 import React, { forwardRef, useRef, useEffect } from "react";
 import { CheckboxProps } from "./types";
-import "../style.css";
-import { getRadius, getShadow, useTheme } from "../_theme";
-import { IconCheck } from "@tabler/icons-react";
+import { useTheme } from "../_theme";
+import { IconCheck, IconMinus } from "@tabler/icons-react";
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     (
@@ -97,13 +96,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 return (
                     <div
                         className={cx(
-                            "transition-opacity opacity-0 flex items-center justify-center",
+                            "transition-opacity opacity-0 flex items-center justify-center text-[var(--luminx-dark-text)]",
                             (checked || indeterminate) && "opacity-100",
                             classNames?.icon
                         )}
                     >
                         {indeterminate ? (
-                            <div className="w-2 h-0.5 bg-[var(--luminx-dark-text)]" />
+                            <IconMinus size={16} />
                         ) : (
                             <IconCheck size={16} />
                         )}
@@ -121,6 +120,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                     )}
                 />
             );
+        };
+
+        const handleClick = () => {
+            if (readOnly || disabled) return;
+            onChange?.({
+                currentTarget: { checked: !checked }
+            } as React.ChangeEvent<HTMLInputElement>);
         };
 
         return (
@@ -189,6 +195,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                                     disabled && "cursor-not-allowed",
                                     classNames?.label
                                 )}
+                                onClick={handleClick}
                             >
                                 {label}
                                 {required && (

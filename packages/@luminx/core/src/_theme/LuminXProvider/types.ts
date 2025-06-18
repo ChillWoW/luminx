@@ -5,6 +5,7 @@ export interface LuminXProviderProps {
     theme?: LuminXTheme;
     themeAutoSave?: boolean;
     lightVariantOpacity?: number;
+    locale?: string;
 }
 
 export interface LuminXContextType {
@@ -13,4 +14,5 @@ export interface LuminXContextType {
     themeAutoSave: boolean;
     setThemeAutoSave: (themeAutoSave: boolean) => void;
     lightVariantOpacity: number;
+    locale: string;
 }

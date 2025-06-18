@@ -54,7 +54,7 @@ export const HueSlider = ({
         <div
             ref={sliderRef}
             className={cx(
-                "relative h-3 rounded-full cursor-pointer overflow-hidden",
+                "relative h-4 rounded-md cursor-pointer overflow-hidden",
                 className
             )}
             style={{
@@ -65,18 +65,14 @@ export const HueSlider = ({
             role="slider"
         >
             <div
-                className="absolute bg-[var(--lumin-text)] rounded-full"
+                className="absolute rounded-full shadow-lg w-3 h-3 ring-2 ring-[var(--luminx-white)] shadow-sm"
                 style={{
-                    left: `min(max(6px, ${
+                    left: `min(max(8px, ${
                         (value / 360) * 100
-                    }%), calc(100% - 6px))`,
-                    width: "12px",
-                    height: "12px",
+                    }%), calc(100% - 8px))`,
                     transform: "translateX(-50%)",
                     top: "50%",
-                    marginTop: "-6px",
-                    border: "2px solid white",
-                    boxSizing: "border-box"
+                    marginTop: "-6px"
                 }}
             />
         </div>

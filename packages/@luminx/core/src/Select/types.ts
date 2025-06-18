@@ -1,5 +1,5 @@
-import { Radius, Shadow } from "../_theme";
 import { InputClassNames, InputProps } from "../Input";
+import { TransitionName, TransitionStyles } from "../Transition";
 
 export interface SelectOption {
     value: string;
@@ -24,13 +24,35 @@ export interface SelectClassNames extends InputClassNames {
     clearIcon?: string;
     chevronIcon?: string;
     scrollbar?: string;
+    multiSelectValue?: string;
+}
+
+export interface SelectTransitionProps {
+    transition?: TransitionName | TransitionStyles;
+    duration?: number;
+    timingFunction?: string;
+    enterDelay?: number;
+    exitDelay?: number;
+}
+
+export interface SelectMiddleware {
+    shift?: boolean;
+    flip?: boolean;
+    inline?: boolean;
 }
 
 export interface SelectProps
-    extends Omit<InputProps, "component" | "type" | "options" | "onChange"> {
+    extends Omit<
+        InputProps,
+        "component" | "type" | "options" | "onChange" | "value"
+    > {
     data: SelectData;
-    value?: string;
-    onChange?: (value: string, option?: SelectOption) => void;
+    value?: string | string[];
+    onChange?: (
+        value: string | string[],
+        option?: SelectOption | SelectOption[]
+    ) => void;
+    multiple?: boolean;
     searchable?: boolean;
     clearable?: boolean;
     allowDeselect?: boolean;
@@ -49,9 +71,13 @@ export interface SelectProps
     initialOpened?: boolean;
     onDropdownOpen?: () => void;
     onDropdownClose?: () => void;
-    placement?: "bottom" | "top";
+    position?: "bottom" | "top";
+    withTransition?: boolean;
+    transitionProps?: SelectTransitionProps;
+    offset?: number;
     maxHeight?: number;
     zIndex?: number;
+    middlewares?: SelectMiddleware;
     stayOpenOnSelect?: boolean;
     classNames?: SelectClassNames;
 }

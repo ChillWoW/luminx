@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { XIcon } from "../_icons";
 import { useDrawerContext } from "./context";
 import { useTheme } from "../_theme";
 import { IconX } from "@tabler/icons-react";
