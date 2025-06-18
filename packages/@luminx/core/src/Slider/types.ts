@@ -10,10 +10,12 @@ export interface SliderProps
     max?: number;
     step?: number;
     marks?: SliderMark[];
+    snapToMarks?: boolean;
     label?: SliderLabel;
     labelAlwaysOn?: boolean;
     thumbSize?: number;
     thumbColor?: string;
+    thumbChildren?: React.ReactNode;
     trackColor?: string;
     barColor?: string;
     disabled?: boolean;
