@@ -1,7 +1,6 @@
 import { forwardRef, ReactNode } from "react";
 import { useTheme } from "../_theme";
 import { useModalContext } from "./context";
-import { getRadius, getShadow, getPadding } from "../_theme";
 
 export interface ModalContentProps {
     children: ReactNode;
