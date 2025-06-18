@@ -22,6 +22,8 @@ import {
     inline,
     Placement
 } from "@floating-ui/react";
+import { MenuSub } from "./MenuSub";
+import { MenuSubItem } from "./MenuSubItem";
 
 const defaultProps = (props: MenuProps) => {
     return {
@@ -39,6 +41,11 @@ const defaultProps = (props: MenuProps) => {
         portalTarget: props.portalTarget,
         itemTabIndex: props.itemTabIndex || -1,
         children: props.children,
+        middlewares: props.middlewares || {
+            shift: true,
+            flip: true,
+            inline: false
+        },
         classNames: props.classNames
     };
 };
@@ -66,13 +73,20 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
         placement: props.position,
         middleware: [
             offset(props.offset || 8),
-            flip({
-                fallbackPlacements: ["top", "bottom", "right", "left"].filter(
-                    (p) => p !== props.position
-                ) as Placement[]
-            }),
-            shift({ padding: 8 }),
-            inline()
+            ...(props.middlewares?.flip
+                ? [
+                      flip({
+                          fallbackPlacements: [
+                              "top",
+                              "bottom",
+                              "right",
+                              "left"
+                          ].filter((p) => p !== props.position) as Placement[]
+                      })
+                  ]
+                : []),
+            ...(props.middlewares?.shift ? [shift({ padding: 8 })] : []),
+            ...(props.middlewares?.inline ? [inline()] : [])
         ],
         whileElementsMounted: autoUpdate
     });
@@ -202,7 +216,9 @@ const ExtendedMenu = Object.assign(Menu, {
     Dropdown: MenuDropdown,
     Label: MenuLabel,
     Item: MenuItem,
-    Divider: MenuDivider
+    Divider: MenuDivider,
+    Sub: MenuSub,
+    SubItem: MenuSubItem
 });
 
 ExtendedMenu.displayName = "Menu";

@@ -20,6 +20,12 @@ export type MenuPosition =
     | "right-start"
     | "right-end";
 
+export interface MenuMiddleware {
+    shift?: boolean;
+    flip?: boolean;
+    inline?: boolean;
+}
+
 export interface MenuProps {
     children: React.ReactNode;
     defaultOpened?: boolean;
@@ -35,6 +41,7 @@ export interface MenuProps {
     withinPortal?: boolean;
     portalTarget?: HTMLElement | string;
     itemTabIndex?: number;
+    middlewares?: MenuMiddleware;
     classNames?: MenuClassNames;
 }
 
@@ -94,4 +101,33 @@ export interface MenuItemProps {
 
 export interface MenuDividerProps {
     className?: string;
+}
+
+export interface MenuSubmenuProps {
+    label: ReactNode;
+    children: ReactNode;
+    disabled?: boolean;
+    leftSection?: ReactNode;
+    rightSection?: ReactNode;
+    className?: string;
+    position?: MenuPosition;
+    offset?: number;
+    openDelay?: number;
+    closeDelay?: number;
+    trigger?: "hover" | "click";
+}
+
+export interface MenuSubmenuContextType {
+    opened: boolean;
+    setOpened: (opened: boolean) => void;
+    refs: UseFloatingReturn<ReferenceType>["refs"];
+    context: FloatingContext<ReferenceType>;
+    floatingStyles: UseFloatingReturn<ReferenceType>["floatingStyles"];
+    getReferenceProps: (props?: any) => any;
+    getFloatingProps: (props?: any) => any;
+    targetId: string;
+    dropdownId: string;
+    position: MenuPosition;
+    offset: number;
+    classNames?: MenuClassNames;
 }
