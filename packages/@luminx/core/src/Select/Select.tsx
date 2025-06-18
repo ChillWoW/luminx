@@ -1,8 +1,23 @@
 import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { Input } from "../Input";
 import { SelectOption, SelectOptionGroup, SelectProps } from "./types";
-import { getRadius, getShadow, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 import { IconCheck, IconChevronDown, IconX } from "@tabler/icons-react";
+import { Transition } from "../Transition";
+import {
+    useFloating,
+    autoUpdate,
+    offset,
+    flip,
+    shift,
+    useClick,
+    useDismiss,
+    useRole,
+    useInteractions,
+    Placement,
+    size,
+    inline
+} from "@floating-ui/react";
 
 export const Select = forwardRef<HTMLInputElement, SelectProps>(
     (
@@ -10,14 +25,16 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             data = [],
             value,
             onChange,
+            multiple = false,
 
             placeholder,
             fullWidth,
 
-            placement = "bottom",
+            position = "bottom",
             maxHeight = 250,
             zIndex = 9999,
             stayOpenOnSelect = false,
+            offset: offsetProp = 5,
 
             searchable = false,
             clearable = false,
@@ -40,6 +57,15 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             onDropdownOpen,
             onDropdownClose,
 
+            withTransition = true,
+            transitionProps = {},
+
+            middlewares = {
+                shift: true,
+                flip: true,
+                inline: false
+            },
+
             classNames,
 
             ...props
@@ -49,23 +75,67 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         const { theme, cx } = useTheme();
 
         const [isOpen, setIsOpen] = useState(initialOpened);
-        const [selectedValue, setSelectedValue] = useState<string | null>(
-            (value as string) || null
+        const [selectedValue, setSelectedValue] = useState<string | string[]>(
+            multiple
+                ? Array.isArray(value)
+                    ? value
+                    : value
+                    ? [value]
+                    : []
+                : (Array.isArray(value) ? value[0] : value) || ""
         );
         const [search, setSearch] = useState(searchValue || "");
 
-        const containerRef = useRef<HTMLDivElement>(null);
-        const dropdownRef = useRef<HTMLDivElement>(null);
         const inputRef = useRef<HTMLInputElement>(null);
+        const containerRef = useRef<HTMLDivElement>(null);
+
+        const { x, y, strategy, refs, middlewareData, context } = useFloating({
+            placement: position as Placement,
+            open: isOpen,
+            onOpenChange: setIsOpen,
+            middleware: [
+                offset(offsetProp),
+                ...(middlewares?.flip ? [flip()] : []),
+                ...(middlewares?.shift ? [shift({ padding: 8 })] : []),
+                ...(middlewares?.inline ? [inline()] : []),
+                size({
+                    apply({ rects, elements }) {
+                        Object.assign(elements.floating.style, {
+                            minWidth: `${rects.reference.width}px`
+                        });
+                    }
+                })
+            ],
+            whileElementsMounted: autoUpdate
+        });
+
+        const click = useClick(context, {
+            enabled: !disabled && !readOnly
+        });
+
+        const dismiss = useDismiss(context);
+        const role = useRole(context, { role: "listbox" });
+
+        const { getReferenceProps, getFloatingProps } = useInteractions([
+            click,
+            dismiss,
+            role
+        ]);
 
         const handleInputRef = (element: HTMLInputElement) => {
             inputRef.current = element;
+            refs.setReference(element);
 
             if (typeof ref === "function") {
                 ref(element);
             } else if (ref) {
                 ref.current = element;
             }
+        };
+
+        const handleContainerRef = (element: HTMLDivElement) => {
+            containerRef.current = element;
+            refs.setReference(element);
         };
 
         const processedData = useMemo(() => {
@@ -131,31 +201,18 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         }, [filteredOptions]);
 
         useEffect(() => {
-            if (!isOpen) return;
-
-            const handleClickOutside = (event: MouseEvent) => {
-                if (
-                    dropdownRef.current &&
-                    !dropdownRef.current.contains(event.target as Node) &&
-                    containerRef.current &&
-                    !containerRef.current.contains(event.target as Node)
-                ) {
-                    closeDropdown();
-                }
-            };
-
-            document.addEventListener("mousedown", handleClickOutside);
-
-            return () => {
-                document.removeEventListener("mousedown", handleClickOutside);
-            };
-        }, [isOpen]);
-
-        useEffect(() => {
             if (value !== undefined) {
-                setSelectedValue(value as string);
+                if (multiple) {
+                    setSelectedValue(
+                        Array.isArray(value) ? value : value ? [value] : []
+                    );
+                } else {
+                    setSelectedValue(
+                        Array.isArray(value) ? value[0] || "" : value || ""
+                    );
+                }
             }
-        }, [value]);
+        }, [value, multiple]);
 
         useEffect(() => {
             if (searchValue !== undefined) {
@@ -163,46 +220,77 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             }
         }, [searchValue]);
 
-        const openDropdown = () => {
-            if (disabled || readOnly) return;
-
-            setIsOpen(true);
-            onDropdownOpen?.();
-
-            if (searchable) {
-                setTimeout(() => inputRef.current?.focus(), 0);
-            }
-        };
-
-        const closeDropdown = () => {
-            setIsOpen(false);
-            onDropdownClose?.();
-
-            if (searchable) {
-                setSearch("");
-                if (searchValue === undefined) {
-                    onSearchChange?.("");
+        useEffect(() => {
+            if (isOpen) {
+                onDropdownOpen?.();
+                if (searchable) {
+                    setTimeout(() => inputRef.current?.focus(), 0);
+                }
+            } else {
+                onDropdownClose?.();
+                if (searchable) {
+                    setSearch("");
+                    if (searchValue === undefined) {
+                        onSearchChange?.("");
+                    }
                 }
             }
-        };
-
-        const toggleDropdown = () => {
-            isOpen ? closeDropdown() : openDropdown();
-        };
+        }, [
+            isOpen,
+            searchable,
+            searchValue,
+            onDropdownOpen,
+            onDropdownClose,
+            onSearchChange
+        ]);
 
         const handleOptionClick = (option: SelectOption) => {
-            const newValue = option.value;
+            if (multiple) {
+                const currentValues = Array.isArray(selectedValue)
+                    ? selectedValue
+                    : [];
+                const newValue = option.value;
+                const isSelected = currentValues.includes(newValue);
 
-            if (allowDeselect && selectedValue === newValue) {
-                setSelectedValue(null);
-                onChange?.("", undefined);
+                let newValues: string[];
+                if (isSelected && allowDeselect) {
+                    newValues = currentValues.filter((v) => v !== newValue);
+                } else if (!isSelected) {
+                    newValues = [...currentValues, newValue];
+                } else {
+                    newValues = currentValues;
+                }
+
+                setSelectedValue(newValues);
+
+                const selectedOptions = newValues
+                    .map((val) =>
+                        processedData.find((opt) => opt.value === val)
+                    )
+                    .filter(Boolean) as SelectOption[];
+
+                onChange?.(newValues, selectedOptions);
+
+                if (!stayOpenOnSelect && !multiple) {
+                    setIsOpen(false);
+                }
             } else {
-                setSelectedValue(newValue);
-                onChange?.(newValue, option);
-            }
+                const newValue = option.value;
+                const currentValue = Array.isArray(selectedValue)
+                    ? selectedValue[0]
+                    : selectedValue;
 
-            if (!stayOpenOnSelect) {
-                closeDropdown();
+                if (allowDeselect && currentValue === newValue) {
+                    setSelectedValue("");
+                    onChange?.("", undefined);
+                } else {
+                    setSelectedValue(newValue);
+                    onChange?.(newValue, option);
+                }
+
+                if (!stayOpenOnSelect) {
+                    setIsOpen(false);
+                }
             }
         };
 
@@ -214,14 +302,45 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             }
 
             if (!isOpen) {
-                openDropdown();
+                setIsOpen(true);
             }
         };
 
         const handleClear = (e: React.MouseEvent) => {
             e.stopPropagation();
-            setSelectedValue(null);
-            onChange?.("", undefined);
+            if (multiple) {
+                setSelectedValue([]);
+                onChange?.([], []);
+            } else {
+                setSelectedValue("");
+                onChange?.("", undefined);
+            }
+        };
+
+        const handleRemoveValue = (
+            valueToRemove: string,
+            e: React.MouseEvent
+        ) => {
+            e.stopPropagation();
+            if (multiple && Array.isArray(selectedValue)) {
+                const newValues = selectedValue.filter(
+                    (v) => v !== valueToRemove
+                );
+                setSelectedValue(newValues);
+
+                const selectedOptions = newValues
+                    .map((val) =>
+                        processedData.find((opt) => opt.value === val)
+                    )
+                    .filter(Boolean) as SelectOption[];
+
+                onChange?.(newValues, selectedOptions);
+            }
+        };
+
+        const handleToggleDropdown = () => {
+            if (disabled || readOnly) return;
+            setIsOpen(!isOpen);
         };
 
         const displayValue = useMemo(() => {
@@ -229,16 +348,83 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                 return search;
             }
 
-            if (!selectedValue) return "";
+            if (multiple) {
+                return ""; // For multiple selection, we'll show pills instead
+            }
+
+            const currentValue = Array.isArray(selectedValue)
+                ? selectedValue[0]
+                : selectedValue;
+            if (!currentValue) return "";
 
             const selectedOption = processedData.find(
-                (option) => option.value === selectedValue
+                (option) => option.value === currentValue
             );
             return selectedOption ? selectedOption.label : "";
-        }, [selectedValue, processedData, searchable, isOpen, search]);
+        }, [
+            selectedValue,
+            processedData,
+            searchable,
+            isOpen,
+            search,
+            multiple
+        ]);
+
+        const renderMultipleValues = () => {
+            if (
+                !multiple ||
+                !Array.isArray(selectedValue) ||
+                selectedValue.length === 0
+            ) {
+                return null;
+            }
+
+            return (
+                <div className="flex flex-wrap gap-1 p-1">
+                    {selectedValue.map((val) => {
+                        const option = processedData.find(
+                            (opt) => opt.value === val
+                        );
+                        if (!option) return null;
+
+                        return (
+                            <div
+                                key={val}
+                                className={cx(
+                                    "flex items-center gap-1 px-2 py-1 text-xs rounded",
+                                    theme === "light"
+                                        ? "bg-[var(--luminx-light-background-hover)] text-[var(--luminx-light-text)]"
+                                        : "bg-[var(--luminx-dark-background-hover)] text-[var(--luminx-dark-text)]",
+                                    classNames?.multiSelectValue
+                                )}
+                            >
+                                <span>{option.label}</span>
+                                <button
+                                    type="button"
+                                    onClick={(e) => handleRemoveValue(val, e)}
+                                    className={cx(
+                                        "hover:opacity-70",
+                                        theme === "light"
+                                            ? "text-[var(--luminx-light-hint)]"
+                                            : "text-[var(--luminx-dark-hint)]"
+                                    )}
+                                >
+                                    <IconX size={12} />
+                                </button>
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        };
 
         const renderOption = (option: SelectOption, index: number) => {
-            const isSelected = option.value === selectedValue;
+            const isSelected = multiple
+                ? Array.isArray(selectedValue) &&
+                  selectedValue.includes(option.value)
+                : (Array.isArray(selectedValue)
+                      ? selectedValue[0]
+                      : selectedValue) === option.value;
 
             const checkMark = () => (
                 <div
@@ -288,96 +474,103 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
             );
         };
 
-        const renderDropdown = () => {
-            if (!isOpen) return null;
-
-            return (
-                <div
-                    ref={dropdownRef}
-                    className={cx(
-                        "absolute w-full border overflow-y-auto luminx-scrollbar rounded-md",
-                        theme === "light"
-                            ? "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)]"
-                            : "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)]",
-                        placement === "top"
-                            ? "bottom-full mb-1"
-                            : "top-full mt-1",
-                        "transition-opacity duration-100",
-                        classNames?.dropdown,
-                        classNames?.scrollbar
-                    )}
-                    style={{
-                        maxHeight,
-                        padding: 4,
-                        zIndex: zIndex || 9999
-                    }}
-                >
-                    {filteredOptions.length === 0 ? (
-                        noResults && (
-                            <div
-                                className={cx(
-                                    "p-2 text-sm text-center",
-                                    theme === "light"
-                                        ? "text-[var(--luminx-light-hint)]"
-                                        : "text-[var(--luminx-dark-hint)]",
-                                    classNames?.noResults
-                                )}
-                            >
-                                {noResults}
-                            </div>
-                        )
-                    ) : (
-                        <div className="flex flex-col gap-1">
-                            {groupedOptions.noGroup.map((option, index) =>
-                                renderOption(option, index)
+        const dropdownContent = (
+            <div
+                className={cx(
+                    "border overflow-y-auto luminx-scrollbar rounded-md",
+                    theme === "light"
+                        ? "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)]"
+                        : "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)]",
+                    classNames?.dropdown,
+                    classNames?.scrollbar
+                )}
+                style={{
+                    maxHeight,
+                    padding: 4
+                }}
+            >
+                {filteredOptions.length === 0 ? (
+                    noResults && (
+                        <div
+                            className={cx(
+                                "p-2 text-sm text-center",
+                                theme === "light"
+                                    ? "text-[var(--luminx-light-hint)]"
+                                    : "text-[var(--luminx-dark-hint)]",
+                                classNames?.noResults
                             )}
-
-                            {Object.entries(groupedOptions.groups).map(
-                                ([groupName, options]) => (
-                                    <div
-                                        key={groupName}
-                                        className="flex flex-col"
-                                    >
-                                        <div
-                                            className={cx(
-                                                "px-2 py-1 text-xs font-semibold",
-                                                theme === "light"
-                                                    ? "text-[var(--luminx-light-hint)]"
-                                                    : "text-[var(--luminx-dark-hint)]",
-                                                classNames?.dropdownGroup
-                                            )}
-                                        >
-                                            {groupName}
-                                        </div>
-                                        {options.map((option, index) =>
-                                            renderOption(option, index)
-                                        )}
-                                    </div>
-                                )
-                            )}
+                        >
+                            {noResults}
                         </div>
-                    )}
-                </div>
-            );
+                    )
+                ) : (
+                    <div className="flex flex-col gap-1">
+                        {groupedOptions.noGroup.map((option, index) =>
+                            renderOption(option, index)
+                        )}
+
+                        {Object.entries(groupedOptions.groups).map(
+                            ([groupName, options]) => (
+                                <div key={groupName} className="flex flex-col">
+                                    <div
+                                        className={cx(
+                                            "px-2 py-1 text-xs font-semibold",
+                                            theme === "light"
+                                                ? "text-[var(--luminx-light-hint)]"
+                                                : "text-[var(--luminx-dark-hint)]",
+                                            classNames?.dropdownGroup
+                                        )}
+                                    >
+                                        {groupName}
+                                    </div>
+                                    {options.map((option, index) =>
+                                        renderOption(option, index)
+                                    )}
+                                </div>
+                            )
+                        )}
+                    </div>
+                )}
+            </div>
+        );
+
+        const renderDropdown = () => {
+            if (withTransition) {
+                return (
+                    <Transition
+                        mounted={isOpen}
+                        transition="fade-down"
+                        duration={200}
+                        timingFunction="ease-out"
+                        {...transitionProps}
+                    >
+                        {dropdownContent}
+                    </Transition>
+                );
+            }
+
+            return isOpen ? dropdownContent : null;
         };
 
+        const hasSelectedValues = multiple
+            ? Array.isArray(selectedValue) && selectedValue.length > 0
+            : selectedValue && selectedValue !== "";
+
         return (
-            <div
-                className={cx("relative", fullWidth && "w-full")}
-                ref={containerRef}
-            >
+            <div className={cx("relative", fullWidth && "w-full")}>
                 <Input
                     inputRef={handleInputRef}
+                    containerRef={handleContainerRef}
                     value={displayValue}
                     placeholder={placeholder}
                     readOnly={!searchable || readOnly}
                     disabled={disabled}
                     fullWidth={fullWidth}
-                    onClick={toggleDropdown}
                     onChange={searchable ? handleInputChange : undefined}
+                    leftSection={multiple ? renderMultipleValues() : undefined}
                     rightSection={
                         <div className="flex items-center">
-                            {clearable && selectedValue && (
+                            {clearable && hasSelectedValues && (
                                 <button
                                     type="button"
                                     className={cx(
@@ -393,23 +586,46 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
                                     {clearIcon || <IconX size={18} />}
                                 </button>
                             )}
-                            {dropdownIcon || (
-                                <IconChevronDown
-                                    size={18}
-                                    className={cx(
-                                        "transform duration-150 ease-in-out",
-                                        isOpen && "rotate-180",
-                                        classNames?.chevronIcon
-                                    )}
-                                    onClick={toggleDropdown}
-                                />
-                            )}
+                            <button
+                                type="button"
+                                onClick={handleToggleDropdown}
+                                className="p-1"
+                                aria-label={
+                                    isOpen ? "Close dropdown" : "Open dropdown"
+                                }
+                            >
+                                {dropdownIcon || (
+                                    <IconChevronDown
+                                        size={18}
+                                        className={cx(
+                                            "transform duration-150 ease-in-out",
+                                            isOpen && "rotate-180",
+                                            classNames?.chevronIcon
+                                        )}
+                                    />
+                                )}
+                            </button>
                         </div>
                     }
                     classNames={classNames}
+                    {...getReferenceProps()}
                     {...props}
                 />
-                {renderDropdown()}
+
+                {isOpen && (
+                    <div
+                        ref={refs.setFloating}
+                        style={{
+                            position: strategy,
+                            top: y ?? 0,
+                            left: x ?? 0,
+                            zIndex: zIndex || 9999
+                        }}
+                        {...getFloatingProps()}
+                    >
+                        {renderDropdown()}
+                    </div>
+                )}
             </div>
         );
     }
