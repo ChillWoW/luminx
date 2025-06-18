@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { SaturationProps } from "./types";
 import { getPosition } from "./get-position";
-import { cx, getRadius } from "../../_theme";
+import { cx } from "../../_theme";
 
 export const Saturation = ({
     value,
@@ -53,8 +53,11 @@ export const Saturation = ({
     return (
         <div
             ref={saturationRef}
-            className={cx("relative h-40 cursor-pointer touch-none", className)}
-            style={{ background, ...getRadius("md") }}
+            className={cx(
+                "relative h-40 cursor-pointer touch-none rounded-md overflow-hidden",
+                className
+            )}
+            style={{ background }}
             onMouseDown={handleMouseDown}
             tabIndex={0}
             role="region"
@@ -73,7 +76,7 @@ export const Saturation = ({
                 }}
             />
             <div
-                className="absolute w-3 h-3 border border-[var(--lumin-text)] rounded-full -translate-x-1/2 -translate-y-1/2"
+                className="absolute w-3 h-3 ring-2 ring-[var(--luminx-white)] rounded-full -translate-x-1/2 -translate-y-1/2 shadow-lg shadow-sm"
                 style={{
                     left: `${value.s * 100}%`,
                     top: `${(1 - value.v) * 100}%`

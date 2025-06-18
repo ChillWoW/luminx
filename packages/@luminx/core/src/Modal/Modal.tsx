@@ -5,6 +5,7 @@ import { ModalRoot } from "./ModalRoot";
 import { ModalContent } from "./ModalContent";
 import { ModalTitle } from "./ModalTitle";
 import { ModalBody } from "./ModalBody";
+import { ModalOverlay } from "./ModalOverlay";
 
 const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
     const {
@@ -104,6 +105,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
             }}
         >
             <ModalRoot>
+                <ModalOverlay />
                 <ModalContent ref={ref}>
                     {(title || withCloseButton) && (
                         <ModalTitle>{title}</ModalTitle>
@@ -116,6 +118,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
 });
 
 const ModalExtended = Object.assign(Modal, {
+    Overlay: ModalOverlay,
     Root: ModalRoot,
     Content: ModalContent,
     Title: ModalTitle,

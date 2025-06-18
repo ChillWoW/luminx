@@ -6,6 +6,7 @@ import { ColorSwatch } from "../ColorSwatch";
 import { Saturation } from "./Saturation/index";
 import { HueSlider } from "./HueSlider/index";
 import { AlphaSlider } from "./AlphaSlider/index";
+import { IconPencil } from "@tabler/icons-react";
 
 const ColorPickerBase = (props: ColorPickerProps, ref: Ref<HTMLDivElement>) => {
     const {
@@ -14,8 +15,9 @@ const ColorPickerBase = (props: ColorPickerProps, ref: Ref<HTMLDivElement>) => {
         onChange,
         format = "hex",
         fullWidth,
-        showColorPreview,
         withPicker = true,
+        hideEyeDropper,
+        hideAlpha,
         swatches,
         className,
         classNames,
@@ -68,7 +70,21 @@ const ColorPickerBase = (props: ColorPickerProps, ref: Ref<HTMLDivElement>) => {
         }
     };
 
-    const previewColor = formatColor(color, format);
+    const activateEyedropper = async () => {
+        try {
+            if ("EyeDropper" in window) {
+                // @ts-ignore - EyeDropper API is not yet in TypeScript types
+                const eyeDropper = new window.EyeDropper();
+                const result = await eyeDropper.open();
+                handleChange(parseColor(result.sRGBHex));
+            } else {
+                alert("Eyedropper not supported in this browser");
+            }
+        } catch (e) {
+            console.error("Error using eyedropper:", e);
+        }
+    };
+
     const rgbColor = hsvToRgb(color);
     const hexColor = rgbToHex(rgbColor, false);
 
@@ -78,7 +94,10 @@ const ColorPickerBase = (props: ColorPickerProps, ref: Ref<HTMLDivElement>) => {
                 key={`${swatch}-${index}`}
                 color={swatch}
                 onClick={() => handleSwatchClick(swatch)}
-                className={cx("cursor-pointer", classNames?.swatch)}
+                className={cx(
+                    "cursor-pointer rounded-md hover:scale-110 transition-transform w-5 h-5",
+                    classNames?.swatch
+                )}
             />
         );
     };
@@ -106,6 +125,16 @@ const ColorPickerBase = (props: ColorPickerProps, ref: Ref<HTMLDivElement>) => {
                         />
 
                         <div className={cx("flex gap-3", classNames?.sliders)}>
+                            {!hideEyeDropper && (
+                                <button
+                                    type="button"
+                                    className="flex items-center justify-center bg-[var(--luminx-dark-background-hover)] rounded-md hover:bg-[var(--luminx-primary-light)] p-3 min-w-[44px] h-11 transition-all duration-200 text-[var(--luminx-dark-text)]"
+                                    onClick={activateEyedropper}
+                                >
+                                    <IconPencil size={20} />
+                                </button>
+                            )}
+
                             <div className="flex items-center w-full flex-col gap-2">
                                 <HueSlider
                                     value={color.h}
@@ -116,7 +145,7 @@ const ColorPickerBase = (props: ColorPickerProps, ref: Ref<HTMLDivElement>) => {
                                     )}
                                 />
 
-                                {useAlpha && (
+                                {!hideAlpha && (
                                     <AlphaSlider
                                         value={color.a}
                                         onChange={handleAlphaChange}
@@ -128,36 +157,6 @@ const ColorPickerBase = (props: ColorPickerProps, ref: Ref<HTMLDivElement>) => {
                                     />
                                 )}
                             </div>
-
-                            {showColorPreview && (
-                                <div
-                                    className={cx(
-                                        "w-10 h-8 rounded-md relative overflow-hidden",
-                                        classNames?.colorPreview
-                                    )}
-                                >
-                                    <div
-                                        className="absolute inset-0 bg-[length:8px_8px] bg-white"
-                                        style={{
-                                            backgroundImage: `
-                                linear-gradient(45deg, #ccc 25%, transparent 25%),
-                                linear-gradient(-45deg, #ccc 25%, transparent 25%),
-                                linear-gradient(45deg, transparent 75%, #ccc 75%),
-                                linear-gradient(-45deg, transparent 75%, #ccc 75%)
-                                `,
-                                            backgroundSize: "8px 8px",
-                                            backgroundPosition:
-                                                "0 0, 0 4px, 4px -4px, -4px 0px"
-                                        }}
-                                    />
-                                    <div
-                                        className="absolute inset-0"
-                                        style={{
-                                            backgroundColor: previewColor
-                                        }}
-                                    />
-                                </div>
-                            )}
                         </div>
                     </>
                 )}

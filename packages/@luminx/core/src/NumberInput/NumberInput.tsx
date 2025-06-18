@@ -315,7 +315,6 @@ export const NumberInput = ({
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             rightSection={hideControls ? null : controlButtons}
-            rightSectionPadding={0}
             disabled={disabled}
             classNames={{
                 rightSection: "p-0",

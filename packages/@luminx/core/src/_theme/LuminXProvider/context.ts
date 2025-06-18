@@ -6,5 +6,6 @@ export const LuminXContext = createContext<LuminXContextType>({
     setTheme: () => {},
     themeAutoSave: false,
     setThemeAutoSave: () => {},
-    lightVariantOpacity: 0.6
+    lightVariantOpacity: 0.6,
+    locale: "en-US"
 });

@@ -1,6 +1,6 @@
 import React, { cloneElement, useRef, useState } from "react";
 import { TooltipProps } from "./types";
-import { getRadius, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 import { Transition } from "../Transition";
 import {
     useFloating,

@@ -17,11 +17,11 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
             max = 100,
             step = 1,
             marks = [],
+            snapToMarks = false,
             label = (val) => val.toString(),
             labelAlwaysOn = false,
             thumbSize = 14,
-            thumbColor,
-            trackColor,
+            thumbChildren,
             barColor,
             disabled = false,
             inverted = false,
@@ -63,6 +63,24 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
             (position: number) => {
                 const clampedPosition = Math.min(Math.max(position, 0), 100);
 
+                if (snapToMarks && marks.length > 0) {
+                    const positionValue =
+                        min + (clampedPosition / 100) * (max - min);
+
+                    let closestMark = marks[0].value;
+                    let minDistance = Math.abs(positionValue - closestMark);
+
+                    for (const mark of marks) {
+                        const distance = Math.abs(positionValue - mark.value);
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            closestMark = mark.value;
+                        }
+                    }
+
+                    return Math.min(Math.max(closestMark, min), max);
+                }
+
                 const stepsCount = (max - min) / step;
                 const stepPercentage = 100 / stepsCount;
                 const steps = Math.round(clampedPosition / stepPercentage);
@@ -75,7 +93,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
 
                 return Math.min(Math.max(roundedValue, min), max);
             },
-            [min, max, step]
+            [min, max, step, snapToMarks, marks]
         );
 
         const updateValueFromPosition = useCallback(
@@ -100,10 +118,45 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
         const handleTrackClick = useCallback(
             (event: React.MouseEvent<HTMLDivElement>) => {
                 if (disabled) return;
+
+                if (event.target === thumbRef.current) return;
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                setIsDragging(true);
                 updateValueFromPosition(event.clientX);
-                onChangeEnd?.(currentValue);
+
+                const handleMouseMove = (e: MouseEvent) => {
+                    updateValueFromPosition(e.clientX);
+                };
+
+                const handleMouseUp = () => {
+                    setIsDragging(false);
+
+                    if (!trackRef.current) return;
+                    const { left, width } =
+                        trackRef.current.getBoundingClientRect();
+                    const position = ((event.clientX - left) / width) * 100;
+                    const finalValue = getValueFromPosition(
+                        inverted ? 100 - position : position
+                    );
+                    onChangeEnd?.(finalValue);
+
+                    document.removeEventListener("mousemove", handleMouseMove);
+                    document.removeEventListener("mouseup", handleMouseUp);
+                };
+
+                document.addEventListener("mousemove", handleMouseMove);
+                document.addEventListener("mouseup", handleMouseUp);
             },
-            [disabled, updateValueFromPosition, onChangeEnd, currentValue]
+            [
+                disabled,
+                updateValueFromPosition,
+                getValueFromPosition,
+                inverted,
+                onChangeEnd
+            ]
         );
 
         const handleMouseDown = useCallback(
@@ -210,7 +263,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                         disabled && "cursor-not-allowed",
                         classNames?.trackContainer
                     )}
-                    onClick={disabled ? undefined : handleTrackClick}
+                    onMouseDown={disabled ? undefined : handleTrackClick}
                 >
                     <div
                         className={cx(
@@ -220,9 +273,6 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                                 : "bg-[var(--luminx-dark-background)]",
                             classNames?.track
                         )}
-                        style={{
-                            backgroundColor: trackColor
-                        }}
                     />
 
                     <div
@@ -240,28 +290,50 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
 
                     {marks.map((mark) => {
                         const markPosition = getPositionFromValue(mark.value);
+
+                        const isAtStart = markPosition <= 1;
+                        const isAtEnd = markPosition >= 99;
+
+                        let translateClass = "-translate-x-1/2";
+                        let leftPosition = `${markPosition}%`;
+
+                        if (isAtStart) {
+                            translateClass = "translate-x-0";
+                            leftPosition = "1px";
+                        } else if (isAtEnd) {
+                            translateClass = "-translate-x-full";
+                            leftPosition = "calc(100% - 1px)";
+                        }
+
                         return (
                             <div
                                 key={mark.value}
                                 className={cx(
-                                    "absolute top-1/2 -translate-x-1/2 -translate-y-1/2",
+                                    "absolute top-1/2 -translate-y-1/2",
+                                    translateClass,
                                     classNames?.markWrapper
                                 )}
-                                style={{ left: `${markPosition}%` }}
+                                style={{ left: leftPosition }}
                             >
                                 <div
                                     className={cx(
-                                        "w-1 h-1 rounded-full",
+                                        "w-1.5 h-1.5 rounded-full bg-[var(--luminx-white)]",
+                                        "shadow-sm z-5",
                                         classNames?.mark
                                     )}
                                 />
                                 {mark.label && (
                                     <div
                                         className={cx(
-                                            "absolute top-4 -translate-x-1/2 text-xs",
+                                            "absolute top-4 text-xs",
                                             theme === "light"
                                                 ? "text-[var(--luminx-light-text)]"
                                                 : "text-[var(--luminx-dark-text)]",
+                                            isAtStart
+                                                ? "translate-x-0"
+                                                : isAtEnd
+                                                ? "-translate-x-full"
+                                                : "-translate-x-1/2",
                                             classNames?.markLabel
                                         )}
                                     >
@@ -281,6 +353,7 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                                 ? "bg-[var(--luminx-white)] ring-[var(--luminx-primary)]"
                                 : "bg-[var(--luminx-primary)] ring-[var(--luminx-white)]",
                             "ring-2 ring-inset",
+                            thumbChildren && "flex items-center justify-center",
                             "cursor-grab active:cursor-grabbing",
                             "transition-shadow duration-200",
                             !disabled && "hover:shadow-md focus:shadow-md",
@@ -294,7 +367,6 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                             left: `${position}%`,
                             width: `${thumbSize}px`,
                             height: `${thumbSize}px`,
-                            backgroundColor: thumbColor,
                             touchAction: "none"
                         }}
                         onMouseDown={handleMouseDown}
@@ -305,7 +377,9 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
                         aria-valuemax={max}
                         aria-valuenow={currentValue}
                         aria-disabled={disabled}
-                    />
+                    >
+                        {thumbChildren}
+                    </div>
 
                     {label && showLabel && (
                         <div

@@ -29,10 +29,9 @@ export interface ColorPickerProps
     onChange?: (value: string) => void;
     format?: ColorPickerFormat;
     fullWidth?: boolean;
-    showColorPreview?: boolean;
     withPicker?: boolean;
-
-    // Swatches
+    hideEyeDropper?: boolean;
+    hideAlpha?: boolean;
     swatches?: string[];
     className?: string;
     classNames?: ColorPickerClassNames;

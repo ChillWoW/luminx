@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { BadgeProps } from "./types";
-import { getRadius, getShadow, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 
 export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
     (

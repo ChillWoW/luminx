@@ -3,9 +3,8 @@ import { HTMLAttributes, ElementType, ReactNode } from "react";
 export interface ColorSwatchProps extends HTMLAttributes<HTMLDivElement> {
     color: string;
     component?: ElementType;
-    size?: number;
     children?: ReactNode;
-    style?: React.CSSProperties;
+    backgroundGrid?: boolean;
     className?: string;
     classNames?: ColorSwatchClassNames;
 }

@@ -1,6 +1,6 @@
 import React, { forwardRef, useState } from "react";
 import { AlertProps } from "./types";
-import { getRadius, getShadow, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 import { IconX } from "@tabler/icons-react";
 import { AlertTitle } from "./AlertTitle";
 import { AlertDescription } from "./AlertDescription";

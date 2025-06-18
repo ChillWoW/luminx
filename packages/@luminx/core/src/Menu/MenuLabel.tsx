@@ -24,7 +24,7 @@ export const MenuLabel = ({
     return (
         <div
             className={cx(
-                "text-xs font-medium",
+                "text-xs font-semibold px-3 pt-2",
                 theme === "light"
                     ? "text-[var(--luminx-light-hint)]"
                     : "text-[var(--luminx-dark-hint)]",

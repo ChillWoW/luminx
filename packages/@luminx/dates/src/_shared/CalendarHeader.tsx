@@ -29,7 +29,7 @@ export function CalendarHeader({
         <div className="flex items-center justify-between mb-3 select-none">
             <button
                 className={cx(
-                    "flex items-center justify-center p-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed",
+                    "flex items-center justify-center p-1 rounded-md disabled:opacity-60 disabled:cursor-not-allowed",
                     theme === "light"
                         ? "text-[var(--luminx-light-text)] hover:bg-[var(--luminx-light-background-hover)]"
                         : "text-[var(--luminx-dark-text)] hover:bg-[var(--luminx-dark-background-hover)]"
@@ -38,25 +38,24 @@ export function CalendarHeader({
                 onClick={onPrevious}
                 aria-label={previousLabel}
             >
-                <IconChevronLeft />
+                <IconChevronLeft size={18} />
             </button>
 
             <button
                 className={cx(
-                    "w-full font-medium px-2 py-1 rounded-md",
+                    "flex items-center justify-center w-fit font-medium px-3 py-1 rounded-md text-sm",
                     theme === "light"
                         ? "text-[var(--luminx-light-text)] hover:bg-[var(--luminx-light-background-hover)]"
                         : "text-[var(--luminx-dark-text)] hover:bg-[var(--luminx-dark-background-hover)]"
                 )}
                 onClick={onLabelClick}
-                aria-label="Change view"
             >
                 {label}
             </button>
 
             <button
                 className={cx(
-                    "flex items-center justify-center p-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed",
+                    "flex items-center justify-center p-1 rounded-md disabled:opacity-60 disabled:cursor-not-allowed",
                     theme === "light"
                         ? "text-[var(--luminx-light-text)] hover:bg-[var(--luminx-light-background-hover)]"
                         : "text-[var(--luminx-dark-text)] hover:bg-[var(--luminx-dark-background-hover)]"
@@ -65,7 +64,7 @@ export function CalendarHeader({
                 onClick={onNext}
                 aria-label={nextLabel}
             >
-                <IconChevronRight />
+                <IconChevronRight size={18} />
             </button>
         </div>
     );

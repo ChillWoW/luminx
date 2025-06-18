@@ -1,7 +1,7 @@
 import React from "react";
 import { PillProps } from "./types";
 import { PillGroup } from "./PillGroup";
-import { getRadius, getShadow, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 import { IconX } from "@tabler/icons-react";
 
 export const Pill = ({

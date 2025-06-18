@@ -1,6 +1,6 @@
 import React, { ElementType, forwardRef } from "react";
 import { AvatarProps } from "./types";
-import { getRadius, getShadow, useTheme } from "../_theme";
+import { useTheme } from "../_theme";
 import { AvatarGroup } from "./AvatarGroup";
 import { IconUserCircle } from "@tabler/icons-react";
 

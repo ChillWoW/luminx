@@ -1,9 +1,10 @@
 import { ButtonHTMLAttributes, ElementType } from "react";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
-export type ButtonVariant = "filled" | "outline" | "unstyled";
+export type ButtonVariant = "filled" | "outline" | "ghost";
 export type ButtonLoaderPosition = "left" | "right";
 export type ButtonAlign = "left" | "center" | "right";
+export type ButtonGroupOrientation = "horizontal" | "vertical";
 
 export interface ButtonProps
     extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color"> {
@@ -36,4 +37,16 @@ export interface ButtonClassNames {
     disabled?: string;
     sectionDisabled?: string;
     loader?: string;
+}
+
+export interface ButtonGroupProps {
+    children:
+        | React.ReactElement<ButtonProps>
+        | React.ReactElement<ButtonProps>[];
+    orientation?: ButtonGroupOrientation;
+    variant?: ButtonVariant;
+    size?: ButtonSize;
+    disabled?: boolean;
+    withSeparator?: boolean;
+    className?: string;
 }

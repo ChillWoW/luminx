@@ -62,12 +62,10 @@ export function YearPicker(props: YearPickerProps) {
         onChange,
         minDate,
         maxDate,
-        size = "md",
         yearsListFormat = "YYYY",
         decadeLabelFormat = "YYYY",
         numberOfColumns = 1,
         getYearControlProps,
-        ariaLabels,
         ...others
     } = props;
 
@@ -110,23 +108,62 @@ export function YearPicker(props: YearPickerProps) {
 
     const handleYearSelect = useCallback(
         (year: Date) => {
+            const findValidDateInYear = (selectedYear: Date): Date => {
+                const yearNum = selectedYear.getFullYear();
+
+                let targetMonth = 0;
+                let targetDay = 1;
+
+                if (type === "default" && value instanceof Date) {
+                    targetMonth = value.getMonth();
+                    targetDay = value.getDate();
+                } else if (activeDate) {
+                    targetMonth = activeDate.getMonth();
+                    targetDay = activeDate.getDate();
+                }
+
+                let targetDate = new Date(yearNum, targetMonth, targetDay);
+
+                if (minDate || maxDate) {
+                    if (minDate && targetDate < minDate) {
+                        if (minDate.getFullYear() === yearNum) {
+                            targetDate = new Date(minDate);
+                        } else {
+                            targetDate = new Date(yearNum, 0, 1);
+                        }
+                    } else if (maxDate && targetDate > maxDate) {
+                        if (maxDate.getFullYear() === yearNum) {
+                            targetDate = new Date(maxDate);
+                        } else {
+                            targetDate = new Date(yearNum, 11, 31);
+                        }
+                    }
+                }
+
+                return targetDate;
+            };
+
+            const validDate = findValidDateInYear(year);
+
             if (type === "default") {
                 const typedValue = value as DateValue;
                 const shouldDeselect =
                     allowDeselect &&
                     typedValue instanceof Date &&
-                    areDatesEqual(typedValue, year);
+                    areDatesEqual(typedValue, validDate);
 
                 const typedOnChange = onChange as
                     | ((date: DateValue) => void)
                     | undefined;
-                typedOnChange?.(shouldDeselect ? null : year);
+                typedOnChange?.(shouldDeselect ? null : validDate);
             } else if (type === "multiple") {
                 const typedValue = value as MultiDateValue;
-                const isSelected = isDateInArray(year, typedValue);
+                const isSelected = isDateInArray(validDate, typedValue);
                 const newValue = isSelected
-                    ? typedValue.filter((date) => !areDatesEqual(date, year))
-                    : [...typedValue, year];
+                    ? typedValue.filter(
+                          (date) => !areDatesEqual(date, validDate)
+                      )
+                    : [...typedValue, validDate];
 
                 const typedOnChange = onChange as
                     | ((dates: MultiDateValue) => void)
@@ -140,32 +177,44 @@ export function YearPicker(props: YearPickerProps) {
                     | undefined;
 
                 if (!start) {
-                    typedOnChange?.([year, null]);
+                    typedOnChange?.([validDate, null]);
                 } else if (!end) {
                     if (
                         allowSingleDateInRange &&
-                        dayjs(year).isSame(start, "year")
+                        dayjs(validDate).isSame(start, "year")
                     ) {
                         typedOnChange?.([start, start]);
                     } else {
                         const hasCorrectOrder = dayjs(start).isBefore(
-                            year,
+                            validDate,
                             "year"
                         );
                         typedOnChange?.(
-                            hasCorrectOrder ? [start, year] : [year, start]
+                            hasCorrectOrder
+                                ? [start, validDate]
+                                : [validDate, start]
                         );
                     }
                 } else {
-                    typedOnChange?.([year, null]);
+                    typedOnChange?.([validDate, null]);
                 }
             }
 
             if (!date) {
-                setActiveDate(year);
+                setActiveDate(validDate);
             }
         },
-        [type, value, onChange, allowDeselect, allowSingleDateInRange, date]
+        [
+            type,
+            value,
+            onChange,
+            allowDeselect,
+            allowSingleDateInRange,
+            date,
+            activeDate,
+            minDate,
+            maxDate
+        ]
     );
 
     const isNextDecadeDisabled =
@@ -191,10 +240,6 @@ export function YearPicker(props: YearPickerProps) {
                 <div key={columnIndex} className="mb-4 last:mb-0">
                     <CalendarHeader
                         label={columnDecadeLabel}
-                        nextLabel={ariaLabels?.nextDecade || "Next decade"}
-                        previousLabel={
-                            ariaLabels?.previousDecade || "Previous decade"
-                        }
                         nextDisabled={isNextDecadeDisabled}
                         previousDisabled={isPreviousDecadeDisabled}
                         onNext={
@@ -243,10 +288,36 @@ export function YearPicker(props: YearPickerProps) {
                                 selected = isStart || isEnd;
                             }
 
-                            const disabled = isDateDisabled(year, {
-                                minDate,
-                                maxDate
-                            });
+                            const disabled = (() => {
+                                const yearStart = new Date(
+                                    year.getFullYear(),
+                                    0,
+                                    1
+                                );
+                                const yearEnd = new Date(
+                                    year.getFullYear(),
+                                    11,
+                                    31
+                                );
+
+                                let isDisabled = false;
+
+                                if (
+                                    minDate &&
+                                    dayjs(yearEnd).isBefore(minDate, "day")
+                                ) {
+                                    isDisabled = true;
+                                }
+
+                                if (
+                                    maxDate &&
+                                    dayjs(yearStart).isAfter(maxDate, "day")
+                                ) {
+                                    isDisabled = true;
+                                }
+
+                                return isDisabled;
+                            })();
 
                             const customControlProps =
                                 getYearControlProps?.(year) || {};
@@ -259,7 +330,6 @@ export function YearPicker(props: YearPickerProps) {
                                     isRangeStart={isRangeStart}
                                     isRangeEnd={isRangeEnd}
                                     disabled={disabled}
-                                    size={size}
                                     onClick={() => handleYearSelect(year)}
                                     aria-label={`Select year ${year.getFullYear()}`}
                                     {...customControlProps}
