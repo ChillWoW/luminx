@@ -97,8 +97,6 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
         const getStyles = () => {
             if (unstyled) return;
 
-            console.log(resolvedVariant);
-
             const baseStyles = [
                 "rounded-full border-2 transition-all duration-200",
                 resolvedVariant === "filled" ? "border-transparent" : ""
