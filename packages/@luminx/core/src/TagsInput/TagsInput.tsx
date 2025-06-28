@@ -10,6 +10,7 @@ import { Input } from "../Input";
 import { Pill } from "../Pill";
 import { TagsInputProps } from "./types";
 import { useTheme } from "../_theme";
+import { CloseButton } from "../CloseButton";
 
 export const TagsInput = ({
     value: controlledValue,
@@ -134,7 +135,6 @@ export const TagsInput = ({
             onChange?.(newTags);
             onTagRemove?.(tagToRemove, index);
 
-            // Focus back to input after removing tag
             setTimeout(() => inputRef.current?.focus(), 0);
         },
         [currentTags, isControlled, onChange, onTagRemove]
@@ -154,15 +154,14 @@ export const TagsInput = ({
                 ? splitChars
                 : [splitChars];
 
-            // Check if any split character is present (except Enter which is handled in onKeyDown)
             const nonEnterSplitChars = splitCharsArray.filter(
                 (char) => char !== "Enter"
             );
             for (const splitChar of nonEnterSplitChars) {
                 if (value.includes(splitChar)) {
                     const parts = value.split(splitChar);
-                    const tagsToAdd = parts.slice(0, -1); // All parts except the last one
-                    const remainingInput = parts[parts.length - 1]; // The last part
+                    const tagsToAdd = parts.slice(0, -1);
+                    const remainingInput = parts[parts.length - 1];
 
                     tagsToAdd.forEach((tag) => addTag(tag));
                     setInputValue(remainingInput);
@@ -191,7 +190,6 @@ export const TagsInput = ({
                 !inputValue &&
                 currentTags.length > 0
             ) {
-                // Remove last tag when backspace is pressed on empty input
                 removeTag(currentTags.length - 1);
             }
 
@@ -265,7 +263,6 @@ export const TagsInput = ({
         ]
     );
 
-    // Create the left section containing the pills
     const leftSection = currentTags.length > 0 && (
         <div
             className={cx(
@@ -280,19 +277,7 @@ export const TagsInput = ({
     const rightSection = (
         <div className="flex items-center gap-1">
             {clearable && currentTags.length > 0 && !disabled && !readOnly && (
-                <button
-                    type="button"
-                    onClick={clearAllTags}
-                    className={cx(
-                        "hover:bg-[var(--luminx-primary-light)] rounded-full w-6 h-6 flex items-center justify-center text-sm",
-                        theme === "light"
-                            ? "text-[var(--luminx-light-text)]"
-                            : "text-[var(--luminx-dark-text)]"
-                    )}
-                    aria-label="Clear all tags"
-                >
-                    ×
-                </button>
+                <CloseButton onClick={clearAllTags} />
             )}
             {props.rightSection}
         </div>

@@ -6,24 +6,22 @@ import React, {
 } from "react";
 import { useTheme } from "../_theme";
 import { BreadcrumbsProps, BreadcrumbItemProps } from "./types";
+import { Anchor } from "../Anchor";
 
 const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
     ({ children, href, className, ...props }, ref) => {
-        const { cx } = useTheme();
+        const { theme, cx } = useTheme();
 
         if (href) {
             return (
-                <a
+                <Anchor
                     ref={ref as React.RefObject<HTMLAnchorElement>}
                     href={href}
-                    className={cx(
-                        "text-[var(--luminx-primary)] hover:underline transition-colors",
-                        className
-                    )}
+                    className={className}
                     {...props}
                 >
                     {children}
-                </a>
+                </Anchor>
             );
         }
 
@@ -31,7 +29,10 @@ const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
             <span
                 ref={ref as React.RefObject<HTMLSpanElement>}
                 className={cx(
-                    "text-[var(--luminx-text-secondary)] cursor-default",
+                    theme === "light"
+                        ? "text-[var(--luminx-light-text)]"
+                        : "text-[var(--luminx-dark-text)]",
+                    "cursor-default",
                     className
                 )}
                 {...props}
@@ -71,7 +72,7 @@ const Breadcrumbs = forwardRef<HTMLDivElement, BreadcrumbsProps>(
                                 })}
                                 {!isLast && (
                                     <span
-                                        className="text-[var(--luminx-text-secondary)] select-none"
+                                        className="text-[var(--luminx-dark-text)] select-none"
                                         aria-hidden="true"
                                     >
                                         {separator}

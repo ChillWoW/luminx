@@ -2,7 +2,7 @@ import React from "react";
 
 export type TabsOrientation = "horizontal" | "vertical";
 export type TabsPosition = "top" | "bottom" | "left" | "right";
-export type TabsVariant = "default" | "pills";
+export type TabsVariant = "default" | "pills" | "segmented" | "underline";
 export type TabsSize = "xs" | "sm" | "md" | "lg" | "xl";
 
 export interface TabsClassNames {

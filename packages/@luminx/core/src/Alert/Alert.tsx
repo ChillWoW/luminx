@@ -1,9 +1,9 @@
 import React, { forwardRef, useState } from "react";
 import { AlertProps } from "./types";
 import { useTheme } from "../_theme";
-import { IconX } from "@tabler/icons-react";
 import { AlertTitle } from "./AlertTitle";
 import { AlertDescription } from "./AlertDescription";
+import { CloseButton } from "../CloseButton";
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(
     (
@@ -12,7 +12,6 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
             icon,
             iconPosition = "center",
             withCloseButton = false,
-            closeButtonLabel = "Close",
             onClose,
             withBorder,
             children,
@@ -96,14 +95,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                     </div>
                     {withCloseButton && (
                         <div className={classNames?.closeButton}>
-                            <IconX
-                                aria-label={closeButtonLabel}
-                                style={{
-                                    cursor: "pointer"
-                                }}
-                                size={18}
-                                onClick={handleClose}
-                            />
+                            <CloseButton onClick={handleClose} />
                         </div>
                     )}
                 </div>

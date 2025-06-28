@@ -22,20 +22,6 @@ export const ModalOverlay = () => {
         }
     };
 
-    const getOpacity = () => {
-        switch (animationState) {
-            case "entering":
-                return 0;
-            case "entered":
-                return overlayOpacity;
-            case "exiting":
-                return 0;
-            case "exited":
-            default:
-                return 0;
-        }
-    };
-
     const getTargetOpacity = () => {
         switch (animationState) {
             case "entering":

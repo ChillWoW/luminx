@@ -121,12 +121,10 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                 if (thumbType === "min") {
                     updatedValue.min = newValue;
 
-                    // Ensure min doesn't exceed max
                     if (!allowCross && updatedValue.min > updatedValue.max) {
                         updatedValue.min = updatedValue.max;
                     }
 
-                    // Ensure minimum range
                     if (
                         minRange > 0 &&
                         updatedValue.max - updatedValue.min < minRange
@@ -139,12 +137,10 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                 } else {
                     updatedValue.max = newValue;
 
-                    // Ensure max doesn't fall below min
                     if (!allowCross && updatedValue.max < updatedValue.min) {
                         updatedValue.max = updatedValue.min;
                     }
 
-                    // Ensure minimum range
                     if (
                         minRange > 0 &&
                         updatedValue.max - updatedValue.min < minRange
@@ -156,7 +152,6 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                     }
                 }
 
-                // Ensure maximum range
                 if (
                     maxRange &&
                     updatedValue.max - updatedValue.min > maxRange
@@ -193,7 +188,6 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
             (event: React.MouseEvent<HTMLDivElement>) => {
                 if (disabled) return;
 
-                // Don't handle clicks on thumbs
                 if (
                     event.target === minThumbRef.current ||
                     event.target === maxThumbRef.current
@@ -212,7 +206,6 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                     inverted ? 100 - position : position
                 );
 
-                // Determine which thumb is closer to the click
                 const minDistance = Math.abs(clickValue - currentValue.min);
                 const maxDistance = Math.abs(clickValue - currentValue.max);
                 const closerThumb = minDistance <= maxDistance ? "min" : "max";
@@ -345,7 +338,6 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                         return;
                 }
 
-                // Apply range constraints
                 if (minRange > 0) {
                     if (
                         thumbType === "min" &&
@@ -432,7 +424,6 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                     )}
                     onMouseDown={disabled ? undefined : handleTrackClick}
                 >
-                    {/* Track background */}
                     <div
                         className={cx(
                             "absolute inset-0 rounded-full",
@@ -443,7 +434,6 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                         )}
                     />
 
-                    {/* Active range bar */}
                     <div
                         className={cx(
                             "absolute top-0 bottom-0 rounded-full",
@@ -457,7 +447,6 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                         }}
                     />
 
-                    {/* Marks */}
                     {marks.map((mark) => {
                         const markPosition = getPositionFromValue(mark.value);
                         const isInRange =
@@ -522,7 +511,6 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                         );
                     })}
 
-                    {/* Min thumb */}
                     <div
                         ref={minThumbRef}
                         className={cx(
@@ -562,7 +550,6 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                         {thumbChildren}
                     </div>
 
-                    {/* Max thumb */}
                     <div
                         ref={maxThumbRef}
                         className={cx(
@@ -602,10 +589,8 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                         {thumbChildren}
                     </div>
 
-                    {/* Labels */}
                     {label && showLabel && (
                         <>
-                            {/* Min label */}
                             <div
                                 className={cx(
                                     "absolute -top-8 transform -translate-x-1/2 px-2 py-1 rounded text-xs whitespace-nowrap",
@@ -627,7 +612,6 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
                                     ? label(currentValue.min)
                                     : label}
                             </div>
-                            {/* Max label */}
                             <div
                                 className={cx(
                                     "absolute -top-8 transform -translate-x-1/2 px-2 py-1 rounded text-xs whitespace-nowrap",

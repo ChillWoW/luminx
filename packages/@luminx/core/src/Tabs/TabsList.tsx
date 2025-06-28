@@ -33,16 +33,16 @@ export const TabsList = ({ className, children }: TabsListProps) => {
             setIndicatorStyle({
                 top: `${currentTabElement.offsetTop}px`,
                 height: `${currentTabElement.offsetHeight}px`,
-                width: "1px"
+                width: variant === "underline" ? "2px" : "1px"
             });
         } else {
             setIndicatorStyle({
                 left: `${currentTabElement.offsetLeft}px`,
                 width: `${currentTabElement.offsetWidth}px`,
-                height: "1px"
+                height: variant === "underline" ? "2px" : "1px"
             });
         }
-    }, [value, isVertical]);
+    }, [value, isVertical, variant]);
 
     useEffect(() => {
         isMounted.current = true;
@@ -76,25 +76,52 @@ export const TabsList = ({ className, children }: TabsListProps) => {
         [value, updateIndicator]
     );
 
+    const getListStyles = () => {
+        const baseStyles = "relative";
+
+        switch (variant) {
+            case "segmented":
+                return cx(
+                    baseStyles,
+                    theme === "light"
+                        ? "bg-[var(--luminx-light-background)] border border-[var(--luminx-light-border)]"
+                        : "bg-[var(--luminx-dark-background)] border border-[var(--luminx-dark-border)]",
+                    "rounded-lg p-1",
+                    isVertical ? "flex flex-col" : "flex flex-row",
+                    "gap-1"
+                );
+            case "pills":
+                return cx(
+                    baseStyles,
+                    isVertical ? "flex flex-col" : "flex flex-row",
+                    "gap-2"
+                );
+            case "underline":
+                return cx(
+                    baseStyles,
+                    isVertical ? "flex flex-col" : "flex flex-row",
+                    "gap-1"
+                );
+            default:
+                return cx(
+                    baseStyles,
+                    theme === "light"
+                        ? "border-[var(--luminx-light-border)]"
+                        : "border-[var(--luminx-dark-border)]",
+                    isVertical
+                        ? ["flex flex-col", "border-r"]
+                        : ["flex flex-row", "border-b"],
+                    position === "bottom" && ["order-1 border-b-0", "border-t"],
+                    position === "right" && "order-1 border-l border-r-0",
+                    !withBorder && "border-0"
+                );
+        }
+    };
+
     return (
         <div
             className={cx(
-                "relative",
-                theme === "light"
-                    ? "border-[var(--luminx-light-border)]"
-                    : "border-[var(--luminx-dark-border)]",
-                isVertical
-                    ? ["flex flex-col", variant !== "pills" && "border-r"]
-                    : [
-                          "flex flex-row",
-                          variant === "pills" ? "gap-1" : "border-b"
-                      ],
-                position === "bottom" && [
-                    "order-1 border-b-0",
-                    variant !== "pills" && "border-t"
-                ],
-                position === "right" && "order-1 border-l border-r-0",
-                !withBorder && "border-0",
+                getListStyles(),
                 fullWidth && "w-full",
                 grow && isVertical ? "flex-grow" : grow && "justify-between",
                 classNames?.list,
@@ -112,15 +139,26 @@ export const TabsList = ({ className, children }: TabsListProps) => {
                 });
             })}
 
-            {variant !== "pills" && (
+            {(variant === "default" || variant === "underline") && (
                 <div
                     className={cx(
-                        "bg-[var(--luminx-primary)] transition-all duration-200 absolute",
+                        "absolute transition-all duration-300 ease-out",
+                        variant === "underline"
+                            ? "bg-[var(--luminx-primary)] rounded-full"
+                            : "bg-[var(--luminx-primary)]",
                         isVertical
-                            ? "right-0 w-[2px] -mr-[1px]"
+                            ? variant === "underline"
+                                ? "left-0 w-[3px]"
+                                : "right-0 w-[2px] -mr-[1px]"
+                            : variant === "underline"
+                            ? "bottom-0 h-[3px]"
                             : "bottom-0 h-[2px] -mb-[1px]",
-                        position === "bottom" && "top-0 bottom-auto -mt-[2px]",
-                        position === "right" && "left-0 right-auto -ml-[2px]",
+                        position === "bottom" &&
+                            variant !== "underline" &&
+                            "top-0 bottom-auto -mt-[2px]",
+                        position === "right" &&
+                            variant !== "underline" &&
+                            "left-0 right-auto -ml-[2px]",
                         classNames?.indicator
                     )}
                     style={indicatorStyle}

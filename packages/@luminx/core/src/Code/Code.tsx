@@ -20,6 +20,7 @@ import {
 import { CodeProps } from "./types";
 import { cx, useTheme } from "../_theme";
 import { Tooltip } from "../Tooltip";
+import { CopyButton } from "../CopyButton";
 
 const themeStyles = {
     dark: oneDark,
@@ -136,26 +137,14 @@ export const Code = ({
             )}
 
             <div className="relative">
-                {copyable && (
-                    <button
-                        onClick={handleCopy}
-                        className={cx(
-                            "absolute top-5 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out text-white",
-                            classNames?.copyButton
-                        )}
-                    >
-                        <Tooltip
-                            label={copied ? copiedText : copyText}
-                            position="bottom-end"
-                        >
-                            {copied ? (
-                                <IconCopyCheck size={18} />
-                            ) : (
-                                <IconCopy size={18} />
-                            )}
-                        </Tooltip>
-                    </button>
-                )}
+                <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
+                    <CopyButton
+                        content={children as string}
+                        onCopy={handleCopy}
+                        copiedText={copiedText}
+                        copyText={copyText}
+                    />
+                </div>
 
                 <SyntaxHighlighter
                     language={language}

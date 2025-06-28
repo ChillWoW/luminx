@@ -51,13 +51,13 @@ export const SegmentedControl = forwardRef<
             }
         };
 
-        const sizeClass = () => {
+        const sizeClasses = () => {
             const styles = {
-                xs: "text-xs py-0.5 px-1.5",
-                sm: "text-sm py-1 px-2",
-                md: "text-base py-1.5 px-2.5",
-                lg: "text-lg py-2 px-3.5",
-                xl: "text-xl py-2.5 px-4.5"
+                xs: "text-xs px-2 py-1",
+                sm: "text-sm px-3 py-1.5",
+                md: "text-sm px-4 py-2",
+                lg: "text-base px-5 py-2.5",
+                xl: "text-lg px-6 py-3"
             };
 
             return styles[size] || styles.md;
@@ -76,10 +76,11 @@ export const SegmentedControl = forwardRef<
             <div
                 ref={ref || rootRef}
                 className={cx(
-                    "inline-flex relative p-1 rounded-md",
+                    "inline-flex relative",
                     theme === "light"
-                        ? "bg-[var(--luminx-light-background)]"
-                        : "bg-[var(--luminx-dark-background)]",
+                        ? "bg-[var(--luminx-light-background)] border border-[var(--luminx-light-border)]"
+                        : "bg-[var(--luminx-dark-background)] border border-[var(--luminx-dark-border)]",
+                    "rounded-lg p-1",
                     orientation === "vertical" ? "flex-col" : "flex-row",
                     fullWidth && "w-full",
                     disabled && "opacity-60 cursor-not-allowed",
@@ -90,8 +91,9 @@ export const SegmentedControl = forwardRef<
             >
                 <div
                     className={cx(
-                        "flex gap-1 w-full",
+                        "flex w-full",
                         orientation === "vertical" ? "flex-col" : "flex-row",
+                        "gap-1",
                         classNames?.control
                     )}
                 >
@@ -99,16 +101,10 @@ export const SegmentedControl = forwardRef<
                         <div
                             key={item.value}
                             className={cx(
-                                "flex-1 rounded-md font-medium",
-                                theme === "light"
-                                    ? "text-[var(--luminx-light-text)]"
-                                    : "text-[var(--luminx-dark-text)]",
-                                activeValue !== item.value &&
-                                    (theme === "light"
-                                        ? "text-[var(--luminx-light-hint)] hover:text-[var(--luminx-light-text)]"
-                                        : "text-[var(--luminx-dark-hint)] hover:text-[var(--luminx-dark-text)]"),
-                                item.disabled &&
-                                    "opacity-60 cursor-not-allowed",
+                                "flex-1 relative",
+                                orientation === "horizontal"
+                                    ? "min-w-0"
+                                    : "min-h-0",
                                 classNames?.item
                             )}
                         >
@@ -131,36 +127,53 @@ export const SegmentedControl = forwardRef<
                                 }}
                                 htmlFor={`segmented-control-${item.value}`}
                                 className={cx(
-                                    "flex items-center justify-center text-center transition-colors w-full rounded-md",
-                                    sizeClass(),
-                                    "cursor-pointer",
-                                    (disabled || item.disabled || readOnly) &&
-                                        "cursor-not-allowed",
-                                    activeValue === item.value &&
-                                        (theme === "light"
-                                            ? "bg-[var(--luminx-light-background-hover)]"
-                                            : "bg-[var(--luminx-dark-background-hover)]"),
+                                    "flex items-center justify-center text-center transition-all duration-200 w-full rounded-md font-medium relative overflow-hidden",
+                                    sizeClasses(),
+                                    "cursor-pointer select-none",
+                                    theme === "light"
+                                        ? "text-[var(--luminx-light-text)]"
+                                        : "text-[var(--luminx-dark-text)]",
+                                    activeValue !== item.value && [
+                                        theme === "light"
+                                            ? "text-[var(--luminx-light-hint)] hover:text-[var(--luminx-light-text)] hover:bg-[var(--luminx-light-background-hover)]"
+                                            : "text-[var(--luminx-dark-hint)] hover:text-[var(--luminx-dark-text)] hover:bg-[var(--luminx-dark-background-hover)]"
+                                    ],
+                                    activeValue === item.value && [
+                                        theme === "light"
+                                            ? "bg-white text-[var(--luminx-light-text)] shadow-sm"
+                                            : "bg-[var(--luminx-dark-background-hover)] text-[var(--luminx-dark-text)] shadow-sm"
+                                    ],
+                                    (disabled || item.disabled || readOnly) && [
+                                        "cursor-not-allowed opacity-60"
+                                    ],
                                     activeValue === item.value &&
                                         classNames?.activeItem,
-                                    classNames?.label,
-                                    "relative z-[2]"
+                                    classNames?.label
                                 )}
                             >
-                                {item.icon && (
-                                    <span
-                                        className={cx("mr-2", classNames?.icon)}
-                                    >
-                                        {item.icon}
-                                    </span>
-                                )}
-                                <span
-                                    className={cx(
-                                        "relative z-[2]",
-                                        classNames?.innerLabel
+                                <div className="flex items-center justify-center gap-2 min-w-0 w-full">
+                                    {item.icon && (
+                                        <span
+                                            className={cx(
+                                                "flex-shrink-0",
+                                                classNames?.icon
+                                            )}
+                                        >
+                                            {item.icon}
+                                        </span>
                                     )}
-                                >
-                                    {item.label}
-                                </span>
+                                    <span
+                                        className={cx(
+                                            "truncate",
+                                            orientation === "horizontal"
+                                                ? "max-w-full"
+                                                : "max-h-full",
+                                            classNames?.innerLabel
+                                        )}
+                                    >
+                                        {item.label}
+                                    </span>
+                                </div>
                             </label>
                         </div>
                     ))}

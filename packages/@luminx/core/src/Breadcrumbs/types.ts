@@ -9,5 +9,6 @@ export interface BreadcrumbsProps extends HTMLAttributes<HTMLDivElement> {
 export interface BreadcrumbItemProps extends HTMLAttributes<HTMLElement> {
     children: ReactNode;
     href?: string;
+    target?: string;
     className?: string;
 }

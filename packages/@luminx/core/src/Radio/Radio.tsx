@@ -46,7 +46,6 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
             inputRef ||
             localRef) as React.RefObject<HTMLInputElement>;
 
-        // Use group context values if available
         const resolvedSize = groupContext?.size || size;
         const resolvedVariant = groupContext?.variant || variant;
         const resolvedLabelPosition =
@@ -98,7 +97,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
             if (unstyled) return;
 
             const baseStyles = [
-                "rounded-full border-2 transition-all duration-200",
+                "rounded-full border transition-all duration-200",
                 resolvedVariant === "filled" ? "border-transparent" : ""
             ];
 

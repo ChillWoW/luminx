@@ -18,20 +18,20 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
         },
         ref
     ) => {
-        const { theme, cx } = useTheme();
+        const { cx } = useTheme();
 
         const getSize = () => {
             switch (size) {
                 case "xs":
                     return "text-xs px-2 py-0.5";
                 case "md":
-                    return "text-base px-3 py-1.5";
+                    return "text-sm px-3 py-1.5";
                 case "lg":
                     return "text-lg px-4 py-2";
                 case "xl":
                     return "text-xl px-5 py-2.5";
                 default:
-                    return "text-sm px-2.5 py-1";
+                    return "text-xs px-2.5 py-1";
             }
         };
 

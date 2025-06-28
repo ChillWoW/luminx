@@ -17,6 +17,7 @@ const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(
             size = "sm",
             disabled,
             withTooltip = true,
+            tooltipProps,
             className,
             classNames,
             onCopy,
@@ -128,7 +129,9 @@ const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(
         }
 
         return (
-            <Tooltip label={copied ? copiedText : copyText}>{button}</Tooltip>
+            <Tooltip label={copied ? copiedText : copyText} {...tooltipProps}>
+                {button}
+            </Tooltip>
         );
     }
 );

@@ -5,12 +5,18 @@ import { AvatarGroup } from "./AvatarGroup";
 import { IconUserCircle } from "@tabler/icons-react";
 
 const defaultFallback = () => {
-    return <IconUserCircle />;
+    return (
+        <div className="flex items-center justify-center">
+            <IconUserCircle />
+        </div>
+    );
 };
 
 const renderContent = ({ children, src, alt }: AvatarProps) => {
     if (src) {
-        return <img src={src} alt={alt} />;
+        return (
+            <img src={src} alt={alt} className="w-full h-full object-cover" />
+        );
     } else if (children) {
         return children;
     } else {
@@ -49,34 +55,15 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             }
         };
 
-        const getBackground = () => {
-            switch (theme) {
-                case "light":
-                    return "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]";
-                default:
-                    return "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]";
-            }
-        };
-
-        const getBorder = () => {
-            if (!withBorder) return "";
-
-            switch (theme) {
-                case "light":
-                    return "border border-[var(--luminx-light-border)]";
-                default:
-                    return "border border-[var(--luminx-dark-border)]";
-            }
-        };
-
         const Element = Component as ElementType;
-
         return (
             <Element
                 className={cx(
                     "inline-flex items-center justify-center overflow-hidden rounded-full",
-                    getBackground(),
-                    getBorder(),
+                    withBorder && "border",
+                    theme === "light"
+                        ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)] border-[var(--luminx-light-border)]"
+                        : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)] border-[var(--luminx-dark-border)]",
                     getSize(),
                     className
                 )}

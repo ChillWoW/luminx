@@ -72,7 +72,8 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
                     "inline-flex w-fit items-center justify-center rounded-md cursor-pointer transition-all duration-150 select-none active:translate-y-0.5",
                     sizeClasses(),
                     getVariant(),
-                    disabled && "opacity-60 cursor-not-allowed",
+                    disabled &&
+                        "opacity-60 cursor-not-allowed active:translate-y-0",
                     disabled && classNames?.disabled,
                     classNames?.root,
                     className

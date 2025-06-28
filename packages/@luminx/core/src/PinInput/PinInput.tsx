@@ -25,7 +25,6 @@ export const PinInput = forwardRef<HTMLDivElement, PinInputProps>(
             onBlur,
             classNames,
             className,
-            "aria-label": ariaLabel,
             id,
             name,
             required = false,
@@ -227,7 +226,6 @@ export const PinInput = forwardRef<HTMLDivElement, PinInputProps>(
                     className={cx("flex items-center gap-2", classNames?.root)}
                     onPaste={handlePaste}
                     role="group"
-                    aria-label={ariaLabel || label || "PIN input"}
                 >
                     {Array.from({ length }, (_, index) => (
                         <input

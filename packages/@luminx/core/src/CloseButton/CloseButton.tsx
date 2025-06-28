@@ -14,6 +14,7 @@ const CloseButton = forwardRef<HTMLButtonElement, CloseButtonProps>(
             disabled,
             title,
             withTooltip = true,
+            tooltipProps,
             className,
             classNames,
             ...props
@@ -76,9 +77,9 @@ const CloseButton = forwardRef<HTMLButtonElement, CloseButtonProps>(
             return icon || <IconX size={iconSize} />;
         };
 
-        const handleClick = () => {
+        const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
             if (!disabled) {
-                onClick();
+                onClick?.(e);
             }
         };
 
@@ -92,7 +93,8 @@ const CloseButton = forwardRef<HTMLButtonElement, CloseButtonProps>(
                     "inline-flex w-fit items-center justify-center rounded-md cursor-pointer transition-all duration-150 select-none active:translate-y-0.5",
                     sizeClasses(),
                     getVariant(),
-                    disabled && "opacity-60 cursor-not-allowed",
+                    disabled &&
+                        "opacity-60 cursor-not-allowed active:translate-y-0",
                     disabled && classNames?.disabled,
                     classNames?.root,
                     className
@@ -109,7 +111,11 @@ const CloseButton = forwardRef<HTMLButtonElement, CloseButtonProps>(
             return button;
         }
 
-        return <Tooltip label={title}>{button}</Tooltip>;
+        return (
+            <Tooltip label={title} {...tooltipProps}>
+                {button}
+            </Tooltip>
+        );
     }
 );
 

@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes } from "react";
+import { TooltipProps } from "../Tooltip";
 
 export type CopyButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type CopyButtonVariant = "filled" | "outline" | "ghost";
@@ -24,6 +25,7 @@ export interface CopyButtonProps
     size?: CopyButtonSize;
     disabled?: boolean;
     withTooltip?: boolean;
+    tooltipProps?: TooltipProps;
     onCopy?: (content: string) => void;
     onCopyError?: (error: Error) => void;
     classNames?: CopyButtonClassNames;

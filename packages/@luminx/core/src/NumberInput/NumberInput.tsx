@@ -25,6 +25,10 @@ export const NumberInput = ({
 }: NumberInputProps) => {
     const { theme, cx } = useTheme();
 
+    const incrementTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const decrementTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const initialDelayRef = useRef<NodeJS.Timeout | null>(null);
+
     const [value, setValue] = useState<number>(
         props.value !== undefined ? Number(props.value) : defaultValue
     );
@@ -233,25 +237,106 @@ export const NumberInput = ({
     );
 
     const increment = useCallback(() => {
-        const newValue = value + step;
-        const clampedValue = clampValue(newValue);
-        if (clampedValue === value) return;
-        setValue(clampedValue);
-        setDisplayValue(null);
-        setIsTyping(false);
-        onChange?.(clampedValue);
-    }, [value, step, clampValue, onChange]);
+        setValue((currentValue) => {
+            const newValue = currentValue + step;
+            const clampedValue = clampValue(newValue);
+            if (clampedValue === currentValue) return currentValue;
+            setDisplayValue(null);
+            setIsTyping(false);
+            onChange?.(clampedValue);
+            return clampedValue;
+        });
+    }, [step, clampValue, onChange]);
 
     const decrement = useCallback(() => {
-        const newValue = value - step;
-        if (!allowNegative && newValue < 0) return;
-        const clampedValue = clampValue(newValue);
-        if (clampedValue === value) return;
-        setValue(clampedValue);
-        setDisplayValue(null);
-        setIsTyping(false);
-        onChange?.(clampedValue);
-    }, [value, step, allowNegative, clampValue, onChange]);
+        setValue((currentValue) => {
+            const newValue = currentValue - step;
+            if (!allowNegative && newValue < 0) return currentValue;
+            const clampedValue = clampValue(newValue);
+            if (clampedValue === currentValue) return currentValue;
+            setDisplayValue(null);
+            setIsTyping(false);
+            onChange?.(clampedValue);
+            return clampedValue;
+        });
+    }, [step, allowNegative, clampValue, onChange]);
+
+    const clearTimers = useCallback(() => {
+        if (incrementTimerRef.current) {
+            clearInterval(incrementTimerRef.current);
+            incrementTimerRef.current = null;
+        }
+        if (decrementTimerRef.current) {
+            clearInterval(decrementTimerRef.current);
+            decrementTimerRef.current = null;
+        }
+        if (initialDelayRef.current) {
+            clearTimeout(initialDelayRef.current);
+            initialDelayRef.current = null;
+        }
+    }, []);
+
+    const handleIncrementMouseDown = useCallback(() => {
+        if (disabled) return;
+
+        increment();
+
+        initialDelayRef.current = setTimeout(() => {
+            incrementTimerRef.current = setInterval(() => {
+                setValue((currentValue) => {
+                    if (max !== undefined && currentValue >= max)
+                        return currentValue;
+                    const newValue = currentValue + step;
+                    const clampedValue = clampValue(newValue);
+                    if (clampedValue === currentValue) return currentValue;
+                    setDisplayValue(null);
+                    setIsTyping(false);
+                    onChange?.(clampedValue);
+                    return clampedValue;
+                });
+            }, 100);
+        }, 300);
+    }, [disabled, max, step, clampValue, onChange, increment]);
+
+    const handleDecrementMouseDown = useCallback(() => {
+        if (disabled) return;
+
+        decrement();
+
+        initialDelayRef.current = setTimeout(() => {
+            decrementTimerRef.current = setInterval(() => {
+                setValue((currentValue) => {
+                    if (
+                        (min !== undefined && currentValue <= min) ||
+                        (!allowNegative && currentValue - step < 0)
+                    ) {
+                        return currentValue;
+                    }
+                    const newValue = currentValue - step;
+                    const clampedValue = clampValue(newValue);
+                    if (clampedValue === currentValue) return currentValue;
+                    setDisplayValue(null);
+                    setIsTyping(false);
+                    onChange?.(clampedValue);
+                    return clampedValue;
+                });
+            }, 100);
+        }, 300);
+    }, [disabled, min, allowNegative, step, clampValue, onChange, decrement]);
+
+    const handleMouseUp = useCallback(() => {
+        clearTimers();
+    }, [clearTimers]);
+
+    const handleMouseLeave = useCallback(() => {
+        clearTimers();
+    }, [clearTimers]);
+
+    React.useEffect(() => {
+        return () => {
+            clearTimers();
+        };
+    }, [clearTimers]);
 
     const isIncrementDisabled = disabled || (max !== undefined && value >= max);
     const isDecrementDisabled =
@@ -281,14 +366,18 @@ export const NumberInput = ({
                         "hover:bg-[var(--luminx-primary-light)]",
                     classNames?.incrementButton
                 )}
-                onClick={increment}
+                onMouseDown={handleIncrementMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseLeave}
                 disabled={isIncrementDisabled}
             >
                 <IconChevronUp size={16} />
             </button>
             <button
                 type="button"
-                onClick={decrement}
+                onMouseDown={handleDecrementMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseLeave}
                 disabled={isDecrementDisabled}
                 className={cx(
                     "w-7 h-[20px] flex items-center justify-center",

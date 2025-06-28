@@ -41,7 +41,6 @@ export const Pill = ({
                 classNames?.root,
                 className
             )}
-            style={{}}
             {...props}
         >
             <span className={classNames?.label}>{children}</span>

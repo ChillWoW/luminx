@@ -1,5 +1,5 @@
-import { CSSProperties, ReactNode } from "react";
 import { LoaderProps } from "../Loader";
+import { ReactNode } from "react";
 
 export interface NotificationProps {
     children: ReactNode;
@@ -10,8 +10,6 @@ export interface NotificationProps {
     title?: ReactNode;
     withBorder?: boolean;
     withCloseButton?: boolean;
-    closeButtonSize?: number;
-    style?: CSSProperties;
     className?: string;
     classNames?: NotificationClassNames;
 }

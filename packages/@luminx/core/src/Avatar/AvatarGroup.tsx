@@ -19,7 +19,10 @@ export const AvatarGroup = ({
     return (
         <div className={cx("flex items-center", className)} style={style}>
             {Children.map(children, (child, index) => {
-                if (isValidElement(child)) {
+                if (
+                    isValidElement(child) &&
+                    (child.type as any).displayName === "@luminx/core/Avatar"
+                ) {
                     const element = child as ReactElement<{
                         className?: string;
                     }>;

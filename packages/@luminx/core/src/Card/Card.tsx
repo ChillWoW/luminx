@@ -13,17 +13,6 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
     ({ children, withBorder, className, ...props }, ref) => {
         const { theme, cx } = useTheme();
 
-        const getBorder = () => {
-            if (!withBorder) return "";
-
-            switch (theme) {
-                case "light":
-                    return "border border-[var(--luminx-light-border)]";
-                default:
-                    return "border border-[var(--luminx-dark-border)]";
-            }
-        };
-
         return (
             <div
                 ref={ref}
@@ -32,7 +21,10 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                         ? "bg-[var(--luminx-light-background)]"
                         : "bg-[var(--luminx-dark-background)]",
                     "rounded-md",
-                    getBorder(),
+                    withBorder && "border",
+                    theme === "light"
+                        ? "border-[var(--luminx-light-border)]"
+                        : "border-[var(--luminx-dark-border)]",
                     className
                 )}
                 {...props}
@@ -43,12 +35,10 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                             className?: string;
                         }>;
 
-                        // Check if this is a Card.Section component
                         const isCardSection = element.type === CardSection;
 
                         return cloneElement(element, {
                             className: cx(
-                                // Only add padding if it's NOT a Card.Section
                                 !isCardSection ? "p-2" : "",
                                 element.props.className
                             )
