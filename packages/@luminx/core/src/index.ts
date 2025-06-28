@@ -31,6 +31,7 @@ export * from "./FloatingButton";
 export * from "./Group";
 export * from "./Highlight";
 export * from "./Icon";
+export * from "./IconButton";
 export * from "./Indicator";
 export * from "./Input";
 export * from "./List";
