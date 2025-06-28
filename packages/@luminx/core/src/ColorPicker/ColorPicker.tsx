@@ -1,6 +1,6 @@
 import { forwardRef, Ref, useEffect, useState } from "react";
 import { ColorPickerProps, HSVColor } from "./types";
-import { cx } from "../_theme";
+import { useTheme } from "../_theme";
 import { formatColor, hsvToRgb, parseColor, rgbToHex } from "./utils";
 import { ColorSwatch } from "../ColorSwatch";
 import { Saturation } from "./Saturation/index";
@@ -23,6 +23,7 @@ const ColorPickerBase = (props: ColorPickerProps, ref: Ref<HTMLDivElement>) => {
         classNames,
         ...rest
     } = props;
+    const { theme, cx } = useTheme();
 
     const [color, setColor] = useState<HSVColor>(() => {
         try {
@@ -73,7 +74,7 @@ const ColorPickerBase = (props: ColorPickerProps, ref: Ref<HTMLDivElement>) => {
     const activateEyedropper = async () => {
         try {
             if ("EyeDropper" in window) {
-                // @ts-ignore - EyeDropper API is not yet in TypeScript types
+                // @ts-ignore
                 const eyeDropper = new window.EyeDropper();
                 const result = await eyeDropper.open();
                 handleChange(parseColor(result.sRGBHex));
@@ -128,7 +129,12 @@ const ColorPickerBase = (props: ColorPickerProps, ref: Ref<HTMLDivElement>) => {
                             {!hideEyeDropper && (
                                 <button
                                     type="button"
-                                    className="flex items-center justify-center bg-[var(--luminx-dark-background-hover)] rounded-md hover:bg-[var(--luminx-primary-light)] p-3 min-w-[44px] h-11 transition-all duration-200 text-[var(--luminx-dark-text)]"
+                                    className={cx(
+                                        "flex items-center justify-center rounded-md p-3 min-w-[44px] h-11 transition-all duration-200 border",
+                                        theme === "light"
+                                            ? "border-[var(--luminx-light-border)] hover:bg-[var(--luminx-light-background-hover)]"
+                                            : "border-[var(--luminx-dark-border)] hover:bg-[var(--luminx-dark-background-hover)]"
+                                    )}
                                     onClick={activateEyedropper}
                                 >
                                     <IconPencil size={20} />

@@ -11,6 +11,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
             label,
             hint,
             error,
+            withAsterisk,
 
             required,
             readOnly,
@@ -49,31 +50,31 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                 },
                 sm: {
                     track: "w-9 h-5",
-                    thumb: "w-3.5 h-3.5",
+                    thumb: "w-4 h-4",
                     thumbTranslate: "translate-x-4",
                     trackLabel: "text-[9px]",
-                    label: "text-sm"
+                    label: "text-xs"
                 },
                 md: {
                     track: "w-11 h-6",
                     thumb: "w-5 h-5",
                     thumbTranslate: "translate-x-5",
                     trackLabel: "text-xs",
-                    label: "text-base"
+                    label: "text-sm"
                 },
                 lg: {
                     track: "w-12 h-7",
                     thumb: "w-6 h-6",
                     thumbTranslate: "translate-x-5",
                     trackLabel: "text-sm",
-                    label: "text-lg"
+                    label: "text-base"
                 },
                 xl: {
                     track: "w-14 h-8",
                     thumb: "w-7 h-7",
                     thumbTranslate: "translate-x-6",
                     trackLabel: "text-base",
-                    label: "text-xl"
+                    label: "text-lg"
                 }
             };
 
@@ -82,17 +83,108 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
 
         const currentSize = sizeClass();
 
-        const getCheckedColor = () => {
-            if (checked) return "bg-[var(--luminx-primary)]";
+        const getSwitchStyles = () => {
+            const baseStyles = [
+                "relative inline-flex items-center rounded-full transition-colors duration-200 ease-in-out cursor-pointer border",
+                !disabled && "hover:border-[var(--luminx-primary-hover)]"
+            ];
 
-            return theme === "light"
-                ? "bg-[var(--luminx-light-background)]"
-                : "bg-[var(--luminx-dark-background)]";
+            const themeStyles =
+                theme === "light"
+                    ? [
+                          "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)]",
+                          !disabled &&
+                              "hover:bg-[var(--luminx-light-background-hover)]"
+                      ]
+                    : [
+                          "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)]",
+                          !disabled &&
+                              "hover:bg-[var(--luminx-dark-background-hover)]"
+                      ];
+
+            const checkedStyles = checked
+                ? [
+                      "bg-[var(--luminx-primary)] border-[var(--luminx-primary)]",
+                      !disabled &&
+                          "hover:bg-[var(--luminx-primary-hover)] hover:border-[var(--luminx-primary-hover)]"
+                  ]
+                : [];
+
+            const disabledStyles = disabled
+                ? ["opacity-60 cursor-not-allowed"]
+                : [];
+
+            return cx([
+                ...baseStyles,
+                ...themeStyles,
+                ...checkedStyles,
+                ...disabledStyles
+            ]);
         };
 
-        const handleClick = () => {
-            if (readOnly || disabled) return;
-            onChange?.(!checked);
+        const renderLabel = () => {
+            if (!label) return null;
+
+            return (
+                <label
+                    className={cx(
+                        "cursor-pointer select-none",
+                        currentSize.label,
+                        theme === "light"
+                            ? "text-[var(--luminx-light-text)]"
+                            : "text-[var(--luminx-dark-text)]",
+                        disabled && "cursor-not-allowed",
+                        classNames?.label
+                    )}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        if (disabled || readOnly) return;
+
+                        onChange?.(!checked);
+                    }}
+                >
+                    {label}
+                    {withAsterisk && (
+                        <span className="text-[var(--luminx-error)] ml-1">
+                            *
+                        </span>
+                    )}
+                </label>
+            );
+        };
+
+        const renderHint = () => {
+            if (!hint || error) return null;
+
+            return (
+                <div
+                    className={cx(
+                        "text-xs mt-1",
+                        theme === "light"
+                            ? "text-[var(--luminx-light-hint)]"
+                            : "text-[var(--luminx-dark-hint)]",
+                        disabled && "opacity-60",
+                        classNames?.hint
+                    )}
+                >
+                    {hint}
+                </div>
+            );
+        };
+
+        const renderError = () => {
+            if (!error) return null;
+
+            return (
+                <div
+                    className={cx(
+                        "text-xs text-[var(--luminx-error)] mt-1",
+                        classNames?.error
+                    )}
+                >
+                    {error}
+                </div>
+            );
         };
 
         return (
@@ -107,7 +199,6 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                 <div
                     className={cx(
                         "flex items-center gap-2",
-                        disabled && "opacity-60 cursor-not-allowed",
                         classNames?.wrapper
                     )}
                 >
@@ -129,9 +220,8 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
 
                         <div
                             className={cx(
-                                "relative inline-flex items-center rounded-full transition-colors duration-200 ease-in-out cursor-pointer",
                                 currentSize.track,
-                                getCheckedColor(),
+                                getSwitchStyles(),
                                 disabled && "cursor-not-allowed",
                                 classNames?.track,
                                 checked && classNames?.activeTrack
@@ -163,7 +253,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                                         ? "bg-[var(--luminx-white)] text-[var(--luminx-black)] ring-0"
                                         : "ring-[var(--luminx-white)]",
                                     currentSize.thumb,
-                                    "top-[2px] left-[2px]",
+                                    "top-[1px] left-[1px]",
                                     checked && currentSize.thumbTranslate,
                                     classNames?.thumb,
                                     checked && classNames?.activeThumb
@@ -174,67 +264,11 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                         </div>
                     </div>
 
-                    {(label || hint || error) && (
-                        <div
-                            className={cx(
-                                "flex flex-col",
-                                classNames?.labelWrapper
-                            )}
-                        >
-                            {label && (
-                                <label
-                                    className={cx(
-                                        currentSize.label,
-                                        theme === "light"
-                                            ? "text-[var(--luminx-light-text)]"
-                                            : "text-[var(--luminx-dark-text)]",
-                                        disabled && "cursor-not-allowed",
-                                        classNames?.label
-                                    )}
-                                    onClick={handleClick}
-                                >
-                                    {label}
-                                    {required && (
-                                        <span
-                                            className={cx(
-                                                "text-[var(--luminx-error)] ml-1",
-                                                classNames?.required
-                                            )}
-                                            aria-hidden="true"
-                                        >
-                                            *
-                                        </span>
-                                    )}
-                                </label>
-                            )}
-
-                            {hint && !error && (
-                                <p
-                                    className={cx(
-                                        "text-sm",
-                                        theme === "light"
-                                            ? "text-[var(--luminx-light-hint)]"
-                                            : "text-[var(--luminx-dark-hint)]",
-                                        classNames?.hint
-                                    )}
-                                >
-                                    {hint}
-                                </p>
-                            )}
-
-                            {error && (
-                                <p
-                                    className={cx(
-                                        "text-[var(--luminx-error)] text-sm",
-                                        classNames?.error
-                                    )}
-                                >
-                                    {error}
-                                </p>
-                            )}
-                        </div>
-                    )}
+                    {renderLabel()}
                 </div>
+
+                {renderHint()}
+                {renderError()}
             </div>
         );
     }

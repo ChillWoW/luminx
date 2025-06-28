@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-    motion,
-    AnimatePresence,
-    Variants,
-    useAnimationControls
-} from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { TransitionProps } from "./types";
 import { TRANSITIONS } from "./transitions";
 
@@ -22,7 +17,6 @@ export const Transition = ({
     className
 }: TransitionProps) => {
     const [visible, setVisible] = useState(mounted);
-    const controls = useAnimationControls();
 
     const getTransition = () => {
         if (typeof transition === "string") {

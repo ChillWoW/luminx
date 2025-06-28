@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Input } from "../Input";
 import { FileInputProps } from "./types";
 import { cx } from "../_theme";
+import { CloseButton } from "../CloseButton";
 
 const DefaultValueComponent: React.FC<{ value: File | null | File[] }> = ({
     value
@@ -81,29 +82,7 @@ export const FileInput = ({
         : selectedFiles !== null;
 
     const clearButton =
-        clearable && hasValue ? (
-            <button
-                type="button"
-                onClick={clearFiles}
-                className={cx(
-                    "flex items-center justify-center w-6 h-6 hover:bg-[var(--luminx-primary-light)] transition-colors rounded-full",
-                    classNames?.clearButton
-                )}
-            >
-                <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"
-                        fill="currentColor"
-                    />
-                </svg>
-            </button>
-        ) : null;
+        clearable && hasValue ? <CloseButton onClick={clearFiles} /> : null;
 
     return (
         <div

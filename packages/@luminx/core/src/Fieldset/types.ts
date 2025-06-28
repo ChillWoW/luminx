@@ -9,4 +9,5 @@ export interface FieldsetProps extends HTMLAttributes<HTMLFieldSetElement> {
 export interface FieldsetClassNames {
     root?: string;
     legend?: string;
+    body?: string;
 }

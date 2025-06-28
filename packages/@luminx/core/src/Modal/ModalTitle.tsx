@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { useTheme } from "../_theme";
-import { IconX } from "@tabler/icons-react";
 import { useModalContext } from "./context";
+import { CloseButton } from "../CloseButton";
 
 export const ModalTitle = ({ children }: { children: ReactNode }) => {
     const { theme, cx } = useTheme();
@@ -18,24 +18,14 @@ export const ModalTitle = ({ children }: { children: ReactNode }) => {
                     : "text-[var(--luminx-dark-text)]"
             )}
         >
-            <p className={cx("text-base font-medium", classNames?.title)}>
-                {children}
-            </p>
+            <p className={cx("text-sm", classNames?.title)}>{children}</p>
             {withCloseButton && canClose && (
-                <button
-                    type="button"
-                    className={cx(
-                        "flex items-center justify-center hover:bg-[var(--luminx-primary-light)] p-2 rounded-full transition-colors",
-                        classNames?.closeButton
-                    )}
-                    aria-label="Close"
+                <CloseButton
                     onClick={() => {
                         if (!canClose) return;
                         onClose?.();
                     }}
-                >
-                    <IconX size={20} />
-                </button>
+                />
             )}
         </div>
     );

@@ -41,7 +41,6 @@ export const Pill = ({
                 classNames?.root,
                 className
             )}
-            style={{}}
             {...props}
         >
             <span className={classNames?.label}>{children}</span>
@@ -55,7 +54,6 @@ export const Pill = ({
                         "ml-1 flex items-center justify-center",
                         classNames?.remove
                     )}
-                    aria-label="Remove"
                 >
                     <IconX size={16} />
                 </button>

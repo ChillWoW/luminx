@@ -12,6 +12,7 @@ export interface SwitchProps
     label?: string;
     hint?: string;
     error?: string;
+    withAsterisk?: boolean;
 
     required?: boolean;
     disabled?: boolean;

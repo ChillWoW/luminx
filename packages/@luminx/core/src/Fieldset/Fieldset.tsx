@@ -21,6 +21,7 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
                     ...style
                 }}
                 disabled={disabled}
+                aria-disabled={disabled}
                 {...props}
             >
                 {legend && (
@@ -34,10 +35,12 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(
                             classNames?.legend
                         )}
                     >
-                        {legend}
+                        <span>{legend}</span>
                     </legend>
                 )}
-                <div className="space-y-2">{children}</div>
+                <div className={cx("space-y-2", classNames?.body)}>
+                    {children}
+                </div>
             </fieldset>
         );
     }

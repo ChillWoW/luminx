@@ -101,10 +101,6 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(
         };
 
         const classes = cx(
-            theme === "light"
-                ? "text-[var(--luminx-light-text)]"
-                : "text-[var(--luminx-dark-text)]",
-
             dimmed &&
                 (theme === "light"
                     ? "text-[var(--luminx-light-hint)]"

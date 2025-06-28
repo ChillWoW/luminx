@@ -2,14 +2,12 @@ import { forwardRef, ReactNode } from "react";
 import { NotificationProps } from "./types";
 import { useTheme, cx } from "../_theme";
 import { Loader } from "../Loader";
-import { IconX } from "@tabler/icons-react";
+import { CloseButton } from "../CloseButton";
 
 const renderTitle = (title: ReactNode, className?: string) => {
     if (!title) return null;
     return (
-        <div className={cx("text-sm font-semibold mb-1", className)}>
-            {title}
-        </div>
+        <div className={cx("text-sm font-medium mb-1", className)}>{title}</div>
     );
 };
 
@@ -26,14 +24,12 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
             icon,
             loading,
             loaderProps = {
-                size: 24,
-                stroke: 4
+                size: 20,
+                stroke: 2
             },
             onClose,
             withBorder,
             withCloseButton = true,
-            closeButtonSize = 18,
-            style,
             className,
             classNames,
             ...props
@@ -52,16 +48,13 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
                 ref={ref}
                 role="alert"
                 className={cx(
-                    "p-3 rounded-md",
+                    "p-3 rounded-md shadow-md",
                     theme === "light"
                         ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)] border-[var(--luminx-light-border)]"
                         : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)] border-[var(--luminx-dark-border)]",
                     withBorder && "border",
                     className
                 )}
-                style={{
-                    ...style
-                }}
                 {...props}
             >
                 <div className="flex gap-3">
@@ -79,15 +72,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
                     </div>
                     {withCloseButton && (
                         <div className="flex items-center">
-                            <button
-                                onClick={handleClose}
-                                className={cx(
-                                    "p-2 hover:bg-[var(--luminx-primary-light)] rounded-full",
-                                    classNames?.closeButton
-                                )}
-                            >
-                                <IconX size={closeButtonSize} />
-                            </button>
+                            <CloseButton onClick={handleClose} />
                         </div>
                     )}
                 </div>

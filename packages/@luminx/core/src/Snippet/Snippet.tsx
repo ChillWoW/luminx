@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { SnippetProps } from "./types";
 import { useTheme } from "../_theme";
-import { Tooltip } from "../Tooltip";
-import { IconCopy, IconCopyCheck } from "@tabler/icons-react";
+import { CopyButton } from "../CopyButton";
 
 export const Snippet = ({
     children,
@@ -19,17 +18,6 @@ export const Snippet = ({
     classNames
 }: SnippetProps) => {
     const { theme, cx } = useTheme();
-
-    const [copied, setCopied] = useState(false);
-
-    const handleCopy = () => {
-        if (typeof children === "string") {
-            navigator.clipboard.writeText(children);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-            onCopy?.(children);
-        }
-    };
 
     const renderSection = (
         content: React.ReactNode,
@@ -64,31 +52,18 @@ export const Snippet = ({
 
     const copyButton =
         copyable && !rightSection ? (
-            <Tooltip label={copied ? copiedText : copyText}>
-                <button
-                    onClick={handleCopy}
-                    className={cx(
-                        "p-1 rounded cursor-pointer",
-                        theme === "light"
-                            ? "text-[var(--luminx-light-text)]"
-                            : "text-[var(--luminx-dark-text)]",
-                        classNames?.copyButton
-                    )}
-                    aria-label={copied ? copiedText : copyText}
-                >
-                    {copied ? (
-                        <IconCopyCheck size={18} />
-                    ) : (
-                        <IconCopy size={18} />
-                    )}
-                </button>
-            </Tooltip>
+            <CopyButton
+                content={children}
+                copiedText={copiedText}
+                copyText={copyText}
+                onCopy={onCopy}
+            />
         ) : null;
 
     return (
         <div
             className={cx(
-                "relative font-mono group inline-block rounded-md",
+                "relative group inline-block rounded-md border",
                 theme === "light"
                     ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)] border-[var(--luminx-light-border)]"
                     : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)] border-[var(--luminx-dark-border)]",
@@ -121,7 +96,7 @@ export const Snippet = ({
                 )}
             >
                 {renderSection(leftSection, "left")}
-                <div className="flex-1">{children}</div>
+                <div className="flex-1 font-mono">{children}</div>
                 {renderSection(rightSection || copyButton, "right")}
             </div>
         </div>

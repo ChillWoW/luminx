@@ -16,7 +16,6 @@ export interface AlertProps {
     icon?: ReactNode;
     iconPosition?: IconPosition;
     withCloseButton?: boolean;
-    closeButtonLabel?: string;
     onClose?: () => void;
     withBorder?: boolean;
     children?: ReactNode;

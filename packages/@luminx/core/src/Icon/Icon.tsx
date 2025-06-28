@@ -34,7 +34,14 @@ export const Icon = forwardRef<HTMLDivElement, IconProps>(
                 )}
                 {...props}
             >
-                <div className={classNames?.icon}>{children}</div>
+                <div
+                    className={cx(
+                        "w-full h-full flex items-center justify-center",
+                        classNames?.icon
+                    )}
+                >
+                    {children}
+                </div>
             </Component>
         );
     }

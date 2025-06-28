@@ -66,7 +66,7 @@ export interface PopoverContextType extends PopoverProps {
 }
 
 export interface PopoverTargetProps {
-    children: ReactElement;
+    children: ReactElement | ReactNode;
     refProp?: string;
 }
 

@@ -144,4 +144,4 @@ export const ValidatorInput = forwardRef<HTMLInputElement, ValidatorInputProps>(
     }
 );
 
-ValidatorInput.displayName = "ValidatorInput";
+ValidatorInput.displayName = "@luminx/core/ValidatorInput";

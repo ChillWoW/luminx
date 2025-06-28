@@ -8,7 +8,10 @@ export const TableContext = createContext<TableContextValue>({
     stickyHeaderOffset: 0,
     variant: "default",
     tabularNums: false,
-    layout: "auto"
+    layout: "auto",
+    size: "md",
+    selectable: false,
+    sortable: false
 });
 
 export const useTableContext = () => useContext(TableContext);

@@ -7,13 +7,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     (
         {
             fullWidth,
-            unstyled = false,
             size = "md",
 
             label,
             hint,
             error,
             indeterminate = false,
+            withAsterisk,
 
             required,
             readOnly,
@@ -27,9 +27,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             icon: Icon,
 
             inputRef,
-            style,
-
-            wrapperProps,
 
             className,
             classNames,
@@ -55,184 +52,235 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             onChange?.(e);
         };
 
-        const sizeClass = () => {
+        const getSizeStyles = () => {
             const styles = {
-                xs: "w-3 h-3",
-                sm: "w-4 h-4",
-                md: "w-5 h-5",
-                lg: "w-6 h-6",
-                xl: "w-7 h-7"
+                xs: {
+                    checkbox: "w-3.5 h-3.5",
+                    icon: 12,
+                    text: "text-xs",
+                    gap: "gap-2"
+                },
+                sm: {
+                    checkbox: "w-4 h-4",
+                    icon: 14,
+                    text: "text-sm",
+                    gap: "gap-2"
+                },
+                md: {
+                    checkbox: "w-5 h-5",
+                    icon: 16,
+                    text: "text-sm",
+                    gap: "gap-3"
+                },
+                lg: {
+                    checkbox: "w-6 h-6",
+                    icon: 18,
+                    text: "text-base",
+                    gap: "gap-3"
+                },
+                xl: {
+                    checkbox: "w-7 h-7",
+                    icon: 20,
+                    text: "text-lg",
+                    gap: "gap-4"
+                }
             };
-
             return styles[size];
         };
 
-        const textSizeClass = () => {
-            const styles = {
-                xs: "text-xs",
-                sm: "text-sm",
-                md: "text-base",
-                lg: "text-lg",
-                xl: "text-xl"
-            };
+        const sizeStyles = getSizeStyles();
 
-            return styles[size];
-        };
-
-        const getStyles = () => {
-            if (unstyled) return;
-
-            return [
-                theme === "light"
-                    ? "border-[var(--luminx-light-border)] bg-[var(--luminx-light-background)]"
-                    : "border-[var(--luminx-dark-border)] bg-[var(--luminx-dark-background)]",
-                (checked || indeterminate) &&
-                    "bg-[var(--luminx-primary)] border-[var(--luminx-primary)]"
+        const getCheckboxStyles = () => {
+            const baseStyles = [
+                "relative inline-flex items-center justify-center rounded-md border transition-all duration-200 ease-in-out cursor-pointer",
+                !disabled && "hover:border-[var(--luminx-primary-hover)]"
             ];
+
+            const themeStyles =
+                theme === "light"
+                    ? [
+                          "bg-[var(--luminx-light-background)] border-[var(--luminx-light-border)]",
+                          !disabled &&
+                              "hover:bg-[var(--luminx-light-background-hover)]"
+                      ]
+                    : [
+                          "bg-[var(--luminx-dark-background)] border-[var(--luminx-dark-border)]",
+                          !disabled &&
+                              "hover:bg-[var(--luminx-dark-background-hover)]"
+                      ];
+
+            const checkedStyles =
+                checked || indeterminate
+                    ? [
+                          "bg-[var(--luminx-primary)] border-[var(--luminx-primary)]",
+                          !disabled &&
+                              "hover:bg-[var(--luminx-primary-hover)] hover:border-[var(--luminx-primary-hover)]"
+                      ]
+                    : [];
+
+            const disabledStyles = disabled
+                ? ["opacity-60 cursor-not-allowed"]
+                : [];
+
+            return cx([
+                ...baseStyles,
+                ...themeStyles,
+                ...checkedStyles,
+                ...disabledStyles
+            ]);
         };
 
         const renderIcon = () => {
-            if (!Icon) {
+            if (Icon) {
                 return (
-                    <div
+                    <Icon
+                        indeterminate={indeterminate}
                         className={cx(
-                            "transition-opacity opacity-0 flex items-center justify-center text-[var(--luminx-dark-text)]",
-                            (checked || indeterminate) && "opacity-100",
+                            "transition-all duration-200 ease-in-out",
+                            checked || indeterminate
+                                ? "opacity-100 scale-100 text-white"
+                                : "opacity-0 scale-75",
                             classNames?.icon
                         )}
-                    >
-                        {indeterminate ? (
-                            <IconMinus size={16} />
-                        ) : (
-                            <IconCheck size={16} />
-                        )}
-                    </div>
+                    />
                 );
             }
 
             return (
-                <Icon
-                    indeterminate={indeterminate}
+                <div
                     className={cx(
-                        "transition-opacity opacity-0",
-                        (checked || indeterminate) && "opacity-100",
+                        "transition-all duration-200 ease-in-out flex items-center justify-center text-white",
+                        checked || indeterminate
+                            ? "opacity-100 scale-100"
+                            : "opacity-0 scale-75",
                         classNames?.icon
                     )}
-                />
+                >
+                    {indeterminate ? (
+                        <IconMinus size={sizeStyles.icon} strokeWidth={2.5} />
+                    ) : (
+                        <IconCheck size={sizeStyles.icon} strokeWidth={2.5} />
+                    )}
+                </div>
             );
         };
 
-        const handleClick = () => {
-            if (readOnly || disabled) return;
-            onChange?.({
-                currentTarget: { checked: !checked }
-            } as React.ChangeEvent<HTMLInputElement>);
+        const renderLabel = () => {
+            if (!label) return null;
+
+            return (
+                <label
+                    className={cx(
+                        "cursor-pointer select-none",
+                        sizeStyles.text,
+                        theme === "light"
+                            ? "text-[var(--luminx-light-text)]"
+                            : "text-[var(--luminx-dark-text)]",
+                        disabled && "opacity-60 cursor-not-allowed",
+                        classNames?.label
+                    )}
+                    onClick={(e) => {
+                        if (disabled || readOnly) {
+                            e.preventDefault();
+                            return;
+                        }
+                        resolvedRef.current?.click();
+                    }}
+                >
+                    {label}
+                    {withAsterisk && (
+                        <span className="text-[var(--luminx-error)] ml-1">
+                            *
+                        </span>
+                    )}
+                </label>
+            );
+        };
+
+        const renderHint = () => {
+            if (!hint || error) return null;
+
+            return (
+                <div
+                    className={cx(
+                        "text-xs mt-1",
+                        theme === "light"
+                            ? "text-[var(--luminx-light-hint)]"
+                            : "text-[var(--luminx-dark-hint)]",
+                        disabled && "opacity-60",
+                        classNames?.hint
+                    )}
+                >
+                    {hint}
+                </div>
+            );
+        };
+
+        const renderError = () => {
+            if (!error) return null;
+
+            return (
+                <div
+                    className={cx(
+                        "text-xs text-[var(--luminx-error)] mt-1",
+                        classNames?.error
+                    )}
+                >
+                    {error}
+                </div>
+            );
         };
 
         return (
             <div
                 className={cx(
-                    "flex items-center",
+                    "inline-flex flex-col",
                     fullWidth && "w-full",
-                    disabled && "opacity-60",
                     className,
                     classNames?.root
                 )}
-                style={style}
-                {...wrapperProps}
             >
                 <div
                     className={cx(
-                        "relative flex items-center justify-center mr-2",
-                        sizeClass(),
-                        disabled && "cursor-not-allowed",
-                        classNames?.body
+                        "inline-flex items-center",
+                        sizeStyles.gap,
+                        classNames?.wrapper
                     )}
                 >
                     <div
                         className={cx(
-                            "flex items-center justify-center absolute top-0 left-0 w-full h-full rounded-md",
-                            getStyles(),
-                            classNames?.inner
+                            sizeStyles.checkbox,
+                            getCheckboxStyles(),
+                            classNames?.body
                         )}
                     >
                         {renderIcon()}
+
+                        <input
+                            ref={resolvedRef}
+                            type="checkbox"
+                            className={cx(
+                                "absolute inset-0 w-full h-full opacity-0 cursor-pointer",
+                                disabled && "cursor-not-allowed",
+                                readOnly && "cursor-default",
+                                classNames?.input
+                            )}
+                            checked={checked}
+                            defaultChecked={defaultChecked}
+                            required={required}
+                            disabled={disabled}
+                            readOnly={readOnly}
+                            autoFocus={autoFocus}
+                            onChange={handleChange}
+                            {...props}
+                        />
                     </div>
-                    <input
-                        ref={resolvedRef}
-                        type="checkbox"
-                        className={cx(
-                            "absolute inset-0 w-full h-full opacity-0 cursor-pointer",
-                            disabled && "cursor-not-allowed",
-                            readOnly && "cursor-default",
-                            classNames?.input
-                        )}
-                        checked={checked}
-                        defaultChecked={defaultChecked}
-                        required={required}
-                        disabled={disabled}
-                        readOnly={readOnly}
-                        autoFocus={autoFocus}
-                        onChange={handleChange}
-                        {...props}
-                    />
+
+                    {renderLabel()}
                 </div>
 
-                {(label || hint || error) && (
-                    <div
-                        className={cx(
-                            "flex flex-col",
-                            classNames?.labelWrapper
-                        )}
-                    >
-                        {label && (
-                            <label
-                                className={cx(
-                                    textSizeClass(),
-                                    theme === "light"
-                                        ? "text-[var(--luminx-light-text)]"
-                                        : "text-[var(--luminx-dark-text)]",
-                                    disabled && "cursor-not-allowed",
-                                    classNames?.label
-                                )}
-                                onClick={handleClick}
-                            >
-                                {label}
-                                {required && (
-                                    <span className="text-[var(--luminx-error)] ml-1">
-                                        *
-                                    </span>
-                                )}
-                            </label>
-                        )}
-
-                        {hint && !error && (
-                            <div
-                                className={cx(
-                                    "text-sm",
-                                    theme === "light"
-                                        ? "text-[var(--luminx-light-hint)]"
-                                        : "text-[var(--luminx-dark-hint)]",
-                                    disabled && "cursor-not-allowed",
-                                    classNames?.hint
-                                )}
-                            >
-                                {hint}
-                            </div>
-                        )}
-
-                        {error && (
-                            <div
-                                className={cx(
-                                    "text-[var(--luminx-error)] text-sm",
-                                    classNames?.error
-                                )}
-                            >
-                                {error}
-                            </div>
-                        )}
-                    </div>
-                )}
+                {renderHint()}
+                {renderError()}
             </div>
         );
     }

@@ -20,12 +20,12 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
         const { theme, cx } = useTheme();
 
         const sizeClass = {
-            xs: "w-[320px]",
-            sm: "w-[440px]",
-            md: "w-[560px]",
-            lg: "w-[680px]",
-            xl: "w-[800px]",
-            full: "w-[95vw]",
+            xs: "w-[240px]",
+            sm: "w-[360px]",
+            md: "w-[480px]",
+            lg: "w-[600px]",
+            xl: "w-[720px]",
+            full: "w-full",
             auto: "w-auto"
         };
 
@@ -57,7 +57,7 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
             <div
                 ref={ref}
                 className={cx(
-                    "relative flex flex-col p-3 rounded-md",
+                    "relative flex flex-col p-3 rounded-md shadow-lg",
                     theme === "light"
                         ? "bg-[var(--luminx-light-background)] text-[var(--luminx-light-text)]"
                         : "bg-[var(--luminx-dark-background)] text-[var(--luminx-dark-text)]",

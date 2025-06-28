@@ -10,15 +10,5 @@ export interface ScrollAreaProps {
     className?: string;
     classNames?: ScrollAreaClassNames;
     scrollbars?: ScrollAreaScrollbars;
-    height?: number | string;
-    width?: number | string;
     viewportRef?: React.RefObject<HTMLDivElement>;
-}
-
-export interface ScrollAreaAutosizeProps
-    extends Omit<ScrollAreaProps, "height" | "width"> {
-    height?: number | string;
-    width?: number | string;
-    maxHeight?: number | string;
-    maxWidth?: number | string;
 }

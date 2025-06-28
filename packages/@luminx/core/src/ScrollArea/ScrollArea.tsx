@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
-import { ScrollAreaProps, ScrollAreaAutosizeProps } from "./types";
-import "../style.css";
+import { ScrollAreaProps } from "./types";
 import { cx } from "../_theme";
 
 export const ScrollArea = ({
@@ -8,37 +7,33 @@ export const ScrollArea = ({
     className,
     classNames,
     scrollbars = "y",
-    height,
-    width,
     viewportRef
 }: ScrollAreaProps) => {
     const localViewportRef = useRef<HTMLDivElement>(null);
     const actualViewportRef = viewportRef || localViewportRef;
 
+    const scrollbarClass = (() => {
+        switch (scrollbars) {
+            case "y":
+                return "overflow-y-auto overflow-x-hidden";
+            case "x":
+                return "overflow-x-auto overflow-y-hidden";
+            case "xy":
+                return "overflow-auto";
+            case "never":
+                return "overflow-hidden";
+            default:
+                return "";
+        }
+    })();
+
     return (
-        <div
-            className={cx(
-                "relative overflow-hidden",
-                className,
-                classNames?.root
-            )}
-            style={{
-                height: height,
-                width: width
-            }}
-        >
+        <div className={cx("relative", className, classNames?.root)}>
             <div
                 ref={actualViewportRef}
                 className={cx(
-                    "h-full w-full luminx-scrollbar",
-                    scrollbars === "y"
-                        ? "overflow-x-hidden overflow-y-auto"
-                        : "",
-                    scrollbars === "x"
-                        ? "overflow-y-hidden overflow-x-auto"
-                        : "",
-                    scrollbars === "xy" ? "overflow-auto" : "",
-                    scrollbars === "never" ? "overflow-hidden" : "",
+                    "w-full h-full luminx-scrollbar",
+                    scrollbarClass,
                     classNames?.viewport
                 )}
             >
@@ -53,39 +48,30 @@ export const ScrollAreaAutosize = ({
     className,
     classNames,
     scrollbars = "y",
-    width,
-    maxHeight,
-    maxWidth,
     viewportRef
-}: ScrollAreaAutosizeProps) => {
+}: ScrollAreaProps) => {
     const contentRef = useRef<HTMLDivElement>(null);
 
+    const scrollbarClass = (() => {
+        switch (scrollbars) {
+            case "y":
+                return "overflow-y-auto overflow-x-hidden";
+            case "x":
+                return "overflow-x-auto overflow-y-hidden";
+            case "xy":
+                return "overflow-auto";
+            case "never":
+                return "overflow-hidden";
+            default:
+                return "";
+        }
+    })();
+
     return (
-        <div
-            className={cx("relative overflow-hidden", className)}
-            style={{
-                width: width || maxWidth,
-                maxWidth: maxWidth,
-                maxHeight: maxHeight
-            }}
-        >
+        <div className={cx("relative", className)}>
             <div
                 ref={viewportRef || contentRef}
-                className={cx(
-                    "w-full luminx-scrollbar",
-                    scrollbars === "y"
-                        ? "overflow-x-hidden overflow-y-auto"
-                        : "",
-                    scrollbars === "x"
-                        ? "overflow-y-hidden overflow-x-auto"
-                        : "",
-                    scrollbars === "xy" ? "overflow-auto" : "",
-                    scrollbars === "never" ? "overflow-hidden" : "",
-                    classNames?.viewport
-                )}
-                style={{
-                    maxHeight: maxHeight
-                }}
+                className={cx("w-full", scrollbarClass, classNames?.viewport)}
             >
                 {children}
             </div>
@@ -94,7 +80,5 @@ export const ScrollAreaAutosize = ({
 };
 
 ScrollAreaAutosize.displayName = "@luminx/core/ScrollArea.Autosize";
-
-ScrollArea.Autosize = ScrollAreaAutosize;
-
 ScrollArea.displayName = "@luminx/core/ScrollArea";
+ScrollArea.Autosize = ScrollAreaAutosize;

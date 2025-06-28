@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { Input } from "../Input/Input";
 import { PasswordInputProps } from "./types";
-import { useTheme } from "../_theme";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import { IconButton } from "../IconButton";
 
 export const PasswordInput = ({
     visible: externalVisible,
@@ -12,8 +12,6 @@ export const PasswordInput = ({
     classNames,
     ...props
 }: PasswordInputProps) => {
-    const { theme, cx } = useTheme();
-
     const [internalVisible, setInternalVisible] = useState(false);
 
     const isVisible =
@@ -29,25 +27,15 @@ export const PasswordInput = ({
     }, [isVisible, onVisibilityChange]);
 
     const eyeIcon = (reveal: boolean) =>
-        reveal ? <IconEyeOff size={20} /> : <IconEye size={20} />;
+        reveal ? <IconEyeOff size={18} /> : <IconEye size={18} />;
 
     const controlButton = visibilityToggle && (
         <div className="inline-flex flex-col h-full">
-            <button
-                type="button"
-                className={cx(
-                    "w-7 h-[30px] flex items-center justify-center rounded-full hover:bg-[var(--luminx-primary-light)]",
-                    theme === "light"
-                        ? "text-[var(--luminx-light-text)]"
-                        : "text-[var(--luminx-dark-text)]",
-                    classNames?.visibilityToggle
-                )}
-                onClick={handleToggleVisibility}
-            >
+            <IconButton onClick={handleToggleVisibility}>
                 {visibilityToggleIcon
                     ? visibilityToggleIcon(isVisible)
                     : eyeIcon(isVisible)}
-            </button>
+            </IconButton>
         </div>
     );
 
