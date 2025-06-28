@@ -55,7 +55,6 @@ export const Pill = ({
                         "ml-1 flex items-center justify-center",
                         classNames?.remove
                     )}
-                    aria-label="Remove"
                 >
                     <IconX size={16} />
                 </button>
