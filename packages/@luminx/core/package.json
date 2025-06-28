@@ -1,6 +1,6 @@
 {
     "name": "@luminx/core",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "description": "React components library focused on simplicity and ease of use",
     "repository": {
         "type": "github",
@@ -38,6 +38,8 @@
         "react-syntax-highlighter": "^15.6.1",
         "tailwind-merge": "^3.0.2",
         "tailwind-scrollbar": "^3.1.0",
+        "pretty-bytes": "^7.0.0",
+        "react-number-format": "^5.4.4",
         "react-textarea-autosize": "8.5.9"
     },
     "devDependencies": {
