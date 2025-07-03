@@ -1,28 +1,38 @@
 import { ReactNode } from "react";
 
-export type ProgressCircleSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type ProgressCircleLabelPosition = "center" | "bottom";
+
+export interface ProgressCircleClassNames {
+    root?: string;
+    wrapper?: string;
+    section?: string;
+    svg?: string;
+    track?: string;
+    progress?: string;
+    label?: string;
+}
 
 export interface ProgressCircleRootProps {
     children?: ReactNode;
-    size?: ProgressCircleSize;
+    size?: number;
     className?: string;
     thickness?: number;
+    classNames?: ProgressCircleClassNames;
 }
 
 export interface ProgressCircleSectionProps {
     value: number;
     className?: string;
-    striped?: boolean;
-    animated?: boolean;
     children?: ReactNode;
-    color?: string;
+    rounded?: boolean;
+    classNames?: ProgressCircleClassNames;
 }
 
 export interface ProgressCircleLabelProps {
     children: ReactNode;
     position?: ProgressCircleLabelPosition;
     className?: string;
+    classNames?: ProgressCircleClassNames;
 }
 
 export interface ProgressCircleProps
@@ -34,7 +44,6 @@ export interface ProgressCircleProps
     value?: number;
     label?: ReactNode;
     labelPosition?: ProgressCircleLabelPosition;
-    striped?: boolean;
-    animated?: boolean;
-    color?: string;
+    rounded?: boolean;
+    classNames?: ProgressCircleClassNames;
 }
