@@ -1,6 +1,6 @@
 {
     "name": "@luminx/notifications",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "description": "React notification handler",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -27,7 +27,7 @@
         "pack:post": "npm run build && npm publish"
     },
     "peerDependencies": {
-        "@luminx/core": ">=3.1.0",
+        "@luminx/core": ">=3.1.1",
         "react": ">=16.8.0",
         "react-dom": ">=16.8.0"
     },
